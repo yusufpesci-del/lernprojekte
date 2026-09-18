@@ -1,5 +1,9 @@
-# Ask user for their name
-name = input ("What's your name? ")
+#Ask user for their name
+name = input("What is your name? ") 
 
-# Say hello to user
-print("hello,", name, sep="???")
+# Remove whitespace from str
+name = name.strip()  
+
+
+# Say hello to the user
+print(f"hello, {name}")

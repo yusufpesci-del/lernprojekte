@@ -9,3 +9,7 @@
 - CS50P Woche 0, Video bis 54:00
 - hello.py mit input, strip, title und f-String
 - Naechstes Mal: Video ab 54:00 weiter
+## 19.09.2026
+- CS50P Woche 0 Video komplett durch
+- Spickzettel angelegt, calculator.py geuebt (int, float, f-Strings, scope)
+- Naechstes Mal: Problem Set 0

@@ -8,3 +8,4 @@ def square(n):
 
 
 print(f"E: {m * square(c)}")
+

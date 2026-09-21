@@ -18,3 +18,8 @@
 - Funktionen verstanden: def, return, Parameter, main()
 - Scope und Shadowing, Nachschlagen mit dir() und help()
 - Naechstes Mal: CS50P Woche 1 (Conditionals)
+## 21.09.2026
+- CS50P Woche 1 begonnen, Video bis 28:32
+- compare.py: if, elif, else, or, Bedingung vereinfachen
+- grade.py angefangen
+- Naechstes Mal: Video ab 28:32 weiter, grade.py fertig

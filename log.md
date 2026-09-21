@@ -13,3 +13,8 @@
 - CS50P Woche 0 Video komplett durch
 - Spickzettel angelegt, calculator.py geuebt (int, float, f-Strings, scope)
 - Naechstes Mal: Problem Set 0
+## 20.09.2026
+- Problem Set 0 komplett (indoor, playback, faces, einstein, tip)
+- Funktionen verstanden: def, return, Parameter, main()
+- Scope und Shadowing, Nachschlagen mit dir() und help()
+- Naechstes Mal: CS50P Woche 1 (Conditionals)

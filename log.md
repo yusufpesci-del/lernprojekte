@@ -27,3 +27,7 @@
 - CS50P Woche 1 Video komplett durch
 - grade.py, parity.py (Modulo), match-case
 - Naechstes Mal: Problem Set 1
+## 23.09.2026
+- Problem Set 1: deep thought und bank geloest
+- startswith(), Reihenfolge bei elif-Ketten
+- Naechstes Mal: Aufgabe 3 von Problem Set 1

@@ -97,3 +97,13 @@ Lege im Repo eine Datei `LOG.md` an. Nach jedem Lerntag drei Zeilen: Was gemacht
 ## Wenn eine Woche ausfällt
 
 Nicht nachholen, nicht verdoppeln. Einfach an der Stelle weitermachen, wo du aufgehört hast. Aufgeben passiert fast nie wegen zu wenig Zeit, sondern wegen der Schuldgefühle nach einer verpassten Woche.
+
+## 29.09.2026
+- Problem Set 1: extensions und interpreter geloest
+- endswith(), split() mit drei Variablen, f-String mit .1f
+- Naechstes Mal: Meal Time (letzte Aufgabe aus Problem Set 1)
+
+## 30.09.2026
+- Problem Set 1 komplett (deep, bank, extensions, interpreter, meal)
+- convert-Funktion mit Umrechnung, verkettete Vergleiche
+- Naechstes Mal: CS50P Woche 2 (Loops)

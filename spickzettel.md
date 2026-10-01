@@ -116,9 +116,18 @@ name.upper()                  # alles gross
 name.title()                  # erster Buchstabe jedes Wortes gross
 name.replace(" ", "...")      # jedes Vorkommen ersetzen
 name.split(" ")               # zerlegt an Leerzeichen -> Liste
+name.split(":")               # zerlegt an einem anderen Trennzeichen
+name.strip("$")               # entfernt $ am Anfang und Ende
+name.startswith("hello")      # faengt der Text damit an?
+name.endswith(".pdf")         # hoert er damit auf?
 ```
 
 `.strip()` zerlegt nichts, es raeumt nur aussen auf. Zerlegen ist `.split()`.
+Mit einem Zeichen als Argument raeumt `.strip()` dieses Zeichen weg statt
+Leerzeichen — praktisch bei `"$50.00"` oder `"15%"`.
+
+`startswith` / `endswith` sind robuster als Slicing: bei leerer Eingabe geben
+sie `False` zurueck, waehrend `text[0]` mit `IndexError` abbricht.
 
 ```
 >>> "   hallo welt   ".strip()
@@ -229,6 +238,139 @@ miteinander zu tun.
 
 Variablen ganz aussen (nicht in einer Funktion) sind ueberall lesbar — heissen
 global, benutzt man sparsam.
+
+### Shadowing — gleicher Name innen und aussen
+
+```python
+n = 5
+
+def square(n):
+    return n * n
+
+print(square(3))      # 9, nicht 25
+```
+
+Der Parameter gewinnt: beim Aufruf legt Python innen einen eigenen Behaelter
+`n` an. Das aeussere `n` bleibt unberuehrt.
+
+Es bricht also nichts — aber der Leser muss erst pruefen, welches `n` gemeint
+ist. Deshalb: Parameter bekommen neutrale Namen (`n`, `text`, `wert`), die
+sprechenden Namen (`c`, `m`) stehen draussen.
+
+---
+
+## Schleifen (Woche 2)
+
+### while — wiederholen, solange etwas gilt
+
+```python
+i = 0
+while i < 3:
+    print("meow")
+    i += 1
+```
+
+Drei Teile, und alle drei braucht es: **Startwert** vor der Schleife,
+**Bedingung** im `while`, und etwas im Rumpf, das die Bedingung irgendwann
+falsch macht. Fehlt das `i += 1`, laeuft die Schleife ewig —
+mit **Strg + C** bricht man ab.
+
+`i += 1` ist die Kurzform von `i = i + 1`. Geht auch mit `-=`, `*=`, `/=`.
+
+### for — fuer jedes Element aus einer Sammlung
+
+```python
+for i in [0, 1, 2]:
+    print("meow")
+```
+
+Kein Zaehler noetig, kein Hochzaehlen, kein Endlosschleifen-Risiko.
+Deshalb nimmt man `for`, wann immer die Anzahl vorher feststeht.
+
+### range — Zahlen erzeugen, ohne sie aufzuschreiben
+
+```python
+for i in range(3):        # 0, 1, 2
+    print("meow")
+```
+
+`range(3)` zaehlt **ab 0** und hoert **vor** der 3 auf — also drei Durchlaeufe.
+Dieselbe Logik wie beim Slicing `text[:5]`.
+
+```python
+range(3)          # 0, 1, 2
+range(1, 4)       # 1, 2, 3
+range(0, 10, 2)   # 0, 2, 4, 6, 8
+```
+
+Wenn die Zaehlvariable gar nicht gebraucht wird, schreibt man einen
+Unterstrich — das Zeichen fuer "interessiert mich nicht":
+
+```python
+for _ in range(3):
+    print("meow")
+```
+
+### Ohne Schleife geht es manchmal auch
+
+```python
+print("meow" * 3)         # meowmeowmeow
+print("meow\n" * 3, end="")
+```
+
+`*` wiederholt Text. `\n` ist ein Zeilenumbruch. `end=""` unterdrueckt den
+Umbruch, den `print` sonst von selbst anhaengt — sonst waere einer zu viel.
+
+### Listen
+
+```python
+students = ["Hermione", "Harry", "Ron"]
+
+print(students[0])        # Hermione — Zaehlung beginnt bei 0
+print(len(students))      # 3
+```
+
+Durchlaufen geht direkt, ohne Index:
+
+```python
+for student in students:
+    print(student)
+```
+
+Das ist der ueblichere Weg. Den Index braucht man nur, wenn man ihn
+wirklich benutzt.
+
+---
+
+## Stil — Namen und Zwischenvariablen
+
+**Variablen nach dem Inhalt benennen, Funktionen nach der Taetigkeit.**
+`betrag` ist ein Ding, `dollars_to_float` tut etwas. Daran erkennt man beim
+Lesen sofort, was was ist. `replace_dollar` als Variablenname verwirrt, weil
+er nach einer Funktion klingt.
+
+Variablen werden **klein** geschrieben. Grossbuchstaben am Anfang sind fuer
+Klassen reserviert (Woche 8).
+
+**Zwischenvariablen nur, wenn sie etwas bringen.** Bei einem einzigen Schritt
+sind sie Ballast:
+
+```python
+return float(d.replace("$", ""))          # so
+amount = d.replace("$", "")               # nicht so
+return float(amount)
+```
+
+**Toter Code raus.** Berechnet-aber-nie-benutzt, auskommentierte Reste,
+Variablen die sofort ueberschrieben werden — alles weg, solange es frisch ist.
+
+**`print("E: ", wert)` fuegt automatisch ein Leerzeichen zwischen den
+Argumenten ein.** Steht im Text schon eines, kommt eine Doppelluecke heraus.
+Mit f-String hat man die Kontrolle: `print(f"E: {wert}")`.
+
+**Reihenfolge bei elif-Ketten:** das Speziellste zuerst, das Allgemeinste
+zuletzt. `startswith("hello")` muss vor `startswith("h")` stehen, sonst
+greift der allgemeine Fall zuerst.
 
 ---
 
@@ -341,7 +483,68 @@ Steht da etwas anderes als 4, wurde von Hand eingerueckt statt mit Tab.
 
 ---
 
+## Bedingungen (Woche 1)
+
+```python
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")
+else:
+    print("F")
+```
+
+`else` nimmt **keine** Bedingung — `else x == y:` ist ein Syntaxfehler.
+Wenn eine Bedingung noetig ist, heisst es `elif`.
+
+Bei einer `elif`-Kette braucht man die Obergrenzen nicht: kommt Python beim
+zweiten Zweig an, ist der erste ja schon fehlgeschlagen.
+
+### Verkettete Vergleiche
+
+```python
+if 7 <= time <= 8:        # richtig: Variable in der Mitte
+if time <= 8 <= 100:      # FALSCH: heisst "time <= 8 and 8 <= 100"
+```
+
+Python liest `a <= b <= c` als `a <= b and b <= c`. Die Variable gehoert
+in die Mitte, Unter- und Obergrenze aussen.
+
+### match-case
+
+```python
+match name:
+    case "Harry" | "Hermione" | "Ron":
+        print("Gryffindor")
+    case "Draco":
+        print("Slytherin")
+    case _:
+        print("Who?")
+```
+
+`case _:` ist das Gegenstueck zu `else`. Das `|` heisst hier "oder", gilt
+aber nur innerhalb von `case` — ausserhalb schreibt man `or`.
+
+### Modulo
+
+```python
+17 // 5     # 3  — wie oft passt 5 rein
+17 % 5      # 2  — was bleibt uebrig
+x % 2 == 0  # gerade (even), sonst ungerade (odd)
+```
+
+200 Minuten sind `200 // 60` = 3 Stunden und `200 % 60` = 20 Minuten.
+
+---
+
+## Aufgaben mit vorgegebenem Geruest
+
+CS50 gibt manchmal ein Geruest mit `# TODO` vor. Dann kopiert man es und
+fuellt nur die TODOs aus — `main` bleibt wie es ist. Das ist kein Schummeln,
+sondern die Uebung: die Struktur ist vorgegeben, die Logik schreibst du.
+
+---
+
 ## Noch offen
 
-- Problem Set 0: Einstein, Tip Calculator
-- Woche 1: Conditionals
+- Woche 2: Video ab 31:00, dann Problem Set 2

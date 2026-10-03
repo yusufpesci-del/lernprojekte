@@ -47,9 +47,27 @@
     #else:
      #   break
 
-while True:
-    n = int(input("What's n? "))
-    if n > 0:
-        break
-for _ in range(n):
-    print("wara")
+#while True:
+ #   n = int(input("What's n? "))
+#    if n > 0:
+ #       break
+    
+#for _ in range(n):
+#    print("wara")
+
+def main ():
+    number = get_number()
+    wara (number)
+
+def get_number ():
+    while True:
+        n = int(input("What's n? "))
+        if n > 0:
+            break
+    return n
+
+def wara (n):
+    for _ in range(n):
+        print("wara")
+
+main()

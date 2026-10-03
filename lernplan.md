@@ -107,3 +107,13 @@ Nicht nachholen, nicht verdoppeln. Einfach an der Stelle weitermachen, wo du auf
 - Problem Set 1 komplett (deep, bank, extensions, interpreter, meal)
 - convert-Funktion mit Umrechnung, verkettete Vergleiche
 - Naechstes Mal: CS50P Woche 2 (Loops)
+
+## 01.10.2026
+- CS50P Woche 2 begonnen, Video bis 31:00
+- while, for, range, Listen
+- Naechstes Mal: Video ab 31:00
+
+## 03.10.2026
+- CS50P Woche 2, Video bis 55:00
+- Listen und len()
+- Naechstes Mal: Video ab 55:00

@@ -30,4 +30,28 @@
 ## 23.09.2026
 - Problem Set 1: deep thought und bank geloest
 - startswith(), Reihenfolge bei elif-Ketten
-- Naechstes Mal: Aufgabe 3 von Problem Set 1
+- Naechstes Mal: Aufgabe 3 von Problem Set 1## 24.-28.09.2026
+- Pause, arbeitsbedingt kein Lernen
+## 29.09.2026
+- Problem Set 1: extensions und interpreter geloest
+- endswith(), split() mit drei Variablen, f-String mit .1f
+- Ordnerstruktur in woche1 aufgeraeumt (Dateien jetzt flach)
+- Naechstes Mal: Meal Time, letzte Aufgabe aus Problem Set 1
+## 30.09.2026
+- Problem Set 1 komplett (deep, bank, extensions, interpreter, meal)
+- convert-Funktion mit echter Umrechnung, verkettete Vergleiche
+- Naechstes Mal: CS50P Woche 2 (Loops)
+## 01.10.2026
+- CS50P Woche 2 begonnen, Video bis 31:00
+- while, for, range, erste Listen
+- Naechstes Mal: Video ab 31:00
+## 03.10.2026
+- CS50P Woche 2, Video bis 55:00
+- Listen und len()
+- Naechstes Mal: Video ab 55:00
+## 04.10.2026
+- CS50P Woche 2 Video komplett durch
+- Dictionaries, verschachtelte Schleifen, break
+- Spickzettel Woche 0-2 neu strukturiert, Lernplan auf Fassung 2 ueberarbeitet
+  (Tempo auf 1 CS50P-Woche pro Kalenderwoche, Zielland USA, Phase 3 jetzt Web statt C#)
+- Naechstes Mal: Wiederholung, dann Problem Set 2

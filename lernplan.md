@@ -117,3 +117,9 @@ Nicht nachholen, nicht verdoppeln. Einfach an der Stelle weitermachen, wo du auf
 - CS50P Woche 2, Video bis 55:00
 - Listen und len()
 - Naechstes Mal: Video ab 55:00
+
+## 04.10.2026
+- CS50P Woche 2 Video komplett durch
+- Dictionaries, verschachtelte Schleifen, break
+- Spickzettel Woche 0-2 neu strukturiert
+- Naechstes Mal: Wiederholung, dann Problem Set 2

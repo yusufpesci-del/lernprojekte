@@ -259,6 +259,60 @@ sprechenden Namen (`c`, `m`) stehen draussen.
 
 ---
 
+## Bedingungen (Woche 1)
+
+```python
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")
+else:
+    print("F")
+```
+
+`else` nimmt **keine** Bedingung — `else x == y:` ist ein Syntaxfehler.
+Wenn eine Bedingung noetig ist, heisst es `elif`.
+
+Bei einer `elif`-Kette braucht man die Obergrenzen nicht: kommt Python beim
+zweiten Zweig an, ist der erste ja schon fehlgeschlagen.
+
+### Verkettete Vergleiche
+
+```python
+if 7 <= time <= 8:        # richtig: Variable in der Mitte
+if time <= 8 <= 100:      # FALSCH: heisst "time <= 8 and 8 <= 100"
+```
+
+Python liest `a <= b <= c` als `a <= b and b <= c`. Die Variable gehoert
+in die Mitte, Unter- und Obergrenze aussen.
+
+### match-case
+
+```python
+match name:
+    case "Harry" | "Hermione" | "Ron":
+        print("Gryffindor")
+    case "Draco":
+        print("Slytherin")
+    case _:
+        print("Who?")
+```
+
+`case _:` ist das Gegenstueck zu `else`. Das `|` heisst hier "oder", gilt
+aber nur innerhalb von `case` — ausserhalb schreibt man `or`.
+
+### Modulo
+
+```python
+17 // 5     # 3  — wie oft passt 5 rein
+17 % 5      # 2  — was bleibt uebrig
+x % 2 == 0  # gerade (even), sonst ungerade (odd)
+```
+
+200 Minuten sind `200 // 60` = 3 Stunden und `200 % 60` = 20 Minuten.
+
+---
+
 ## Schleifen (Woche 2)
 
 ### while — wiederholen, solange etwas gilt
@@ -480,60 +534,6 @@ git remote add origin https://github.com/yusufpesci-del/lernprojekte.git
 
 Unten in der Leiste steht die erkannte Einrueckung ("Spaces: 4").
 Steht da etwas anderes als 4, wurde von Hand eingerueckt statt mit Tab.
-
----
-
-## Bedingungen (Woche 1)
-
-```python
-if score >= 90:
-    print("A")
-elif score >= 80:
-    print("B")
-else:
-    print("F")
-```
-
-`else` nimmt **keine** Bedingung — `else x == y:` ist ein Syntaxfehler.
-Wenn eine Bedingung noetig ist, heisst es `elif`.
-
-Bei einer `elif`-Kette braucht man die Obergrenzen nicht: kommt Python beim
-zweiten Zweig an, ist der erste ja schon fehlgeschlagen.
-
-### Verkettete Vergleiche
-
-```python
-if 7 <= time <= 8:        # richtig: Variable in der Mitte
-if time <= 8 <= 100:      # FALSCH: heisst "time <= 8 and 8 <= 100"
-```
-
-Python liest `a <= b <= c` als `a <= b and b <= c`. Die Variable gehoert
-in die Mitte, Unter- und Obergrenze aussen.
-
-### match-case
-
-```python
-match name:
-    case "Harry" | "Hermione" | "Ron":
-        print("Gryffindor")
-    case "Draco":
-        print("Slytherin")
-    case _:
-        print("Who?")
-```
-
-`case _:` ist das Gegenstueck zu `else`. Das `|` heisst hier "oder", gilt
-aber nur innerhalb von `case` — ausserhalb schreibt man `or`.
-
-### Modulo
-
-```python
-17 // 5     # 3  — wie oft passt 5 rein
-17 % 5      # 2  — was bleibt uebrig
-x % 2 == 0  # gerade (even), sonst ungerade (odd)
-```
-
-200 Minuten sind `200 // 60` = 3 Stunden und `200 % 60` = 20 Minuten.
 
 ---
 

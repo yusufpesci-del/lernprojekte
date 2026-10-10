@@ -26,6 +26,30 @@ Der Weg dazwischen ergibt sich meistens von selbst.
 nur weil sie gerechnet wurde — dafür braucht es `print`. Nur im
 interaktiven Modus (`>>>`) wird jedes Ergebnis automatisch gezeigt.
 
+### Von oben nach unten
+
+Python liest die Datei Zeile für Zeile, von oben nach unten. Daraus folgt
+eine Regel ohne Ausnahme:
+
+> Eine Variable muss **angelegt** sein, bevor eine andere Zeile sie benutzt.
+
+```python
+fruits = {"apple": 130}        # erst anlegen
+item = input("Item: ")
+if item in fruits:             # dann benutzen
+    print(fruits[item])
+```
+
+> **Stolperstein.** Steht die Prüfung über dem Dictionary, bricht Python
+> mit `NameError` ab und kommt nie bis zur Zeile, in der das Dictionary
+> entsteht. Die Reihenfolge im Editor **ist** die Reihenfolge der
+> Ausführung.
+
+Der interaktive Modus verhält sich anders: dort gilt alles, was man schon
+getippt hat. Zeilen, die man zum Ausprobieren ins `>>>` eingibt, gehören
+deshalb **nicht** in die Datei — ohne `print` passiert dort nichts
+Sichtbares.
+
 ---
 
 ## Variablen
@@ -442,12 +466,48 @@ for i in range(len(students)):
     print(i + 1, students[i])
 ```
 
+### in und not in
+
 Prüfen, ob etwas drin ist:
 
 ```python
 if "Harry" in students:
     print("gefunden")
+
+if "Voldemort" not in students:
+    print("nicht dabei")
 ```
+
+`not in` ist das Gegenteil von `in`. Es spart oft ein `else`:
+
+```python
+for zeichen in wort:                      # so
+    if zeichen not in "aeiouAEIOU":
+        ergebnis += zeichen
+
+for zeichen in wort:                      # nicht so
+    if zeichen in "aeiouAEIOU":
+        ergebnis += ""                    # tut nichts
+    else:
+        ergebnis += zeichen
+```
+
+**Achtung — `in` bedeutet bei Text etwas anderes als bei einer Liste:**
+
+```python
+zeichen in ["a", "e", "i"]     # Liste: ist es EINER DIESER Einträge?
+zeichen in "aei"               # Text:  kommt es IRGENDWO darin vor?
+```
+
+Bei einzelnen Buchstaben läuft beides aufs Gleiche hinaus, und die
+Textvariante ist kürzer. Das gilt aber nur, weil jedes "Element" genau
+ein Zeichen lang ist.
+
+> **Stolperstein.** `zeichen in "a,e,i,o,u"` — die Kommas sind Teil des
+> Textes und zählen mit. Ein Komma in der Eingabe wird dann als Vokal
+> behandelt und verschwindet: `Hello, World` wurde zu `Hll Wrld` statt
+> `Hll, Wrld`. Entweder echte Liste mit eckigen Klammern, oder Text
+> **ohne** Trennzeichen: `"aeiouAEIOU"`.
 
 ---
 
@@ -481,6 +541,81 @@ for name, house in students.items():   # beides auf einmal
 
 Wann was: **Liste**, wenn die Reihenfolge zählt und alles gleichartig ist.
 **Dictionary**, wenn du etwas unter einem Namen nachschlagen willst.
+
+### Erst prüfen, dann nachschlagen
+
+Ein Schlüssel, den es nicht gibt, bricht das Programm ab:
+
+```python
+students["Luna"]         # KeyError, wenn Luna nicht drin ist
+```
+
+Deshalb vorher fragen. `in` schaut bei einem Dictionary auf die
+**Schlüssel**:
+
+```python
+if "Luna" in students:
+    print(students["Luna"])
+```
+
+Alternative: `.get()` bricht nicht ab, sondern gibt `None` zurück.
+
+```python
+students.get("Luna")             # None statt KeyError
+students.get("Luna", "unbekannt")   # oder ein Ersatzwert
+```
+
+Wann was: `if ... in`, wenn bei fehlendem Schlüssel **nichts** passieren
+soll. `.get()` mit Ersatzwert, wenn du trotzdem etwas ausgeben willst.
+
+### Groß- und Kleinschreibung
+
+Wenn die Eingabe mit `.lower()` kleingemacht wird, müssen **alle
+Schlüssel klein geschrieben sein**. Sonst können sie sich nie treffen.
+
+```python
+fruits = {"sweet cherries": 100}
+item = input("Item: ").strip().lower()
+```
+
+> **Stolperstein.** `{"Sweet Cherries": 100}` mit `.lower()` auf der
+> Eingabe wird **in keiner Schreibweise** gefunden — nicht als
+> `Sweet Cherries`, nicht als `sweet cherries`. Der Eintrag steht im
+> Dictionary, aber niemand kommt je an ihn heran. Totes Material.
+
+### Daten gehören ins Dictionary, nicht in den Code
+
+Zwanzig Früchte mit Kalorien — zwei Wege:
+
+```python
+if item == "apple":              # 20 Zweige, Zahlen im Code verstreut
+    print("Calories: 130")
+elif item == "banana":
+    print("Calories: 110")
+...
+```
+
+```python
+fruits = {"apple": 130, "banana": 110, ...}    # 20 Datenzeilen
+if item in fruits:                             # 2 Zeilen Logik, fertig
+    print(f"Calories: {fruits[item]}")
+```
+
+Der Gewinn: ändert sich eine Zahl, änderst du eine Datenzeile. Beim
+`elif`-Weg suchst du im Code. Und die Logik bleibt gleich lang, ob es
+zwei Früchte sind oder zweihundert.
+
+> **Stolperstein.** Nicht die Form aus dem Video übernehmen, ohne zu
+> prüfen, ob sie passt. Eine **Liste von Dictionaries**
+> (`[{"Item": "apple", "calories": 130}, ...]`) braucht man für mehrere
+> Datensätze mit mehreren Feldern. Zum Nachschlagen eines einzelnen
+> Werts reicht **ein** Dictionary — und spart die Schleife komplett.
+
+> **Stolperstein.** Den Fehlerfall nicht in die Daten schreiben.
+> `{"chocolate": ""}` für "ist keine Frucht" geht nicht auf: es gibt
+> unendlich viele Dinge, die keine Frucht sind. Ins Dictionary kommt nur,
+> was es wirklich gibt — alles andere erkennt man daran, dass es **nicht
+> drin** ist.
 
 ---
 
@@ -557,6 +692,21 @@ Der Parameter gewinnt. Das äußere `n` bleibt unberührt.
 Es bricht also nichts — aber der Leser muss erst prüfen, welches `n`
 gemeint ist. Deshalb: Parameter bekommen neutrale Namen (`n`, `text`,
 `wert`), die sprechenden Namen (`c`, `m`) stehen draußen.
+
+**Bei eingebauten Namen bricht es sehr wohl etwas.** `input`, `print`,
+`str`, `int`, `list`, `len`, `sum`, `max` gehören Python. Wer sie als
+Variablennamen benutzt, zerstört das Werkzeug:
+
+```python
+input = input("Item: ")        # ab hier ist input kein Werkzeug mehr,
+                               # sondern Text
+zweite = input("Noch eine? ")  # TypeError: 'str' object is not callable
+```
+
+> **Stolperstein.** Beim ersten Aufruf fällt es nicht auf — die Zeile
+> läuft noch. Erst der zweite Aufruf scheitert, und die Fehlermeldung
+> zeigt auf die *zweite* Zeile, obwohl der Fehler in der ersten steht.
+> `item`, `frucht`, `eingabe` — alles gut. `input` nicht.
 
 ---
 
@@ -643,6 +793,19 @@ welcher der vier Schritte schuld war, musst du raten.
 
 **Kommentare erklären das Warum, nicht das Was.** `# addiere 1` ist
 überflüssig, `# Reihenfolge wichtig: erst strippen, dann ersetzen` nicht.
+
+**"Tu nichts" nicht hinschreiben.** Wenn in einem Fall nichts passieren
+soll, lässt man den Zweig weg — ohne `else` macht Python von sich aus
+nichts.
+
+```python
+ergebnis += ""        # hängt nichts an
+else: None            # tut nichts
+```
+
+Beides sind Zeilen, die aussehen wie Code, aber keiner sind. Tauchen sie
+auf, steht meistens die Bedingung verkehrt herum: mit `not in` statt `in`
+verschwindet der leere Zweig von selbst.
 
 ---
 
@@ -760,6 +923,19 @@ später die Entwicklung, nicht nur das Ergebnis.
 am Rand: leere Eingabe, Großschreibung, Leerzeichen vorne, Zahlen außerhalb
 des erwarteten Bereichs.
 
+**Erst laufen lassen, dann fragen.** Das Terminal antwortet schneller als
+jeder Mensch und sagt dir dasselbe. Bei camel und coke war beides schon
+richtig, bevor ich nachgefragt habe.
+
+**Klein anfangen, dann auffüllen.** Bei nutrition erst drei Früchte ins
+Dictionary und das Programm zum Laufen bringen — die restlichen siebzehn
+danach. Wer zwanzig Zeilen tippt und dann startet, sucht den Fehler in
+zwanzig Zeilen.
+
+**Dateien in VS Code schließen, wenn Claude sie ändert.** Sonst hält der
+Editor die alte Fassung im Speicher und überschreibt die neue beim
+nächsten Strg+S. So sind schon zweimal Änderungen verschwunden.
+
 **KI-Vervollständigung aus.** In den ersten Monaten lernt man mehr, wenn
 man die Sätze und den Code selbst formuliert.
 
@@ -771,5 +947,5 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 2
+- Problem Set 2: Vanity Plates (4 von 5 Aufgaben sind durch)
 - Woche 3: Exceptions (Fehler abfangen)

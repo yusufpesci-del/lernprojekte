@@ -30,7 +30,8 @@
 ## 23.09.2026
 - Problem Set 1: deep thought und bank geloest
 - startswith(), Reihenfolge bei elif-Ketten
-- Naechstes Mal: Aufgabe 3 von Problem Set 1## 24.-28.09.2026
+- Naechstes Mal: Aufgabe 3 von Problem Set 1
+## 24.-28.09.2026
 - Pause, arbeitsbedingt kein Lernen
 ## 29.09.2026
 - Problem Set 1: extensions und interpreter geloest

@@ -1,0 +1,14 @@
+def main():
+    twitter = input("Input: ")
+    print("Output:", convert(twitter))
+
+
+def convert(twitter):
+    ergebnis = ""
+    for zeichen in twitter:
+        if zeichen not in ["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]:
+            ergebnis += zeichen
+    return ergebnis
+
+
+main()

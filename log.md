@@ -56,3 +56,51 @@
 - Spickzettel Woche 0-2 neu strukturiert, Lernplan auf Fassung 2 ueberarbeitet
   (Tempo auf 1 CS50P-Woche pro Kalenderwoche, Zielland USA, Phase 3 jetzt Web statt C#)
 - Naechstes Mal: Wiederholung, dann Problem Set 2
+## 08.10.2026
+- Problem Set 2 begonnen, Aufgabe camelCase verstanden
+  (camelCase vs snake_case, jeder Grossbuchstabe wird Unterstrich + Kleinbuchstabe)
+- Naechstes Mal: camel.py schreiben
+## 09.10.2026
+- camel.py geloest, auf eigenem Weg: direkt in der Schleife ausgeben statt sammeln
+- isupper() und bool verstanden - True/False ist dasselbe, was in jedem if steckt
+- for ... in wiederholt, "" (leerer Text) und end="" auseinandergehalten
+- coke.py geloest, erste eigene while-Schleife
+  Muenzpruefung mit "in" und Liste, Wechselgeld ueber -amount_due
+- Erkenntnis: erst laufen lassen, dann fragen. Beide Loesungen waren richtig,
+  bevor ich nachgefragt habe
+- Naechstes Mal: Problem Set 2, Aufgabe 3 (Just setting up my twttr)
+## 10.10.2026
+- twttr.py geloest. Es gibt kein isvowel() - "Vokal" ist eine menschliche
+  Kategorie, die Liste muss man selbst hinschreiben
+- Gelernt: "in" bei Text heisst "kommt irgendwo darin vor", bei einer Liste
+  "ist einer dieser Eintraege". Mit Kommas im Text verschwand das Komma aus
+  Hello, World
+- not in statt if/else - spart den leeren Zweig
+- nutrition.py begonnen, erstes eigenes Dictionary. Drei Anlaeufe gebraucht:
+  erst Liste von Dictionaries aus dem Video, dann elif-Kette, dann richtig
+- Die eigentliche Lektion: Daten gehoeren ins Dictionary, Logik in die
+  drei Zeilen darunter. 20 Fruechte = 20 Datenzeilen, aber keine Zeile Logik mehr
+- Zwei Fehler zum Merken: input als Variablenname zerstoert die Funktion input.
+  Und Schluessel muessen klein sein, wenn die Eingabe .lower() bekommt
+- Reihenfolge verstanden: Python liest von oben nach unten, nichts darf
+  benutzt werden, bevor es existiert
+- Naechstes Mal: nutrition fertig auffuellen, dann Vanity Plates
+## 11.10.2026
+- nutrition.py fertig: alle 20 Fruechte, .strip().lower() auf der Eingabe
+- plates.py geloest - Problem Set 2 ist damit komplett, fuenf von fuenf
+- Aufbau gewaehlt: Hilfsfunktion is_valid(), die True/False zurueckgibt,
+  jede Regel einzeln, bei Verstoss sofort return False. Ausgabe nur in main()
+- return beendet die ganze Funktion, break nur die Schleife - der Unterschied
+  war mir vorher nicht klar
+- Neu und schwer: Regel 3. Man kann nicht jedes Zeichen einzeln beurteilen,
+  sondern muss sich beim Durchlaufen merken, ob schon eine Ziffer kam.
+  Dafuer eine bool-Variable VOR der Schleife, in der Schleife if/elif
+- elif statt else war entscheidend - else haette bei jedem Buchstaben
+  zugeschlagen, auch bei denen vor der ersten Ziffer
+- Weitere Fallen: "".isdigit() ist False (leeres Stueck beim Slicing),
+  break ohne Schleife ist ein SyntaxError, Code unter return laeuft nie,
+  und die Laufvariable darf nicht so heissen wie die Funktion
+- Drei Durchgaenge haben am meisten Zeit gekostet: Einrueckung, Namen die
+  etwas ueberschreiben, Code unterhalb von return
+- Naechstes Mal: vier Wiederholungsaufgaben (wiederholung/aufgaben.md),
+  danach Woche 3 (Exceptions)

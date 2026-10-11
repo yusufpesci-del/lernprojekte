@@ -152,6 +152,52 @@ name.endswith(".pdf")       # hört er damit auf?
 
 `.strip()` zerlegt nichts, es räumt nur außen auf. Zerlegen ist `.split()`.
 
+### len() — wie viele?
+
+`len()` gibt die **Anzahl** zurück. Es steht vorne, mit dem Wert in
+Klammern — es ist kein `.befehl` hinten dran.
+
+| Aufruf | zählt | Ergebnis |
+|---|---|---|
+| `len("CS50")` | Zeichen | `4` |
+| `len(["a", "b", "c"])` | Einträge der Liste | `3` |
+| `len(fruits)` | Schlüssel im Dictionary | `20` |
+
+Typisch in einer Bedingung, als verketteter Vergleich:
+
+```python
+if 2 <= len(plate) <= 6:
+```
+
+### Welche Zeichen stecken drin?
+
+Fragen, die ein Zeichen oder einen ganzen Text prüfen. Alle geben `True`
+oder `False` zurück:
+
+```python
+"N".isupper()        # Großbuchstabe?
+"n".islower()        # Kleinbuchstabe?
+"5".isdigit()        # Ziffer?
+"abc".isalpha()      # nur Buchstaben?
+"ab12".isalnum()     # nur Buchstaben und Ziffern, kein . , - Leerzeichen?
+```
+
+Bei mehreren Zeichen gilt die Frage für **alle**: `"CS50".isdigit()` ist
+`False`, weil nicht jedes Zeichen eine Ziffer ist.
+
+> **Stolperstein.** Bei **leerem** Text ist jede dieser Fragen `False` —
+> `"".isdigit()`, `"".isalpha()`, alle. Es ist ja nichts da, was eine
+> Ziffer sein könnte. Gefährlich wird das zusammen mit Slicing: bei
+> `"CS"[2:]` kommt ein leeres Stück heraus, und `"CS"[2:].isdigit()` ist
+> `False`, obwohl nichts verkehrt ist.
+
+**Es gibt kein `isvowel()`.** "Großbuchstabe" und "Ziffer" sind
+Eigenschaften, die im Zeichensatz stehen und die Python kennt. "Vokal"
+ist eine menschliche Kategorie und hängt von der Sprache ab — die Liste
+schreibt man selbst hin. Je weiter man kommt, desto öfter ist es so: beim
+FM-Tool weiß Python auch nicht, welche Lagerguthöhe welche Schutzklasse
+auslöst.
+
 Verketten ist üblich, und die **Reihenfolge zählt**:
 
 ```python
@@ -438,6 +484,49 @@ while True:
 
 Das ist das Muster, um auf eine gültige Eingabe zu warten.
 
+**`break` und `return` machen verschieden große Sprünge:**
+
+| | verlässt |
+|---|---|
+| `break` | nur die Schleife — der Code darunter läuft weiter |
+| `return` | die ganze Funktion — alles danach fällt weg |
+
+> **Stolperstein.** `break` außerhalb einer Schleife ist ein `SyntaxError`.
+> Es heißt "spring aus der Schleife" — ohne Schleife gibt es nichts, wo man
+> herausspringen könnte.
+
+### Sich etwas merken beim Durchlaufen
+
+Manche Prüfungen lassen sich **nicht** an einem einzelnen Element
+entscheiden. Beispiel: in `CS50P` ist am `P` nichts falsch — falsch ist,
+dass **vorher schon Ziffern kamen**.
+
+Dafür legt man eine Variable **vor** der Schleife an, die den Zustand
+festhält:
+
+```python
+zahl_gekommen = False
+for zeichen in plate:
+    if zeichen.isdigit():
+        zahl_gekommen = True
+    elif zahl_gekommen:
+        return False
+```
+
+Zwei Dinge sind entscheidend:
+
+**Die Variable muss vor die Schleife.** Innerhalb würde sie bei jedem
+Durchlauf neu angelegt — dann merkt sie sich nichts.
+
+**`elif`, nicht `else`.** `else` nimmt keine Bedingung und würde bei jedem
+Zeichen zuschlagen, das keine Ziffer ist — also auch bei den Buchstaben
+*vor* der ersten Ziffer. Verboten sind Buchstaben aber nur **danach**, und
+genau diese Einschränkung trägt das `elif`.
+
+Dasselbe Muster braucht man für "war schon mal", "gab es bisher",
+"alles bisher in Ordnung". Es ist der Schritt von *jedes Element einzeln
+beurteilen* zu *den Verlauf beurteilen*.
+
 ---
 
 ## Listen
@@ -658,6 +747,50 @@ Regeln:
 > vergessen — dann passiert gar nichts. Das Rezept steht im Buch,
 > gekocht wird es nie.
 
+> **Stolperstein.** Was **unter** einem `return` steht, läuft nie.
+> `return` ist das Ende der Funktion, nicht nur eine Zeile darin.
+
+### Funktionen, die eine Frage beantworten
+
+Eine Funktion muss nicht rechnen — sie kann auch nur `True` oder `False`
+zurückgeben. Das ist das Mittel, um viele Prüfungen übersichtlich zu
+halten:
+
+```python
+def main():
+    plate = input("Plate: ")
+    if is_valid(plate):
+        print("Valid")
+    else:
+        print("Invalid")
+
+
+def is_valid(plate):
+    if len(plate) < 2 or len(plate) > 6:
+        return False
+
+    if not plate[:2].isalpha():
+        return False
+
+    return True
+```
+
+**Jede Regel bekommt ihren eigenen Block**, und bei Verstoß steigt
+`return False` sofort aus — die restlichen Regeln werden gar nicht mehr
+geprüft. Das `return True` ganz unten wird nur erreicht, wenn keine Regel
+zugeschlagen hat.
+
+Drei Gründe, warum das besser ist als eine lange Zeile mit `or`:
+
+- Mit sechs Regeln ist eine `or`-Kette nicht mehr lesbar
+- Eine siebte Regel kommt dazu, ohne dass man die anderen anfasst
+- Die Ausgabe steht **einmal** im Code, in `main` — egal welche Regel
+  verletzt ist
+
+Weil die Funktion `True`/`False` liefert, passt sie direkt in ein `if`:
+`if is_valid(plate):` — ohne `== True`. Namen mit `is_` davor sind die
+übliche Form dafür.
+
 ### Scope — wo eine Variable existiert
 
 Was in einer Funktion angelegt wird, lebt nur dort:
@@ -707,6 +840,13 @@ zweite = input("Noch eine? ")  # TypeError: 'str' object is not callable
 > läuft noch. Erst der zweite Aufruf scheitert, und die Fehlermeldung
 > zeigt auf die *zweite* Zeile, obwohl der Fehler in der ersten steht.
 > `item`, `frucht`, `eingabe` — alles gut. `input` nicht.
+
+Dasselbe gilt für **deine eigenen** Namen:
+
+> **Stolperstein.** `for is_valid in plate:` — die Laufvariable heißt wie
+> die Funktion, in der sie steht. Ab da ist `is_valid` ein einzelner
+> Buchstabe. Laufvariablen heißen `zeichen`, `i`, `n` — nie wie etwas,
+> das es schon gibt.
 
 ---
 
@@ -947,5 +1087,6 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 2: Vanity Plates (4 von 5 Aufgaben sind durch)
 - Woche 3: Exceptions (Fehler abfangen)
+
+Problem Set 2 ist komplett — camel, coke, twttr, nutrition, plates.

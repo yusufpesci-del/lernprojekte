@@ -43,14 +43,15 @@ September schon einmal funktioniert.
 
 ## Phase 1 — CS50P fertig (Oktober bis Mitte Dezember)
 
-Eine CS50P-Woche pro Kalenderwoche. Stand 04.10.: Woche 0–2 durch,
-Problem Set 2 offen.
+Eine CS50P-Woche pro Kalenderwoche. **Stand 11.10.: Woche 0–2 durch,
+Problem Set 2 komplett.** Der Plan sah Problem Set 2 bis zum 11.10. vor —
+genau so gekommen. Zum ersten Mal läuft es im Takt.
 
 | Zeitraum | Inhalt |
 |---|---|
-| 05.–11.10. | Problem Set 2, dann Woche 3 (Exceptions) |
-| 12.–18.10. | Problem Set 3, Woche 4 (Libraries) |
-| 19.–25.10. | Problem Set 4 |
+| ~~05.–11.10.~~ | ~~Problem Set 2~~ ✅ fertig am 11.10. |
+| 12.–18.10. | Wiederholung Woche 0–2, dann Woche 3 (Exceptions) + Problem Set 3 |
+| 19.–25.10. | Woche 4 (Libraries) + Problem Set 4 |
 | 26.10.–01.11. | Woche 5 (Unit Tests) + Problem Set |
 | 02.–08.11. | Woche 6 (File I/O) + Problem Set |
 | 09.–15.11. | Woche 7 (Regular Expressions) + Problem Set |
@@ -127,7 +128,9 @@ Wochen, weil die Denkweise dieselbe ist.
 
 - Zweites Projekt, das nichts mit Brandschutz zu tun hat — zeigt, dass du
   nicht nur eine Sache kannst
-- Repo aufräumen: README mit Screenshots, saubere Commit-Historie
+- Repo aufräumen: README mit Screenshots, saubere Commit-Historie.
+  Ab hier wird das Repo englisch — README zuerst, dann die Kommentare
+  im Code
 - Englischer Lebenslauf und LinkedIn auf die neue Richtung ausrichten
 - Visum und Arbeitserlaubnis USA klären — das ist der längste Vorlauf
   und gehört früher angefangen als man denkt
@@ -150,17 +153,30 @@ mit dem US-Ziel.
 
 ---
 
-## Was bisher stimmt (Stand 04.10.2026)
+## Was bisher stimmt (Stand 11.10.2026)
 
-Drei Wochen, und das hier läuft besser als der Plan vorsah:
+Vier Wochen, fünfzehn selbst geschriebene Programme, drei Problem Sets.
 
-- Problem Set 0 und 1 vollständig selbst gelöst, zehn Programme
+- Problem Set 0, 1 und 2 vollständig selbst gelöst
 - Nach fünf Tagen Zwangspause ohne Murren weitergemacht
 - Lerntagebuch und Commits konsequent geführt
 - Fragen nach dem Warum statt nach der Lösung
+- **Das Tempo stimmt jetzt auch.** Am 04.10. hinkte der Plan; die
+  korrigierte Fassung 2 wurde in ihrer ersten Woche exakt eingehalten.
 
-Das Tempo hinkt, die Gewohnheiten stimmen. Das ist die Reihenfolge, in der
-man es haben will — Tempo lässt sich korrigieren, Gewohnheiten nicht.
+Was in Woche 2 dazukam, ist mehr als eine neue Technik: bei plates war
+zum ersten Mal ein Programm zu bauen, das sich beim Durchlaufen etwas
+**merkt**, statt jedes Element für sich zu beurteilen. Das ist der
+Übergang von Rechnen zu Programmieren.
+
+Was sich wiederholt und Zeit kostet: Einrückung, Namen die etwas
+überschreiben, Code unterhalb von `return`. Alles drei steht als
+Stolperstein im Spickzettel — bei Woche 3 bewusst darauf achten.
+
+**Vor Woche 3** stehen vier Wiederholungsaufgaben in
+`cs50p/wiederholung/aufgaben.md`, die Woche 0 bis 2 noch einmal
+zusammenfassen. Nicht übersprungen, auch wenn es verlockend ist: Woche 3
+baut darauf auf.
 
 ---
 

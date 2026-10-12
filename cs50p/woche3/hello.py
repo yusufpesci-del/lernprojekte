@@ -1,0 +1,2 @@
+#SyntaxError
+print("hello,world")

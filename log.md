@@ -104,3 +104,29 @@
   etwas ueberschreiben, Code unterhalb von return
 - Naechstes Mal: vier Wiederholungsaufgaben (wiederholung/aufgaben.md),
   danach Woche 3 (Exceptions)
+## 12.10.2026
+- Wiederholungsaufgaben 1 bis 3 geloest: druck.py, klasse.py, material.py
+- druck.py hat am laengsten gedauert, sechs Anlaeufe. Der Knoten sass beim
+  Zusammenspiel zweier Funktionen: was return zurueckgibt, ist das Einzige,
+  was die aufrufende Funktion sieht. Eine Variable aus convert kennt main nicht
+- Was geholfen hat: raus aus der Datei, rein in den interaktiven Modus und die
+  Kette Zeile fuer Zeile aufbauen, bis jedes Zwischenergebnis sichtbar war.
+  Danach war die Funktion nur noch Abschreiben. Merken fuer das naechste Mal,
+  wenn ich mich festfahre
+- split(" ") gibt eine LISTE zurueck - deshalb [0] fuer den ersten Teil.
+  Und ein Leerzeichen am Ende der Eingabe erzeugt ein leeres drittes Element
+- klasse.py: == statt >= hat drei Faelle verschluckt (7.0, 8.5, 9.0 landeten
+  in Klasse 1). Haette ich beim Testen der Grenzwerte sofort gesehen - habe
+  nicht getestet, obwohl die Werte in der Aufgabe standen
+- Dabei gelernt: in einer elif-Kette weiss jeder Zweig schon, dass alle
+  vorherigen nicht zutrafen. Von gross nach klein geprueft reicht die untere
+  Grenze, die obere ist geschenkt
+- material.py: Zaehlmuster im Dictionary - pruefen ob bekannt, dann += 1,
+  sonst neu mit 1 anlegen. Ohne den zweiten Fall bleibt das Dictionary ewig leer
+- Selbst gemerkt: druck.py stuerzt bei "5bar" ohne Leerzeichen ab. Genau dafuer
+  ist Woche 3 da - nicht jeden Sonderfall vorher abfangen, sondern den Absturz
+  auffangen
+- Woche 3 angefangen, Video bis 20:00. Dann gemerkt, dass ich nicht mehr
+  aufnahmefaehig bin, und aufgehoert. Das war richtig so
+- Naechstes Mal: Video ab 20:00 weiter. stueckliste.py (Aufgabe 4) bleibt offen
+  und kommt vor Problem Set 3

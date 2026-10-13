@@ -1,2 +1,0 @@
-#SyntaxError
-print("hello,world")

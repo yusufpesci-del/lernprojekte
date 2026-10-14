@@ -12,6 +12,7 @@
             #pass anstelle von print("x is not an integer")
 #main()
 
+#ODER
 
 def main():
     x = get_int("What's x? ")

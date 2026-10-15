@@ -7,6 +7,8 @@ def main():
    
         if position == "fertig":
             break
+        if not ist_brauchbar(position):
+            continue
         artikel, menge = position.split(" ")
         menge = int(menge)
         if artikel in zaehler:
@@ -25,14 +27,11 @@ def main():
     print(f"Gesamt: {gesamt}")
 
 def ist_brauchbar(zeile):
-    if len(zeile) > 0:
+    teile = zeile.split(" ")
+    if len(teile) != 2:
         return False
-
-    if not zeile[" "].isalpha():
+    if not teile[1].isdigit():
         return False
-    if not zeile.isalnum():
-        return False
-
     return True
 
 

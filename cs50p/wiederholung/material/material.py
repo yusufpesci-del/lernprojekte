@@ -12,7 +12,5 @@ while True:
     else:
             zaehler[material] = 1
 
-
-
 for name, anzahl in zaehler.items():
     print(f"{name}: {anzahl}")

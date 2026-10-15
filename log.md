@@ -130,3 +130,54 @@
   aufnahmefaehig bin, und aufgehoert. Das war richtig so
 - Naechstes Mal: Video ab 20:00 weiter. stueckliste.py (Aufgabe 4) bleibt offen
   und kommt vor Problem Set 3
+## 13.10.2026
+- CS50P Woche 3 Video komplett durch (Exceptions)
+- Der Kern: nicht jeden Sonderfall vorher abfragen, sondern es versuchen und
+  den Absturz auffangen. Lieber um Verzeihung bitten als um Erlaubnis fragen
+- try = die riskante Zeile, except ValueError = Reaktion darauf,
+  else = nur wenn es geklappt hat
+- In try gehoert so wenig wie moeglich - nur die Zeile, die scheitern kann.
+  Sonst faengt das except spaeter Fehler mit, die ganz woanders herkommen
+- Die Falle: scheitert int(), wurde x nie angelegt. Wer danach auf x zugreift,
+  bekommt NameError - ein Fehler ersetzt den anderen. Dafuer ist else da
+- Der eigentliche Gewinn ist while True drumherum: bei unsinniger Eingabe wird
+  einfach nochmal gefragt, statt aufzugeben. pass im except reicht dabei
+- Die Exception-Namen kannte ich alle schon, weil ich jede einzelne in den
+  letzten Wochen selbst produziert habe. Neu ist nur, sie abzufangen
+- Naechstes Mal: stueckliste.py (Wiederholungsaufgabe 4), danach Problem Set 3
+## 14.10.2026
+- stueckliste.py Stufe 1 bis 3: Eingabe bis "fertig", Zeile zerlegen,
+  Mengen im Dictionary addieren, Ausgabe mit Gesamtsumme
+- Erst gedacht, ich muesste material.py und coke.py vermischen. Falsch -
+  coke hatte mit der Aufgabe nichts zu tun. material.py allein war das Geruest
+- Hauptfehler: ich habe nach position (der ganzen Zeile) gefragt, aber artikel
+  (nur den Namen) ins Dictionary gelegt. Deshalb wurde jede Menge
+  ueberschrieben statt addiert
+- Regel daraus: man muss nach demselben fragen, das man auch hineinlegt.
+  In den eckigen Klammern bei zaehler[...] steht immer ein Schluessel
+- .items() gibt immer erst den Schluessel, dann den Wert - egal wie man die
+  beiden Namen nennt
+- Zum Schluss die Form von plates.py uebertragen, ohne zu ueberlegen was
+  geprueft werden soll. Zeichen fuer zu lange Konzentration, also aufgehoert
+- Naechstes Mal: ERST in Worten "Eine Zeile ist brauchbar, wenn ...", dann Code
+## 15.10.2026
+- stueckliste.py fertig - damit sind ALLE VIER Wiederholungsaufgaben durch
+- Der Satz in Worten war die eigentliche Arbeit. Danach war die Pruefunktion
+  vier Zeilen und in fuenf Minuten fertig. Das Vorgehen merken
+- Gelernt: teile = zeile.split(" ") klappt IMMER, egal wie viele Teile.
+  Aber artikel, menge = zeile.split(" ") wirft ValueError, wenn es nicht
+  genau zwei sind. Zwei Namen links verlangen genau zwei Teile
+- len(zeile) zaehlt Zeichen, len(teile) zaehlt Teile - nicht verwechseln
+- teile[:2] ist ein Ausschnitt (wieder eine Liste), teile[1] ein Eintrag
+- .isalpha().isdigit() geht nicht: die erste Frage liefert True/False, und
+  ein True kann man nicht nochmal fragen. AttributeError
+- Dieselbe Pruefung nochmal mit try/except geschrieben (stueckliste2.py).
+  Kuerzer, und sie prueft mit genau den Operationen, die main danach ausfuehrt
+- Interessanter Fund beim Vergleich: bei "Rohr -5" sind sich die beiden
+  Fassungen uneinig. isdigit() sagt False (Minus ist keine Ziffer), int("-5")
+  funktioniert. Zwei Loesungen, die bei allen Testfaellen gleich sind, koennen
+  trotzdem verschieden sein - zeigt sich erst bei einem Fall, an den keiner
+  gedacht hat
+- erklaert.md angelegt: alle vier Aufgaben Zeile fuer Zeile auf Deutsch
+  kommentiert, zum Nachlesen
+- Naechstes Mal: Problem Set 3 (Exceptions)

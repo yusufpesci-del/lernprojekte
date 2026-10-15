@@ -185,6 +185,17 @@ oder `False` zurück:
 Bei mehreren Zeichen gilt die Frage für **alle**: `"CS50".isdigit()` ist
 `False`, weil nicht jedes Zeichen eine Ziffer ist.
 
+> **Stolperstein.** `text.isalpha().isdigit()` — solche Fragen lassen sich
+> **nicht aneinanderhängen**. Die erste liefert `True` oder `False`, und ein
+> `True` kann man nicht nochmal fragen, ob es eine Ziffer ist:
+> `AttributeError: 'bool' object has no attribute 'isdigit'`.
+> Zwei Fragen heißt zwei getrennte Prüfungen, verbunden mit `and`.
+
+`isdigit()` ist strenger als `int()`: `"-5".isdigit()` ist `False`, weil das
+Minus keine Ziffer ist — `int("-5")` funktioniert aber. Bei negativen Zahlen
+geben die beiden also verschiedene Antworten. Welche man will, hängt von der
+Sache ab, nicht von Python.
+
 > **Stolperstein.** Bei **leerem** Text ist jede dieser Fragen `False` —
 > `"".isdigit()`, `"".isalpha()`, alle. Es ist ja nichts da, was eine
 > Ziffer sein könnte. Gefährlich wird das zusammen mit Slicing: bei
@@ -219,6 +230,23 @@ x, o, y = "1 + 1".split(" ")
 ```
 
 Die Anzahl links muss zur Anzahl rechts passen, sonst `ValueError`.
+
+**Das ist der Unterschied, der leicht übersehen wird:**
+
+```python
+teile = zeile.split(" ")             # klappt IMMER, egal wie viele Teile
+artikel, menge = zeile.split(" ")    # verlangt GENAU zwei
+```
+
+```
+"Rohr 40"        →  ["Rohr", "40"]              beide Formen gehen
+"Rohr"           →  ["Rohr"]                    ValueError: not enough values
+"Rohr 3 Stueck"  →  ["Rohr", "3", "Stueck"]     ValueError: too many values
+```
+
+Wer links zwei Namen hinschreibt, stellt damit eine **Bedingung**. Das ist
+nützlich: man kann sie mit `try` abfangen, statt die Anzahl selbst zu
+prüfen.
 
 ### Slicing — Zeichen herausschneiden
 
@@ -898,7 +926,10 @@ und `^^^^^` markiert die Stelle.
 | `ValueError: not enough values to unpack` | links mehr Variablen als rechts Werte |
 | `IndexError: list index out of range` | Position gibt es nicht (zählt ab 0!) |
 | `KeyError` | Schlüssel im Dictionary gibt es nicht |
+| `AttributeError: 'bool' object has no attribute` | zwei Fragen aneinandergehängt, z. B. `.isalpha().isdigit()` |
 | `can't open file ... No such file or directory` | falscher Ordner im Terminal, oder nicht gespeichert |
+
+PLATZHALTER_EXCEPTIONS
 
 VS Code färbt zusammengehörige Klammern gleich ein. Wirkt eine Klammer
 einsam, fehlt das Gegenstück.

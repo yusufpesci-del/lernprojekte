@@ -7,8 +7,10 @@ def main():
    
         if position == "fertig":
             break
+        
         if not ist_brauchbar(position):
             continue
+
         artikel, menge = position.split(" ")
         menge = int(menge)
         if artikel in zaehler:

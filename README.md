@@ -13,16 +13,22 @@ kleine Programme, Notizen.
 | `cs50p/` | Harvard CS50P, nach Wochen sortiert |
 | `cs50p/wiederholung/` | selbstgestellte Aufgaben zum Festigen |
 | `spickzettel.md` | alles Gelernte zum Nachschlagen, mit meinen eigenen Fehlern |
-| `lernplan.md` | der Plan bis zur Bewerbungsreife, Fassung 2 |
+| `erklaert.md` | mein Code, Zeile für Zeile auf Deutsch kommentiert |
+| `lernplan.md` | der Plan bis zur Bewerbungsreife |
 | `log.md` | Lerntagebuch, ein Eintrag pro Lerntag |
 
 ## Stand
 
-**CS50P Woche 0 bis 2 durch, Problem Set 0, 1 und 2 vollständig gelöst.**
-Als Nächstes Woche 3 (Exceptions).
+**CS50P Woche 0 bis 3 durch, Problem Set 0 bis 3 vollständig gelöst.**
+Als Nächstes Woche 4 (Libraries).
 
 Gelernt bisher: Variablen und Datentypen, Bedingungen, Schleifen, Listen,
-Dictionaries, Funktionen, Fehlermeldungen lesen, Git.
+Dictionaries, Funktionen, Fehler abfangen mit `try`/`except`,
+Fehlermeldungen lesen, Git.
+
+Ab Problem Set 3 heißen die Variablen **englisch**. Das Ziel ist der
+US-Arbeitsmarkt, die Dokumentation ist englisch — und zwei Sprachen in
+einer Datei zu mischen wird nur unübersichtlich.
 
 ## Wohin das führt
 

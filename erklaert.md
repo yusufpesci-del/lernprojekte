@@ -1,6 +1,11 @@
-# Die vier Wiederholungsaufgaben, Zeile für Zeile
+# Mein Code, Zeile für Zeile
 
-Mein eigener Code, kommentiert zum Nachlesen.
+Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
+
+| Teil | Inhalt |
+|---|---|
+| **Teil 1** | die vier Wiederholungsaufgaben (Woche 0–2) |
+| **Teil 2** | Problem Set 3 — fuel, taqueria, grocery, outdated (Woche 3) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -29,6 +34,8 @@ Und die drei Gleichheitszeichen:
 | `+=` | **dazuaddieren**: `x += 3` ist dasselbe wie `x = x + 3` |
 
 ---
+
+# Teil 1 — Die vier Wiederholungsaufgaben
 
 ## Aufgabe 1 — druck.py
 
@@ -322,7 +329,7 @@ Entscheidung: darf eine Menge negativ sein?
 
 ---
 
-## Was in allen vier vorkommt
+## Was in allen vier aus Teil 1 vorkommt
 
 | Baustein | wofür |
 |---|---|
@@ -339,3 +346,253 @@ Entscheidung: darf eine Menge negativ sein?
 
 Wer diese zehn Zeilen versteht, kann die vier Programme lesen — und die
 meisten kleinen Programme überhaupt.
+
+---
+
+# Teil 2 — Problem Set 3 (Woche 3)
+
+Alle vier benutzen `try`/`except`. Das ist das Thema der Woche: **nicht
+prüfen, ob etwas gutgehen wird, sondern es versuchen und den Fehler
+auffangen.**
+
+## Aufgabe 1 — fuel.py
+
+```python
+while True:
+    # "wiederhole für immer". Der Ausstieg ist das break weiter unten.
+    try:
+        # "versuch das". Geht dabei etwas schief, springt Python sofort
+        # nach unten ins except, statt abzustürzen.
+
+        x, y = input("Fraction: ").split("/")
+        #  ^^^^                    ^^^^^^^^^^
+        #  |                       zerlegt "3/4" in die Liste ["3", "4"]
+        #  |
+        #  zwei Namen links verlangen GENAU zwei Teile. Bei "3/4/5" oder
+        #  bei "3" gibt es hier einen ValueError.
+
+        x = int(x)
+        y = int(y)
+        # "3" wird zu 3. Vorher ist es Text, mit Text kann man nicht
+        # rechnen. Bei "drei" gibt es hier den ValueError.
+
+        if x > y:
+            continue
+        # continue = "Rest überspringen, nächster Durchlauf".
+        # Ein Tank kann nicht voller als voll sein. Das ist KEIN Fehler,
+        # den Python melden würde — 5/4 rechnet sich sauber aus. Dass es
+        # fachlich unmöglich ist, weiß nur ich. Also ein if.
+
+        fuel =  round(x / y *100)
+        # x / y ergibt 0.75, mal 100 sind 75.0, round() macht 75 daraus.
+        # Bei y = 0 entsteht hier der ZeroDivisionError.
+
+        if fuel <= 1:
+            print("E")
+        elif fuel >= 99:
+            print("F")
+        else:
+            print(f"{fuel}%")
+        # Sonderfälle zuerst, der Normalfall ins else.
+
+        break
+        # raus aus der Schleife. Steht INNERHALB des try — wird also nur
+        # erreicht, wenn vorher nichts schiefgegangen ist.
+
+    except (ValueError, ZeroDivisionError):
+        pass
+    # Die runde Klammer fasst zwei Fehlerarten zusammen: beide sollen
+    # dasselbe bewirken. pass = "tu nichts" — es gibt auch nichts zu tun.
+    # Das break wurde nicht erreicht, also fragt die Schleife von selbst
+    # noch einmal.
+```
+
+**Die Einsicht aus dieser Aufgabe:** es gibt zwei Arten von schlechten
+Eingaben. Die eine wirft einen Fehler (`except`), die andere rechnet sich
+sauber aus und ist trotzdem falsch (`if` + `continue`).
+
+## Aufgabe 2 — taqueria.py
+
+```python
+menu = {"Baja Taco": 4.25, "Burrito": 7.50, "Bowl": 8.50, "Nachos": 11.00,
+        "Tortilla Salad": 8.00, "Quesadilla": 8.50, "Super Burrito": 8.50,
+        "Super Quesadilla": 9.50, "Taco": 3.00}
+# Ein Dictionary: links der Name (Schlüssel), rechts der Preis (Wert).
+# Die Daten stehen HIER, nicht in neun if-Zweigen. Deshalb reicht unten
+# eine einzige Zeile für alle neun Gerichte.
+
+gesamt = 0
+# Der Sammelbehälter. Muss VOR der Schleife stehen — sonst wäre er bei
+# jedem Durchlauf wieder 0 und die Summe würde nie wachsen.
+
+while True:
+    try:
+        item = input("Item: ").strip().title()
+        #                      ^^^^^^^ ^^^^^^^
+        #                      |       "baja taco" wird zu "Baja Taco":
+        #                      |       jedes Wort groß, Rest klein. Genau
+        #                      |       die Schreibweise der Schlüssel oben.
+        #                      Leerzeichen außen weg
+        #
+        # Hier entsteht der EOFError, wenn der Benutzer Strg+Z drückt.
+
+        if item in menu:
+            # in fragt bei einem Dictionary die SCHLÜSSEL ab, nie die Werte.
+            gesamt += menu[item]
+            # menu[item] holt den Preis, += legt ihn auf gesamt drauf.
+            print(f"Total: ${gesamt:.2f}")
+            # :.2f = immer zwei Stellen nach dem Komma. Ohne das stünde
+            # da "Total: $11.5" statt "$11.50".
+
+        # Kein else: unbekannte Eingaben werden still ignoriert. So will
+        # es die Aufgabe.
+
+    except EOFError:
+        break
+    # EOFError ist hier KEINE Panne. Strg+Z heißt "ich bin fertig".
+    # Exceptions melden ungewöhnliche Situationen, nicht nur Fehler.
+```
+
+> **Stolperstein.** `.title` ohne Klammern tut nichts. Die Klammern sind
+> das "wende es an". Ohne sie landet die *Methode selbst* in der Variablen,
+> und `item in menu` findet dann nie etwas.
+
+> **Auf Windows** ist es **Strg+Z und dann Enter**, nicht Strg+D wie in der
+> englischen Aufgabe.
+
+## Aufgabe 3 — grocery.py
+
+```python
+zaehler = {}
+# Leeres Dictionary. Die Namen kennt das Programm vorher NICHT — anders
+# als bei taqueria. Was eingetippt wird, kommt hinein.
+
+while True:
+    try:
+        item = input().strip().upper()
+        # input() ohne Beschriftung, weil die Aufgabe keine will.
+        # .upper() macht "milk" und "MILK" zum gleichen Schlüssel.
+    except EOFError:
+        break
+    # Wichtig: NUR das input() steht im try. Alles danach kann keinen
+    # EOFError mehr werfen, also hat es dort nichts zu suchen.
+
+    if item in zaehler:
+        zaehler[item] += 1
+        # schon gesehen: um eins hoch
+    else:
+        zaehler[item] = 1
+        # zum ersten Mal: mit 1 anlegen
+    # Dieses Muster — erst prüfen, dann hochzählen oder anlegen — IST der
+    # Zähler. Ohne das else gäbe es beim ersten Mal einen KeyError, weil
+    # man nichts hochzählen kann, was es noch nicht gibt.
+
+for name in sorted(zaehler):
+    # sorted() auf ein Dictionary liefert die SCHLÜSSEL alphabetisch,
+    # als Liste. Die Werte sind darin nicht enthalten.
+    print(f"{zaehler[name]} {name}")
+    # Deshalb hier nachschlagen: zaehler[name] holt die Anzahl.
+```
+
+> **Stolperstein.** `sorted(zaehler).items()` geht nicht. `sorted()` gibt
+> eine **Liste** zurück, und eine Liste hat kein `.items()` — das haben nur
+> Dictionaries. Entweder durch die sortierten Schlüssel laufen und einzeln
+> nachschlagen (so wie oben), oder `sorted(zaehler.items())`.
+
+**Der Unterschied zu taqueria:** dort gibt es einen Katalog und nur was
+darin steht zählt. Hier gibt es keinen — alles Eingetippte zählt. Die
+Aufgabe entscheidet das, nicht die vorige Lösung.
+
+## Aufgabe 4 — outdated.py
+
+```python
+months = ["January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December"]
+# Die Reihenfolge ist die Information. Position 0 ist January, Position 8
+# ist September — die Liste IST die Umrechnungstabelle.
+
+while True:
+    try:
+        date = input("Date: ").strip()
+        # Erst speichern. Der Text wird ZWEIMAL gebraucht: einmal für die
+        # Frage nach dem Format, einmal zum Zerlegen.
+
+        if "/" in date:
+            # Kommt irgendwo ein Schrägstrich vor? Dann Zahlenformat.
+            month, day, year = date.split("/")
+            # date, nicht input(date) — der Text liegt schon da.
+            # Monat zuerst: 8/9/1636 ist der 9. August, nicht der 8. September.
+
+        else:
+            # Kein Schrägstrich, also Wortformat: September 8, 1636
+            monthday, year = date.split(", ")
+            # Trennzeichen ", " MIT Leerzeichen, sonst klebt es am Jahr.
+            # Ergebnis ["September 8", "1636"] — zwei Teile, zwei Namen.
+            # "8 September 1636" hat kein Komma, gibt nur EIN Teil und
+            # damit einen ValueError. Genau richtig: das Format ist falsch.
+
+            month, day = monthday.split(" ")
+            # "September 8" wird zu ["September", "8"]
+
+            month = months.index(month) + 1
+            # .index() liefert die Position: 8 für September. Gezählt wird
+            # ab 0, Monate ab 1, also + 1.
+            # Steht der Name nicht in der Liste ("Jan"), wirft .index()
+            # einen ValueError — die Abkürzung wird dadurch von selbst
+            # abgelehnt, ohne eine einzige zusätzliche Zeile.
+
+        month = int(month)
+        day = int(day)
+        year = int(year)
+        # Ab hier wieder GEMEINSAM. Beide Zweige haben dieselben drei
+        # Namen gefüllt, deshalb steht der Rest nur einmal da.
+        # int() auf eine Zahl ist harmlos: int(9) ist 9.
+
+        if not 1 <= month <= 12 or not 1 <= day <= 31:
+            continue
+        # Wieder die Regel, die kein Fehler ist — wie x > y bei fuel.py.
+        # 13/8/1636 rechnet sich sauber aus, es gibt den Monat nur nicht.
+        # 1 <= month <= 12 ist die GUTE Aussage, not dreht sie um.
+
+        print(f"{year}-{month:02}-{day:02}")
+        # :02 = mindestens zwei Stellen, vorne mit Null auffüllen.
+        # Aus 9 wird 09. Ohne das stünde da "1636-9-8".
+        break
+
+    except ValueError:
+        pass
+    # EIN except für fünf verschiedene Quellen:
+    #   "neun/acht/1636"      int() auf keine Zahl
+    #   "9/8"                 zwei Teile, drei Namen
+    #   "8 September 1636"    fehlendes Komma, ein Teil statt zwei
+    #   "Jan 1, 1970"         Monatsname nicht in der Liste
+    #   "September 8 1636"    fehlendes Komma
+    # Alle melden ValueError, alle sollen dasselbe bewirken: nochmal fragen.
+```
+
+---
+
+## Was in Teil 2 neu dazukam
+
+| Baustein | wofür |
+|---|---|
+| `try:` / `except:` | versuchen statt vorher prüfen |
+| `except (A, B):` | zwei Fehlerarten, dieselbe Reaktion |
+| `pass` | "tu nichts" — hier: einfach nochmal fragen |
+| `EOFError` | Strg+Z: der Benutzer ist fertig, keine Panne |
+| `continue` | Rest überspringen, nächster Durchlauf |
+| `.index()` | an welcher Stelle steht der Wert in der Liste? |
+| `sorted(...)` | Schlüssel alphabetisch, als **Liste** |
+| `:.2f` / `:02` | Nachkommastellen / führende Null |
+| `if … else` als Weiche | zwei Eingabeformen, ein gemeinsamer Schluss |
+
+**Der Kerngedanke der Woche:** vorher jede Möglichkeit abzufragen wird bei
+mehr als zwei Fällen unübersichtlich. Stattdessen macht man es einfach —
+und fängt auf, wenn es schiefgeht. Auf Englisch heißt das *easier to ask
+for forgiveness than permission*: lieber um Verzeihung bitten als um
+Erlaubnis fragen.
+
+**Und der Gegenpunkt, der genauso wichtig ist:** nicht jede falsche Eingabe
+ist ein Fehler. `5/4` und `13/8/1636` rechnen sich sauber aus. Dass ein
+Tank nicht überlaufen und ein Jahr nicht dreizehn Monate haben kann, ist
+Fachwissen — das prüft man selbst, mit einem `if`.

@@ -341,6 +341,37 @@ elif greeting.startswith("h"):     # sonst fängt dieser Zweig alles ab
 > **keine** Bedingung — das ist sein Sinn: "in allen anderen Fällen".
 > Braucht man eine Bedingung, heißt es `elif`.
 
+### Eine Weiche mit gemeinsamem Schluss
+
+Wenn zwei verschiedene Eingabeformen zum selben Ergebnis führen sollen,
+teilt man nur den Anfang auf:
+
+```python
+date = input("Date: ").strip()          # erst speichern
+
+if "/" in date:                         # 9/8/1636
+    month, day, year = date.split("/")
+else:                                   # September 8, 1636
+    monthday, year = date.split(", ")
+    month, day = monthday.split(" ")
+    month = months.index(month) + 1
+
+month = int(month)                      # ab hier wieder gemeinsam
+day = int(day)
+year = int(year)
+```
+
+Beide Zweige füllen **dieselben Namen**. Alles danach — umwandeln, prüfen,
+ausgeben — steht deshalb nur **einmal** da, nicht zweimal.
+
+Damit das geht, muss die Eingabe vorher in eine Variable: man braucht sie
+**zweimal**, einmal für die Frage `"/" in date` und einmal zum Zerlegen.
+
+> **Stolperstein.** `input(date)` fragt **noch einmal**. Was in den
+> Klammern von `input()` steht, ist nur die **Beschriftung**, die vor der
+> Eingabe angezeigt wird — niemals die Quelle. Liegt der Text schon in
+> `date`, arbeitet man direkt daran: `date.split("/")`.
+
 ### Vergleichen
 
 ```python
@@ -363,6 +394,24 @@ Python liest `a <= b <= c` als `a <= b and b <= c`.
 > Der zweite Teil ist immer wahr, übrig bleibt `score <= 90` — und schon
 > bekommt eine 88 die Note A. Die Variable gehört in die **Mitte**,
 > Unter- und Obergrenze außen.
+
+> **Stolperstein.** `1 < month > 12` sieht aus wie "zwischen 1 und 12",
+> heißt aber `1 < month and month > 12` — *größer als 1 **und** größer als
+> 12*. Wahr erst ab 13; die `0` kommt ungeprüft durch. Beim Verketten
+> zeigen **beide** Zeichen in dieselbe Richtung: `1 <= month <= 12`.
+
+Soll die Bedingung zuschlagen, wenn der Wert **nicht** im Bereich liegt,
+schreibt man die gute Aussage hin und dreht sie mit `not` um:
+
+```python
+if not 1 <= month <= 12 or not 1 <= day <= 31:
+    continue
+```
+
+Das liest sich wie der deutsche Satz: *wenn der Monat nicht zwischen 1 und
+12 liegt, oder der Tag nicht zwischen 1 und 31.* Ausgeschrieben
+(`month < 1 or month > 12 or day < 1 or day > 31`) ist es dasselbe, nur
+doppelt so lang und doppelt so leicht falsch zu tippen.
 
 ### and, or, not
 
@@ -625,6 +674,35 @@ ein Zeichen lang ist.
 > behandelt und verschwindet: `Hello, World` wurde zu `Hll Wrld` statt
 > `Hll, Wrld`. Entweder echte Liste mit eckigen Klammern, oder Text
 > **ohne** Trennzeichen: `"aeiouAEIOU"`.
+
+### .index() — an welcher Stelle steht es?
+
+`in` fragt **ob** etwas drin ist, `.index()` fragt **wo**:
+
+```python
+months = ["January", "February", "March", ... , "December"]
+
+months.index("January")      # 0
+months.index("September")    # 8
+```
+
+Die Position zählt ab 0, Monate ab 1 — deshalb `+ 1`:
+
+```python
+month = months.index(month) + 1
+```
+
+Damit ist die Liste selbst die Umrechnungstabelle. Die **Reihenfolge** ist
+die Information; ein Dictionary mit zwölf Einträgen wäre doppelte Arbeit.
+
+**Nützlich:** `.index()` wirft einen `ValueError`, wenn der Wert nicht in
+der Liste steht. Innerhalb eines `try` muss man unbekannte Werte dann
+nicht selbst abfangen — `"Jan"` fliegt von allein raus.
+
+> **Stolperstein.** `months.index("month")` sucht nach dem **Wort**
+> `month`. Anführungszeichen machen aus einem Variablennamen Text.
+> Gesucht werden soll der *Inhalt*, also ohne Anführungszeichen:
+> `months.index(month)`.
 
 ---
 
@@ -929,10 +1007,84 @@ und `^^^^^` markiert die Stelle.
 | `AttributeError: 'bool' object has no attribute` | zwei Fragen aneinandergehängt, z. B. `.isalpha().isdigit()` |
 | `can't open file ... No such file or directory` | falscher Ordner im Terminal, oder nicht gespeichert |
 
-PLATZHALTER_EXCEPTIONS
-
 VS Code färbt zusammengehörige Klammern gleich ein. Wirkt eine Klammer
 einsam, fehlt das Gegenstück.
+
+---
+
+## Fehler abfangen (Woche 3)
+
+Fehler lesen ist das eine. Dafür sorgen, dass sie das Programm nicht
+umwerfen, das andere.
+
+**Die Denkweise:** nicht jeden Sonderfall vorher abfragen, sondern es
+versuchen und den Absturz auffangen. *Lieber um Verzeihung bitten als
+vorher um Erlaubnis fragen.*
+
+Der Grund: Sonderfälle vorher aufzuzählen wird nie fertig. Bei `5 bar`
+fehlt mal das Leerzeichen, mal steht ein Komma statt eines Punktes, mal
+`BAR` groß. Es gibt immer einen Fall mehr.
+
+```python
+try:
+    x = int(input("x: "))      # das hier kann schiefgehen
+except ValueError:
+    print("keine Zahl")        # falls genau dieser Fehler kommt
+else:
+    print(f"x ist {x}")        # nur wenn nichts schiefging
+```
+
+| Block | Bedeutung |
+|---|---|
+| `try:` | Versuch das. Es **kann** scheitern. |
+| `except ValueError:` | Falls **dieser** Fehler kommt, mach stattdessen das. |
+| `else:` | Es ist **nicht** gescheitert — mach weiter. |
+
+**In `try` gehört so wenig wie möglich** — nur die Zeile, die wirklich
+scheitern kann. Alles andere ins `else`. Sonst fängt das `except` später
+Fehler mit, die aus ganz anderen Gründen entstehen, und man sucht an der
+falschen Stelle.
+
+> **Stolperstein.** Scheitert `int()`, wurde `x` nie angelegt. Wer danach
+> trotzdem darauf zugreift, bekommt `NameError` — ein Fehler ersetzt den
+> anderen. Genau dafür gibt es `else`.
+
+### So lange fragen, bis es passt
+
+Das ist der eigentliche Gewinn: `try` in eine Schleife packen.
+
+```python
+def get_int(prompt):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            pass
+```
+
+`pass` heißt "tu nichts" — hier sinnvoll, weil die Schleife von selbst
+nochmal fragt. Der Benutzer sieht ja, dass die Frage wiederkommt.
+
+`return` beendet die Funktion **und** die Schleife, sobald die Umwandlung
+geklappt hat. Danach ist der Aufruf wieder eine Zeile — nur eine, die nicht
+mehr abstürzen kann.
+
+### Ein `except` fängt mehrere Fälle
+
+Verschiedene Stellen können denselben Fehler werfen:
+
+```python
+artikel, menge = zeile.split(" ")   # ValueError, wenn nicht genau zwei Teile
+int(menge)                          # ValueError, wenn keine Zahl
+```
+
+Beides ist `ValueError`, also genügt ein `except ValueError`. Man muss die
+Fälle nicht auseinanderhalten, wenn die Reaktion dieselbe ist.
+
+**Der Vorteil gegenüber selbst geschriebenen Prüfungen:** `try` prüft mit
+**genau den Operationen**, die danach ohnehin ausgeführt werden. Eine
+nachgebaute `if`-Prüfung kann auseinanderlaufen, wenn man den eigentlichen
+Code später ändert. Die `try`-Fassung kann das nicht.
 
 ---
 
@@ -1118,6 +1270,10 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 3: Exceptions (Fehler abfangen)
+- Woche 4: Libraries
 
-Problem Set 2 ist komplett — camel, coke, twttr, nutrition, plates.
+**Problem Set 3 ist komplett** — fuel, taqueria, grocery, outdated. Damit
+sind Woche 0 bis 3 und die Problem Sets 0 bis 3 durch.
+
+Zeile für Zeile erklärt stehen alle neun Programme in `erklaert.md`: die
+vier Wiederholungsaufgaben und die vier aus Problem Set 3.

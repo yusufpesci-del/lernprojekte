@@ -22,17 +22,32 @@ amerikanisches Regelwerk.
 
 ---
 
-## Wochenrhythmus (8–10 Std.)
+## Wochenrhythmus (10–12 Std.)
+
+**Überarbeitet am 17.10.** Entscheidend ist nicht nur wie viel Zeit, sondern
+**wann**: unter der Woche geht es erst ab 21 Uhr los.
 
 | Tag | Zeit | Inhalt |
 |---|---|---|
-| Mo–Do | 1–2 Std. an 2–3 Abenden | Videolektion, kleine Übungen |
+| Mo–Do | 3 Abende, je 1,5–2 Std. ab 21 Uhr | Videolektion, Spickzettel und `erklaert.md` lesen, kleine Übungen |
 | Fr | frei | Puffertag — bewusst nichts |
-| Sa | 3–4 Std. | Problem Set, am Stück |
-| So | 2 Std. | Rest, Wiederholung, Lerntagebuch |
+| Sa | 3–4 Std. am Stück | Problem Set |
+| So | 2–3 Std. | Rest vom Problem Set, Wiederholung, Lerntagebuch |
 
-Zwei Regeln: An jedem Lerntag mindestens ein Commit. Und den Freitag wirklich
-freihalten — der Plan läuft über Monate.
+**Abends aufnehmen, am Wochenende bauen.** Am 17.10. war der Unterschied
+deutlich zu sehen: drei Stunden lang lief das Zerlegen und Zusammensetzen
+von Code gut, in der vierten kam dreimal dieselbe Zeile mit einer
+Winzigkeit geändert. Kein fehlendes Verständnis — Ermüdung. Videos,
+Spickzettel und Erklärungen lesen geht um 22 Uhr noch. Ein Problem Set von
+null auf lösen nicht.
+
+**Drei Abende, nicht fünf.** Möglich sind Mo–Fr je 2–3 Stunden — fünf
+Abende bis Mitternacht wären aber über 20 Std./Woche. Der Plan läuft noch
+neun Monate; das hält niemand durch. Drei Abende sind das Maß, das jede
+Woche funktioniert. Ein vierter ist ein Bonus, kein Soll.
+
+Zwei Regeln bleiben: an jedem Lerntag mindestens ein Commit. Und den
+Freitag wirklich freihalten.
 
 **Wenn eine Woche ausfällt:** nicht nachholen, nicht verdoppeln. Da
 weitermachen, wo du aufgehört hast. Aufgeben passiert fast nie wegen zu wenig
@@ -43,14 +58,14 @@ September schon einmal funktioniert.
 
 ## Phase 1 — CS50P fertig (Oktober bis Mitte Dezember)
 
-Eine CS50P-Woche pro Kalenderwoche. **Stand 11.10.: Woche 0–2 durch,
-Problem Set 2 komplett.** Der Plan sah Problem Set 2 bis zum 11.10. vor —
-genau so gekommen. Zum ersten Mal läuft es im Takt.
+Eine CS50P-Woche pro Kalenderwoche. **Stand 17.10.: Woche 0–3 durch,
+Problem Set 3 komplett.** Der Plan sah die Woche bis zum 18.10. vor —
+fertig am 17.10., also einen Tag früher. Zweite Woche im Takt.
 
 | Zeitraum | Inhalt |
 |---|---|
 | ~~05.–11.10.~~ | ~~Problem Set 2~~ ✅ fertig am 11.10. |
-| 12.–18.10. | Wiederholung Woche 0–2, dann Woche 3 (Exceptions) + Problem Set 3 |
+| ~~12.–18.10.~~ | ~~Wiederholung Woche 0–2, Woche 3 (Exceptions) + Problem Set 3~~ ✅ fertig am 17.10. |
 | 19.–25.10. | Woche 4 (Libraries) + Problem Set 4 |
 | 26.10.–01.11. | Woche 5 (Unit Tests) + Problem Set |
 | 02.–08.11. | Woche 6 (File I/O) + Problem Set |
@@ -66,12 +81,16 @@ gebraucht, bist du früher fertig.
 > **Meilenstein 1 (Ende Oktober):** Du kannst Fehler abfangen (`try`/`except`)
 > und fremde Bibliotheken einbinden. Ab da kannst du Programme schreiben, die
 > nicht beim ersten Tippfehler des Benutzers abstürzen.
+> **Erste Hälfte erreicht am 17.10.** — vier Programme mit `try`/`except`,
+> keines stürzt bei falscher Eingabe ab. Bleibt: die Bibliotheken.
 
 > **Meilenstein 2 (Mitte Dezember):** CS50P komplett, neun Problem Sets und
 > ein Abschlussprojekt im öffentlichen Repo.
 
-**Zertifikat:** Am 10.10. kommt die Erinnerung, ob du die Einreichung bei
-CS50 nachholen willst. Entscheidung dann, nicht vorher.
+**Zertifikat: noch offen.** Die Erinnerung vom 10.10. ist nicht beantwortet
+worden. Problem Set 0 bis 3 sind gelöst, aber nicht bei CS50 eingereicht.
+Nachreichen ist möglich — je später, desto mehr Sets auf einmal. Spätestens
+vor Woche 5 entscheiden.
 
 ---
 
@@ -153,30 +172,40 @@ mit dem US-Ziel.
 
 ---
 
-## Was bisher stimmt (Stand 11.10.2026)
+## Was bisher stimmt (Stand 17.10.2026)
 
-Vier Wochen, fünfzehn selbst geschriebene Programme, drei Problem Sets.
+Fünf Wochen, dreiundzwanzig selbst geschriebene Programme, vier Problem
+Sets.
 
-- Problem Set 0, 1 und 2 vollständig selbst gelöst
+- Problem Set 0 bis 3 vollständig selbst gelöst
 - Nach fünf Tagen Zwangspause ohne Murren weitergemacht
 - Lerntagebuch und Commits konsequent geführt
 - Fragen nach dem Warum statt nach der Lösung
-- **Das Tempo stimmt jetzt auch.** Am 04.10. hinkte der Plan; die
-  korrigierte Fassung 2 wurde in ihrer ersten Woche exakt eingehalten.
+- **Das Tempo stimmt.** Am 04.10. hinkte der Plan; Fassung 2 wurde in
+  ihren ersten beiden Wochen eingehalten, die zweite sogar einen Tag früher.
 
-Was in Woche 2 dazukam, ist mehr als eine neue Technik: bei plates war
+Was in Woche 2 dazukam, war mehr als eine neue Technik: bei plates war
 zum ersten Mal ein Programm zu bauen, das sich beim Durchlaufen etwas
 **merkt**, statt jedes Element für sich zu beurteilen. Das ist der
 Übergang von Rechnen zu Programmieren.
 
-Was sich wiederholt und Zeit kostet: Einrückung, Namen die etwas
-überschreiben, Code unterhalb von `return`. Alles drei steht als
-Stolperstein im Spickzettel — bei Woche 3 bewusst darauf achten.
+Woche 3 hat noch einen draufgesetzt: **nicht jede falsche Eingabe ist ein
+Fehler.** `5/4` beim Tank und `13/8/1636` beim Datum rechnen sich sauber
+aus und sind trotzdem unmöglich. Diese Grenze zwischen "Python meldet es"
+und "das weiß nur ich" selbst zu ziehen, ist Ingenieursarbeit — und genau
+das, was bei einem Auslegungswerkzeug später die ganze Logik ausmacht.
 
-**Vor Woche 3** stehen vier Wiederholungsaufgaben in
-`cs50p/wiederholung/aufgaben.md`, die Woche 0 bis 2 noch einmal
-zusammenfassen. Nicht übersprungen, auch wenn es verlockend ist: Woche 3
-baut darauf auf.
+Was sich wiederholt und Zeit kostet: Einrückung, Namen die etwas
+überschreiben, und das Zusammensetzen funktionierender Einzelteile zu
+einer Kette. Das Letzte ist der eigentliche Engpass — nicht Verständnis,
+sondern Montage. Dagegen hilft nachweislich: in kleinen Schritten bauen,
+jeden Zwischenschritt ausgeben lassen, und bei Formeln erst den deutschen
+Satz hinschreiben, dann übersetzen.
+
+**Vor Woche 3** standen vier Wiederholungsaufgaben in
+`cs50p/wiederholung/aufgaben.md`. Nicht übersprungen — und das hat sich
+ausgezahlt: die Stückliste enthielt bereits die Zählerstruktur, die bei
+grocery wieder gebraucht wurde.
 
 ---
 

@@ -181,3 +181,73 @@
 - erklaert.md angelegt: alle vier Aufgaben Zeile fuer Zeile auf Deutsch
   kommentiert, zum Nachlesen
 - Naechstes Mal: Problem Set 3 (Exceptions)
+## 16.10.2026
+- Freitag statt Samstag gelernt, weil ich So-Mo in Grossbeeren arbeiten muss.
+  Puffertag getauscht - genau dafuer ist er da
+- Problem Set 3: fuel.py und taqueria.py geloest. Beide mit try/except
+- fuel.py in drei Stufen gebaut: erst der Normalfall, dann E und F,
+  dann die Fehlerbehandlung. Das Vorgehen funktioniert
+- Wichtigste Einsicht: nicht alles ist ein Fehler, den man abfangen kann.
+  "drei/vier" wirft ValueError, "3/0" ZeroDivisionError - aber "5/4" laeuft
+  glatt durch. Dass ein Tank nicht voller als voll sein kann, ist Fachwissen,
+  keine Mathematik. Das muss ich selbst mit einem if pruefen
+- Zwei Fehlerarten in einem except: except (ValueError, ZeroDivisionError)
+- taqueria.py: EOFError zum ersten Mal benutzt - und zwar NICHT fuer eine
+  Panne, sondern weil der Benutzer fertig ist. Exceptions sind der Weg, auf
+  dem Python ungewoehnliche Situationen meldet, nicht nur Fehler
+- Auf Windows ist es Strg+Z und Enter, nicht Strg+D wie in der Aufgabe
+- Stolperstein: .title OHNE Klammern tut nichts - die Klammern sind das
+  "wende es an". Ohne sie steht in der Variablen die Methode statt des Texts
+- Nochmal derselbe Fehler wie bei nutrition: .lower() auf die Eingabe, aber
+  die Schluessel gross geschrieben. Hier .title() genommen, weil die
+  Speisekarte durchgehend so geschrieben ist
+- Claude hatte zwei Preise falsch diktiert (Tortilla Salad, Baja Taco).
+  Selbst auf der CS50-Seite nachgeschaut und korrigiert. Merke: die
+  Aufgabenstellung ist die Quelle, die deutsche Erklaerung nur Uebersetzung
+- Vergleich zu Montag: da sechs Anlaeufe fuer druck.py mit drei Zeilen,
+  heute zwei komplette Programme mit Schleife und Fehlerbehandlung in
+  derselben Zeit
+- Naechstes Mal: Grocery List und Outdated, dann ist Problem Set 3 durch
+## 17.10.2026
+- grocery.py und outdated.py geloest - PROBLEM SET 3 IST KOMPLETT.
+  Damit Woche 0 bis 3 und die Problem Sets 0 bis 3 durch, einen Tag vor Plan
+- grocery.py: erst eine feste Einkaufsliste erfunden, wie bei taqueria die
+  Speisekarte. Falsch gedacht - hier gibt es keinen Katalog, alles was
+  getippt wird zaehlt. Die Aufgabe lesen, nicht die vorige kopieren
+- sorted(zaehler).items() geht nicht: sorted() liefert eine LISTE, und eine
+  Liste hat kein .items(). Also for name in sorted(zaehler) und drinnen
+  zaehler[name] nachschlagen
+- outdated.py in drei Stufen gebaut, und das war diesmal meine eigene
+  Entscheidung: erst nur 9/8/1636, dann Schleife und Pruefungen, dann das
+  Wortformat
+- Englische Variablennamen ab jetzt: month, day, year. Passt zum US-Ziel
+  und zur Doku. Deutsch und Englisch in einer Datei mischen will ich nicht
+- months.index("September") liefert 8, nicht 9 - gezaehlt wird ab 0, also
+  + 1. Und .index() wirft ValueError, wenn der Name nicht in der Liste
+  steht: "Jan 1, 1970" wird dadurch von selbst abgelehnt, ohne dass ich
+  eine Zeile dafuer schreibe
+- Am Ende faengt EIN except ValueError fuenf Quellen ab: Nicht-Zahlen,
+  falsche Teilzahl beim Schraegstrich, fehlendes Komma im Wortformat,
+  unbekannter Monatsname, zu wenige Teile. Das ist der Punkt von Woche 3
+- Neu gelernt: die Weiche. if "/" in date: ... else: ... und darunter geht
+  es gemeinsam weiter. Beide Zweige muessen dieselben Namen fuellen, dann
+  steht alles danach nur EINMAL da. Dafuer muss input() vorher in eine
+  Variable, weil der Text zweimal gebraucht wird
+- Stolperstein input(date): input() heisst IMMER "frag den Benutzer". Was
+  in den Klammern steht, ist nur die Beschriftung - nie die Quelle. Der
+  Text lag schon in date, ich wollte zerlegen statt fragen
+- Stolperstein months.index("month"): in Anfuehrungszeichen ist das das
+  WORT month, nicht der Inhalt der Variablen
+- Stolperstein 1 < month > 12: verkettete Vergleiche werden mit UND
+  verbunden, heisst also "groesser 1 und groesser 12" - erst ab 13 wahr,
+  die 0 kommt durch. Richtig: not 1 <= month <= 12
+- Zwischendurch dreimal dieselbe Zeile mit minimaler Aenderung geschickt
+  statt den naechsten Schritt anzufangen. Claude hat das Muster erkannt
+  und angeboten Schluss zu machen. Habe weitergemacht, und danach lief es
+  in kleinen Schritten durch. Dasselbe Muster wie bei druck.py am Montag
+- Was geholfen hat: eine Wegwerf-Datei test.py mit zwei Zeilen und einem
+  FESTEN Text statt input(). Jeden Zwischenschritt einzeln ausgeben lassen.
+  Erst als die drei Teile einzeln dastanden, ging es weiter. Das merken
+- Zeiten neu festgelegt: Mo-Fr erst ab 21 Uhr, 2 bis 3 Stunden.
+  Sa und So die langen Tage. Lernplan entsprechend angepasst
+- Naechstes Mal: Woche 4 (Libraries), ab Dienstag. So und Mo Grossbeeren

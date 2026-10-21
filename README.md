@@ -19,12 +19,13 @@ kleine Programme, Notizen.
 
 ## Stand
 
-**CS50P Woche 0 bis 3 durch, Problem Set 0 bis 3 vollständig gelöst.**
-Als Nächstes Woche 4 (Libraries).
+**CS50P Woche 0 bis 4 durch, Problem Set 0 bis 3 vollständig gelöst.**
+Als Nächstes Problem Set 4.
 
 Gelernt bisher: Variablen und Datentypen, Bedingungen, Schleifen, Listen,
 Dictionaries, Funktionen, Fehler abfangen mit `try`/`except`,
-Fehlermeldungen lesen, Git.
+fremde Bibliotheken einbinden (`import`, `pip`), Dienste im Netz abfragen,
+eigene Module, Fehlermeldungen lesen, Git.
 
 Ab Problem Set 3 heißen die Variablen **englisch**. Das Ziel ist der
 US-Arbeitsmarkt, die Dokumentation ist englisch — und zwei Sprachen in

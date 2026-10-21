@@ -251,3 +251,77 @@
 - Zeiten neu festgelegt: Mo-Fr erst ab 21 Uhr, 2 bis 3 Stunden.
   Sa und So die langen Tage. Lernplan entsprechend angepasst
 - Naechstes Mal: Woche 4 (Libraries), ab Dienstag. So und Mo Grossbeeren
+## 18.10.2026
+- Grossbeeren, kein Rechner. Spickzettel und erklaert.md am Handy gelesen
+  (Woche-3-Teil und die neue Weiche-Stelle)
+## 20.10.2026
+- Woche 4 (Libraries) angefangen, Video bis 44:41 (Kapitel "Packages").
+  Erster Abend nach dem neuen Rhythmus: 21:40 bis 23:20, hat gepasst
+- Der Kerngedanke der Woche: bis jetzt war jedes Programm komplett von mir.
+  Ab jetzt benutze ich fremden Code. import random heisst, jemand anders
+  hat Zufallszahlen schon geloest
+- random.choice(liste) zieht EIN Element zufaellig raus
+- Zwei Schreibweisen fuer dasselbe:
+  import random          -> dann random.choice(...)
+  from random import choice -> dann choice(...)
+  Die erste ist die bessere Gewohnheit, weil man sieht wo etwas herkommt
+- statistics.mean(liste) rechnet den Mittelwert, kommt immer als
+  Kommazahl zurueck - auch 95.0 wenn es glatt aufgeht
+- sys.argv ist eine LISTE mit dem was im Terminal stand. argv[0] ist immer
+  die Datei selbst, argv[1] das erste danach
+- Dabei IndexError kassiert: python name.py ohne Namen dahinter. Dann hat
+  die Liste nur Position 0, und argv[1] gibt es nicht
+- Das ist der Sinn von argv: das Programm fragt nicht mehr nach, es
+  bekommt alles beim Start mitgeliefert. git commit -m "..." ist genau
+  dasselbe Prinzip
+- Woche 3 trifft Woche 4: try/except IndexError um argv[1]. Besser ist
+  sys.exit("Too few arguments") - gibt die Meldung UND beendet.
+  print allein laeuft weiter
+- Alternative ohne try: if len(sys.argv) < 2. Bei argv ueblicher, weil man
+  die Laenge ohne Risiko abfragen kann
+- Noch offen aus dem Video: pip, APIs, eigene Module,
+  if __name__ == "__main__"
+- Naechstes Mal: zweite Haelfte Woche 4 ab pip install
+## 21.10.2026
+- Woche 4 zu Ende geschaut. Zweiter Abend nach dem neuen Rhythmus,
+  21:00 bis 22:30
+- pip install cowsay hat geklappt. Erste fremde Bibliothek aus dem Netz -
+  genau so kommen spaeter Oberflaeche und PDF-Ausgabe ins FM-Werkzeug
+- requests und die iTunes-API. Da haengengeblieben: Malan zeigt die API im
+  Browser und ich dachte, er laedt irgendwo eine Datei runter. Es wird
+  NICHTS runtergeladen. Der Browser ist nur ein Fenster auf die Antwort
+- requests.get(adresse) macht genau das, was sonst die Adresszeile macht.
+  Deshalb zeigt er es erst im Browser - damit man sieht was ankommt,
+  bevor Code im Weg steht
+- Dass es bei ihm aufgeraeumt aussah, ist eine Browser-Erweiterung fuer
+  JSON. Kosmetik, kein Einrichtungsschritt
+- Zwei Richtungen, das war der verwirrende Teil:
+  response.json()            Antwort-Text -> Python
+  json.dumps(x, indent=2)    Python -> lesbarer Text
+  indent=2 ist nur die Anzahl Leerzeichen pro Ebene
+- Der Umweg ueber Python lohnt sich, weil man dort einzelne Werte
+  rausholen kann statt der ganzen Antwort
+- Verschachtelte Daten: o["results"] ist eine LISTE, darin stecken
+  Dictionaries. Also for result in o["results"] und drinnen
+  result["trackName"]
+- Eigene Module: from sayings import hello in say.py. Jede .py-Datei ist
+  ein Modul und kann importiert werden
+- if __name__ == "__main__" verstanden. Der Schluessel: import heisst
+  nicht "schau rein", Python FUEHRT die Datei AUS, von oben nach unten.
+  Ohne das if wuerde main() beim Importieren mitlaufen
+- __name__ ist "__main__" bei direktem Start, sonst der Modulname.
+  Also nur ein if auf eine Variable die Python selbst fuellt, keine
+  Zauberei. Die zwei Unterstriche heissen "verwaltet Python"
+- Regel: sobald eine Datei auch nur vielleicht importiert wird, gehoert
+  die Startzeile in dieses if
+- Stolperstein in generate.py: for card in cards: print(cards) gibt
+  dreimal die GANZE Liste aus. Gemeint war print(card). Einzahl und
+  Mehrzahl unterscheiden sich um einen Buchstaben - noch zu korrigieren
+- random.shuffle(cards) gibt NICHTS zurueck, es mischt die Liste direkt
+  an ihrem Platz. cards = random.shuffle(cards) macht None draus
+- sys.argv[1:] ist ein Ausschnitt ab Position 1, also alle Argumente
+  ohne den Dateinamen
+- Angewohnheit die ich beibehalte: alle Varianten aus dem Video als
+  Kommentar in der Datei stehen lassen, mit ---- getrennt. Macht spaeter
+  nachvollziehbar wie es sich entwickelt hat
+- Naechstes Mal: Problem Set 4 am Samstag

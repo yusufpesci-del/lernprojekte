@@ -1088,6 +1088,193 @@ Code später ändert. Die `try`-Fassung kann das nicht.
 
 ---
 
+## Bibliotheken benutzen (Woche 4)
+
+Bis Woche 3 war jedes Programm vollständig selbst geschrieben. Ab hier
+benutzt du fremden Code — das ist der Übergang vom Selbermachen zum
+Zusammensetzen.
+
+```python
+import random
+
+random.choice(["heads", "tails"])   # ein Element zufällig herausziehen
+random.randint(1, 10)               # ganze Zahl von 1 bis 10, beide dabei
+random.shuffle(cards)               # mischt die Liste AN IHREM PLATZ
+```
+
+`import random` holt die Bibliothek, der Punkt verbindet sie mit dem
+Werkzeug darin. Nach diesem Muster funktioniert jede Bibliothek.
+
+> **Stolperstein.** `random.shuffle(cards)` gibt **nichts** zurück — es
+> verändert die Liste direkt. `cards = random.shuffle(cards)` macht aus
+> `cards` ein `None`.
+
+> **Stolperstein.** `for card in cards: print(cards)` gibt dreimal die
+> **ganze Liste** aus. Gemeint war `print(card)`, das einzelne Element.
+> Einzahl und Mehrzahl unterscheiden sich um einen Buchstaben und sind
+> genau deshalb leicht zu verwechseln.
+
+### Zwei Schreibweisen für import
+
+| | danach schreibt man |
+|---|---|
+| `import random` | `random.choice(...)` |
+| `from random import choice` | `choice(...)` |
+
+Beides ist richtig. `import random` ist die bessere Gewohnheit: man sieht an
+jeder Stelle, woher etwas kommt. Bei `choice(...)` allein weiß man das nach
+drei Wochen nicht mehr.
+
+> **Stolperstein.** Eine eigene Datei **nie** wie eine Bibliothek benennen.
+> Heißt deine Datei `random.py`, importiert Python ab dann *deine* Datei
+> statt der Bibliothek. Dieselbe Falle wie `input = input(...)`, nur eine
+> Etage höher.
+
+### Fremde Bibliotheken nachladen — pip
+
+```powershell
+pip install cowsay
+```
+
+`pip` holt sie aus dem Internet. Die mitgelieferten — `random`,
+`statistics`, `sys`, `json` — brauchen das nicht, die sind schon da.
+
+### statistics
+
+```python
+import statistics
+
+statistics.mean([100, 90])     # 95.0
+```
+
+Mittelwerte kommen als Kommazahl zurück, auch wenn es glatt aufgeht.
+
+### sys.argv — Argumente beim Programmstart
+
+```
+python name.py Yusuf
+       ^^^^^^^ ^^^^^
+       argv[0] argv[1]
+```
+
+`sys.argv` ist eine **Liste** mit dem, was im Terminal stand. Position 0 ist
+immer die Datei selbst.
+
+| Befehl | `sys.argv` |
+|---|---|
+| `python name.py` | `["name.py"]` |
+| `python name.py Yusuf` | `["name.py", "Yusuf"]` |
+| `python name.py a b` | `["name.py", "a", "b"]` |
+
+Der Sinn: das Programm **fragt nicht mehr nach**, es bekommt alles beim
+Start mitgeliefert. `git commit -m "..."` ist genau dasselbe Prinzip.
+
+> **Stolperstein.** `python name.py` ohne Argument und dann `sys.argv[1]`
+> gibt `IndexError: list index out of range`. Die Liste hat nur Position 0.
+
+```python
+if len(sys.argv) < 2:
+    sys.exit("Too few arguments")
+```
+
+`sys.exit("...")` gibt die Meldung aus **und** beendet. Ein `print` allein
+läuft weiter — bei einem größeren Programm dann mit fehlenden Daten.
+
+Bei `argv` ist das `if` üblicher als `try`, weil man die Länge einer Liste
+ohne Risiko abfragen kann. `try/except IndexError` wäre auch richtig.
+
+**Alle Argumente durchlaufen**, nicht nur das erste:
+
+```python
+for arg in sys.argv[1:]:
+    print(arg)
+```
+
+`[1:]` ist ein Ausschnitt ab Position 1 — alles außer dem Dateinamen.
+
+### Dienste im Netz fragen — requests und JSON
+
+```python
+import json
+import requests
+
+response = requests.get("https://itunes.apple.com/search?term=weezer")
+daten = response.json()
+```
+
+`requests.get(adresse)` tut genau das, was dein Browser tut: Adresse hin,
+Antwort zurück. Es wird **nichts heruntergeladen** und es gibt keine Datei —
+die Antwort ist einfach Text.
+
+Zwei Richtungen, und das ist der verwirrende Teil:
+
+```
+Antwort-Text  --.json()-->  Python  --json.dumps()-->  lesbarer Text
+```
+
+| | |
+|---|---|
+| `response.json()` | Text → Python-Dictionaries und -Listen |
+| `json.dumps(x, indent=2)` | Python → eingerückter Text zum Anschauen |
+
+`indent=2` ist nur die Anzahl Leerzeichen pro Ebene, reine Lesbarkeit.
+
+Der Umweg über Python lohnt sich, weil man dort **einzelne Werte**
+herausholen kann statt der ganzen Antwort:
+
+```python
+o = response.json()
+for result in o["results"]:      # ["results"] ist eine LISTE
+    print(result["trackName"])   # darin stecken Dictionaries
+```
+
+Erst mit `json.dumps(..., indent=2)` anschauen, **dann** den Weg zum
+gewünschten Wert heraussuchen. Blind raten geht schief.
+
+### Eigene Module
+
+Jede `.py`-Datei ist ein Modul und kann importiert werden:
+
+```python
+# say.py
+from sayings import hello
+
+hello("Yusuf")
+```
+
+### if \_\_name\_\_ == "\_\_main\_\_"
+
+`import` heißt **nicht** "schau rein" — Python führt die ganze Datei aus,
+von oben nach unten. Steht unten `main()`, läuft das Programm also auch beim
+Importieren mit.
+
+Python legt in jeder Datei automatisch `__name__` an:
+
+| gestartet mit | `__name__` in `sayings.py` |
+|---|---|
+| `python sayings.py` | `"__main__"` |
+| `import sayings` | `"sayings"` |
+
+Deshalb:
+
+```python
+if __name__ == "__main__":
+    main()
+```
+
+Wörtlich: *nur starten, wenn **diese** Datei gestartet wurde — nicht, wenn
+jemand sie importiert.* Keine Zauberei, nur ein `if` auf eine Variable, die
+Python für dich füllt.
+
+Die zwei Unterstriche auf jeder Seite sind Absicht: so heißt bei Python
+alles, was die Sprache selbst verwaltet und was man nicht aus Versehen
+überschreiben soll.
+
+**Die Regel:** sobald eine Datei auch nur *vielleicht* importiert wird,
+gehört die Startzeile in dieses `if`.
+
+---
+
 ## Stil
 
 **Variablen nach dem Inhalt benennen, Funktionen nach der Tätigkeit.**
@@ -1270,10 +1457,11 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 4: Libraries
+- Problem Set 4
 
-**Problem Set 3 ist komplett** — fuel, taqueria, grocery, outdated. Damit
-sind Woche 0 bis 3 und die Problem Sets 0 bis 3 durch.
+**Woche 4 ist angeschaut** — Bibliotheken, `pip`, `sys.argv`, APIs, eigene
+Module. Damit sind Woche 0 bis 4 durch und die Problem Sets 0 bis 3 gelöst.
 
-Zeile für Zeile erklärt stehen alle neun Programme in `erklaert.md`: die
-vier Wiederholungsaufgaben und die vier aus Problem Set 3.
+Zeile für Zeile erklärt stehen alle Programme in `erklaert.md`: die vier
+Wiederholungsaufgaben, die vier aus Problem Set 3 und der Mitschrieb
+aus Woche 4.

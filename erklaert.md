@@ -6,6 +6,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 |---|---|
 | **Teil 1** | die vier Wiederholungsaufgaben (Woche 0–2) |
 | **Teil 2** | Problem Set 3 — fuel, taqueria, grocery, outdated (Woche 3) |
+| **Teil 3** | Woche 4 — Mitschrieb aus der Vorlesung (Libraries) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -596,3 +597,271 @@ Erlaubnis fragen.
 ist ein Fehler. `5/4` und `13/8/1636` rechnen sich sauber aus. Dass ein
 Tank nicht überlaufen und ein Jahr nicht dreizehn Monate haben kann, ist
 Fachwissen — das prüft man selbst, mit einem `if`.
+
+---
+
+# Teil 3 — Woche 4, Mitschrieb (Libraries)
+
+Anders als Teil 1 und 2: das sind **keine** eigenen Lösungen, sondern die
+Beispiele aus der Vorlesung, mitgetippt. Problem Set 4 kommt danach.
+
+In den Dateien stehen die Zwischenstufen als Kommentar, mit `----` getrennt.
+Unten steht jeweils die Endfassung — die ist hier erklärt.
+
+## generate.py — random
+
+```python
+import random
+# Holt die Bibliothek. Ab jetzt steht random.* zur Verfügung.
+# random ist mitgeliefert, braucht also kein pip install.
+
+cards = ["Jack", "Queen", "King"]
+
+random.shuffle(cards)
+# Mischt die Liste AN IHREM PLATZ und gibt NICHTS zurück.
+# Deshalb kein "cards = random.shuffle(cards)" - daraus wuerde None.
+
+for card in cards:
+    print(cards)       # <-- HIER STECKT EIN FEHLER
+```
+
+> **Der Fehler.** `print(cards)` gibt die **ganze Liste** aus, und zwar
+> dreimal, weil die Schleife dreimal läuft:
+>
+> ```
+> ['Queen', 'Jack', 'King']
+> ['Queen', 'Jack', 'King']
+> ['Queen', 'Jack', 'King']
+> ```
+>
+> Gemeint war `print(card)` — das einzelne Element dieses Durchlaufs:
+>
+> ```
+> Queen
+> Jack
+> King
+> ```
+>
+> `card` ist die Schleifenvariable, `cards` die Liste. Ein Buchstabe
+> Unterschied. Das macht jeder einmal.
+
+Die drei Werkzeuge aus `random`, die im Video vorkamen:
+
+| | |
+|---|---|
+| `random.choice(liste)` | **ein** Element zufällig herausziehen |
+| `random.randint(1, 10)` | ganze Zahl von 1 bis 10, beide Grenzen dabei |
+| `random.shuffle(liste)` | Liste mischen, an ihrem Platz |
+
+## average.py — statistics
+
+```python
+import statistics
+
+print(statistics.mean([100, 90]))
+# mean = Mittelwert. (100 + 90) / 2 = 95.0
+# Kommt IMMER als Kommazahl zurueck, auch wenn es glatt aufgeht.
+```
+
+Dasselbe Muster wie bei `random`: Bibliothek, Punkt, Werkzeug, Klammern.
+Wer das einmal sieht, kann jede Bibliothek benutzen.
+
+## name.py — sys.argv
+
+```python
+import sys
+
+if len(sys.argv) < 2:
+    sys.exit("Too few arguments")
+# sys.argv ist eine LISTE mit dem, was im Terminal stand.
+# Position 0 ist IMMER die Datei selbst, ab 1 kommen die Argumente.
+#
+#   python name.py            -> ["name.py"]              Laenge 1
+#   python name.py Yusuf      -> ["name.py", "Yusuf"]     Laenge 2
+#
+# Weniger als 2 heisst also: es wurde kein Name mitgegeben.
+#
+# sys.exit("...") gibt die Meldung aus UND beendet das Programm.
+# Ein print allein wuerde weiterlaufen - und dann unten auf argv[1]
+# zugreifen, das es nicht gibt. IndexError.
+
+for arg in sys.argv[1:]:
+    print("Hello, my name is", arg)
+# [1:] ist ein AUSSCHNITT ab Position 1 - alles ausser dem Dateinamen.
+# Damit funktioniert es fuer beliebig viele Namen:
+#   python name.py Yusuf Frances   -> zwei Zeilen Ausgabe
+```
+
+**Warum `if` und nicht `try`?** Beides wäre richtig. Bei `argv` ist das `if`
+üblicher, weil man die Länge einer Liste gefahrlos abfragen kann — dafür
+braucht man kein `try`. Umgekehrt bei `int()`: da *muss* man es versuchen,
+weil es keine Frage gibt, die vorher sicher antwortet.
+
+**Und der Sinn der ganzen Sache:** das Programm fragt nicht mehr nach, es
+bekommt alles beim Start mitgeliefert. `git commit -m "..."` ist genau
+dasselbe Prinzip — `-m` und der Text sind `argv`.
+
+## itunes.py — requests und JSON
+
+```python
+import json
+import requests
+import sys
+# requests ist NICHT mitgeliefert: pip install requests war noetig.
+
+if len(sys.argv) != 2:
+    sys.exit()
+# != 2 heisst: genau ein Suchbegriff, nicht null und nicht zwei.
+# sys.exit() ohne Text beendet still.
+
+response = requests.get("https://itunes.apple.com/search?entity=song&limit=50&term=" + sys.argv[1])
+# Das + klebt den Suchbegriff hinten an die Adresse.
+# requests.get(adresse) tut genau das, was der Browser tut:
+# Adresse hin, Antwort zurueck. Es wird NICHTS runtergeladen,
+# es gibt KEINE Datei - die Antwort ist Text.
+# limit=50 heisst: bis zu 50 Treffer statt nur einem.
+
+o = response.json()
+# Macht aus dem Antwort-Text echte Python-Dictionaries und -Listen.
+# Erst damit kann man einzelne Werte herausholen.
+
+for result in o["results"]:
+    print(result["trackName"])
+```
+
+Die letzten zwei Zeilen sind der schwierigste Teil der Woche, deshalb
+ausführlich. Die Antwort von Apple ist **verschachtelt**:
+
+```
+o                      ein Dictionary
+o["results"]           eine LISTE von Treffern
+o["results"][0]        ein Dictionary - der erste Treffer
+o["results"][0]["trackName"]   der Songtitel darin
+```
+
+Also: über die Liste laufen, und in jedem Durchlauf aus dem Dictionary den
+einen Wert holen.
+
+```python
+for result in o["results"]:       # result ist jeweils EIN Treffer-Dictionary
+    print(result["trackName"])    # daraus nur der Titel
+```
+
+**Das Vorgehen, wenn man eine fremde Antwort auswerten will:** erst mit
+`json.dumps(o, indent=2)` ausgeben und **anschauen**, dann den Weg zum
+gewünschten Wert heraussuchen. Blind raten geht schief, weil jeder Dienst
+seine Antwort anders aufbaut.
+
+## sayings.py und say.py — eigene Module
+
+Zwei Dateien, die zusammenarbeiten. **sayings.py** ist die Werkzeugkiste:
+
+```python
+def main():
+    hello("world")
+    goodbye("world")
+# Das ist, was passieren soll, wenn man DIESE Datei direkt startet.
+
+
+def hello(name):
+    print(f"hello, {name}")
+
+
+def goodbye(name):
+    print(f"goodbye, {name}")
+
+
+if __name__ == "__main__":
+    main()
+# Hier steckt der ganze Trick, siehe unten.
+```
+
+**say.py** benutzt sie:
+
+```python
+import sys
+
+from sayings import hello
+# Holt NUR hello aus der Datei sayings.py.
+# Jede .py-Datei ist ein Modul und kann importiert werden -
+# da ist kein Unterschied zu random oder requests.
+
+if len(sys.argv) == 2:
+    hello(sys.argv[1])
+# Ohne das "sayings." davor, weil wir mit "from ... import" geholt haben.
+```
+
+### Warum das `if __name__` nötig ist
+
+`import` heißt **nicht** "schau rein". Python **führt die Datei aus**, von
+oben nach unten. Ohne das `if` sähe es so aus:
+
+```python
+# sayings.py OHNE das if
+def hello(name): ...
+def goodbye(name): ...
+
+main()          # laeuft auch beim Importieren mit
+```
+
+Dann würde `python say.py` ausgeben:
+
+```
+hello, world        <- wollte keiner, kam durchs Importieren
+goodbye, world      <- auch nicht
+hello, Yusuf        <- das war gewollt
+```
+
+Python legt in jeder Datei automatisch eine Variable `__name__` an, und ihr
+Inhalt hängt davon ab, **wie** die Datei ins Spiel kam:
+
+| gestartet mit | `__name__` in `sayings.py` |
+|---|---|
+| `python sayings.py` | `"__main__"` |
+| `import sayings` (aus `say.py`) | `"sayings"` |
+
+Also fragt man einfach nach. Keine Zauberei — ein `if` auf eine Variable,
+die Python für dich füllt.
+
+Die zwei Unterstriche auf jeder Seite sind Absicht: so heißt bei Python
+alles, was die Sprache selbst verwaltet und was man nicht aus Versehen
+überschreiben soll.
+
+> **Der Zusammenhang zu meinem eigenen Code:** in `stueckliste.py` steht
+> unten `main()`. Solange nur ich die Datei starte, ist das in Ordnung.
+> Sobald jemand `import stueckliste` schreibt, würde das Stücklisten-
+> Programm mitten in einem fremden Programm anlaufen. Deshalb gehört die
+> Startzeile in dieses `if`, sobald eine Datei auch nur vielleicht
+> importiert wird.
+
+> **Stolperstein.** Eine eigene Datei nie wie eine Bibliothek benennen.
+> Heißt deine Datei `random.py`, importiert Python ab dann *deine* Datei
+> statt der Bibliothek — und `random.choice` gibt es darin nicht.
+
+---
+
+## Was in Teil 3 neu dazukam
+
+| Baustein | wofür |
+|---|---|
+| `import x` | fremden Code mitbenutzen, danach `x.werkzeug(...)` |
+| `from x import y` | nur ein Werkzeug holen, danach `y(...)` ohne Punkt |
+| `pip install x` | Bibliothek aus dem Internet nachladen |
+| `random.choice` / `randint` / `shuffle` | Zufall |
+| `statistics.mean` | Mittelwert |
+| `sys.argv` | Liste der Argumente beim Start, `[0]` ist die Datei |
+| `sys.exit("...")` | Meldung ausgeben und beenden |
+| `liste[1:]` | Ausschnitt ab Position 1 |
+| `requests.get(adresse)` | einen Dienst im Netz fragen |
+| `.json()` | Antwort-Text → Python |
+| `json.dumps(x, indent=2)` | Python → eingerückter Text |
+| `if __name__ == "__main__"` | nur starten, wenn direkt gestartet |
+
+**Der Kerngedanke der Woche:** bis Woche 3 war jedes Programm vollständig
+selbst geschrieben. Ab hier nicht mehr. `import random` heißt: jemand anders
+hat Zufallszahlen schon gelöst, ich benutze das.
+
+Das ist der Punkt, an dem Programmieren vom Selbermachen zum Zusammensetzen
+wird — und der Grund, warum das FM-Werkzeug überhaupt baubar ist. Eine
+Oberfläche, PDF-Ausgabe, Daten speichern: alles schon geschrieben, von
+anderen. Meine Arbeit daran ist die Fachlogik, nicht die Technik darunter.

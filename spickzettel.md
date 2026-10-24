@@ -269,6 +269,11 @@ Stelle, **bis zu der** geschnitten wird (ohne sie selbst).
 
 ## Ausgabe formatieren
 
+> **Stolperstein.** `print` steht **nie** rechts vom `=`. `text =
+> print(...)` heißt: *gib etwas aus und merk dir das Nichts danach* — in
+> `text` landet `None`. `print` legt etwas auf den Bildschirm und gibt
+> nichts zurück. Fragen, rechnen und ausgeben sind getrennte Zeilen.
+
 ```python
 print("hallo")
 print("a", "b")              # a b  — Komma fügt ein Leerzeichen ein
@@ -325,6 +330,16 @@ else:
 
 Was **eingerückt** unter `if` steht, läuft nur, wenn die Bedingung stimmt.
 Einrücken mit der **Tab-Taste** (= 4 Leerzeichen, Python-Standard).
+
+> **Stolperstein.** **Tabs und Leerzeichen nicht mischen.** Für dich sehen
+> beide gleich aus, für Python nicht. Eine Datei, in der ein Teil der Zeilen
+> mit Tab und ein Teil mit Leerzeichen eingerückt ist, bricht ab:
+>
+> `IndentationError: unindent does not match any outer indentation level`
+>
+> In VS Code für die ganze Datei reparieren: unten rechts in der Statusleiste
+> auf `Spaces: 4` bzw. `Tab Size: 4` klicken, dann
+> **„Convert Indentation to Spaces"**.
 
 **Die Reihenfolge macht die Arbeit.** Kommt Python beim `elif` an, ist der
 erste Zweig ja schon fehlgeschlagen — die Obergrenze braucht man dann nicht
@@ -703,6 +718,26 @@ nicht selbst abfangen — `"Jan"` fliegt von allein raus.
 > `month`. Anführungszeichen machen aus einem Variablennamen Text.
 > Gesucht werden soll der *Inhalt*, also ohne Anführungszeichen:
 > `months.index(month)`.
+
+---
+
+### Liste oder Dictionary?
+
+| | wofür |
+|---|---|
+| `[]` Liste | **sammeln** — Dinge in Reihenfolge, Dubletten erlaubt |
+| `{}` Dictionary | **zählen oder nachschlagen** — ein Name zeigt auf einen Wert |
+
+Die Frage ist nicht, was schöner ist, sondern: *brauche ich zu jedem Ding
+noch einen zweiten Wert?*
+
+```python
+zaehler = {}        # grocery: Name -> Anzahl. Zählen.
+persons = []        # adieu: nur die Namen, in Reihenfolge. Sammeln.
+```
+
+`.append()` gibt es **nur** bei Listen. Und Funktionen, die eine Aufzählung
+erwarten — etwa `join` aus `inflect` — wollen eine Liste.
 
 ---
 
@@ -1273,6 +1308,42 @@ alles, was die Sprache selbst verwaltet und was man nicht aus Versehen
 **Die Regel:** sobald eine Datei auch nur *vielleicht* importiert wird,
 gehört die Startzeile in dieses `if`.
 
+### Ein Ding erzeugen und behalten
+
+Manche Bibliotheken geben dir kein einzelnes Werkzeug, sondern ein **Ding**,
+das sich etwas merkt:
+
+```python
+from pyfiglet import Figlet
+
+figlet = Figlet()                   # Klammern: hier entsteht das Ding
+figlet.setFont(font="slant")        # es merkt sich die Schriftart
+print(figlet.renderText("CS50"))    # und benutzt sie
+```
+
+```python
+import inflect
+
+p = inflect.engine()                # dasselbe Muster
+p.join(["Liesl", "Friedrich"])      # -> "Liesl and Friedrich"
+```
+
+Der Punkt bedeutet hier etwas anderes als bisher:
+
+| | heißt |
+|---|---|
+| `random.choice(...)` | **Bibliothek**.Werkzeug |
+| `figlet.renderText(...)` | **mein Ding**.seine Fähigkeit |
+
+> **Stolperstein.** `Figlet().renderText("CS50")` erzeugt das Ding und
+> benutzt es im selben Atemzug — dazwischen gab es keine Gelegenheit, die
+> Schriftart einzustellen. Und das nächste `Figlet()` wäre ein neues Ding,
+> das nichts davon weiß. Passieren mit einem Ding **zwei** Dinge
+> nacheinander, muss es in eine Variable.
+
+Mehr dazu in Woche 8 (Objekte). Fürs Erste reicht: erzeugen, in eine
+Variable legen, dann einstellen und benutzen.
+
 ---
 
 ## Stil
@@ -1432,6 +1503,13 @@ später die Entwicklung, nicht nur das Ergebnis.
 **Selbst testen, nicht nur das Beispiel aus der Aufgabe.** Auch die Fälle
 am Rand: leere Eingabe, Großschreibung, Leerzeichen vorne, Zahlen außerhalb
 des erwarteten Bereichs.
+
+**Brauche ich das hier, oder habe ich es nur zuletzt benutzt?** Der häufigste
+Fehler zu Beginn einer neuen Aufgabe ist mitgeschlepptes Werkzeug: `import
+sys`, weil es im Video vorkam. `Output: ` davor, weil die vorige Aufgabe es
+wollte. `.title()`, weil es bei taqueria nötig war. `{}`, weil die letzten
+drei Programme gezählt haben. Jede Zeile muss sich aus **dieser** Aufgabe
+begründen lassen.
 
 **Erst laufen lassen, dann fragen.** Das Terminal antwortet schneller als
 jeder Mensch und sagt dir dasselbe. Bei camel und coke war beides schon

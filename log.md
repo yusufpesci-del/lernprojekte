@@ -325,3 +325,39 @@
   Kommentar in der Datei stehen lassen, mit ---- getrennt. Macht spaeter
   nachvollziehbar wie es sich entwickelt hat
 - Naechstes Mal: Problem Set 4 am Samstag
+## 23.10.2026
+- Freitag statt Puffertag, aber nur eine Aufgabe. Problem Set 4,
+  Aufgabe 1: emojize geloest. 22:00 bis 22:30
+- pip install emoji, wie bei cowsay
+- Drei aehnliche Namen durcheinandergebracht:
+  emoji      = die Bibliothek, die man importiert
+  emojize    = die Funktion darin
+  emojize.py = meine eigene Datei
+  import emojize haette also meine EIGENE Datei importiert. Genau der
+  Stolperstein von Mittwoch mit random.py, nur sofort
+- sys und json mitimportiert, die ich hier gar nicht brauche - nur weil
+  sie im Video vorkamen. Nicht alles mitnehmen was man zuletzt gesehen hat
+- Stolperstein, und zwar zweimal in einer Aufgabe: text = print(...).
+  print gibt NICHTS zurueck, es legt nur etwas auf den Bildschirm.
+  PRINT STEHT NIE RECHTS VOM =
+- Dritter Anlauf, weil ich fragen, umwandeln und ausgeben in EINE Zeile
+  gequetscht habe. Drei Saetze sind drei Zeilen. Das Vorgehen von der
+  Stueckliste - erst in Worten hinschreiben - hilft immer noch
+- Auch wieder: den Text fest in den Code geschrieben statt ihn vom
+  Benutzer zu holen. Dann sagt das Programm immer dasselbe, egal was man
+  eintippt
+- Gefragt wie ich Variablen nennen soll. Antwort gemerkt: Namen brauchen
+  keine Kreativitaet, nur eine Beschreibung. Die Frage ist immer "was
+  steckt drin?". Hier text, weil Text drin steckt. Immer das Ding, nie
+  die Taetigkeit - eingeben oder umwandeln waeren schlechte Namen
+- language="alias" ist NICHT optional. Ohne den Parameter fallen
+  :smile_cat: und :thumbsup: durch - und :smile_cat: ist eines der drei
+  Beispiele der Aufgabenstellung. Es gibt zwei Schreibweisen pro Emoji:
+  den offiziellen Code (:thumbs_up:) und den Spitznamen (:thumbsup:)
+- Benannte Parameter hatte ich schon gesehen: json.dumps(o, indent=2)
+- Ganze Saetze funktionieren auch, die Codes werden mitten im Text
+  ersetzt. Das macht die Bibliothek, nicht ich
+- f-String genommen statt print mit Komma. Beides richtig
+- Noch offen: generate.py aus Woche 4, print(cards) muss print(card)
+  werden
+- Naechstes Mal: Rest von Problem Set 4 am Samstag

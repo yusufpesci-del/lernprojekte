@@ -7,6 +7,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 | **Teil 1** | die vier Wiederholungsaufgaben (Woche 0–2) |
 | **Teil 2** | Problem Set 3 — fuel, taqueria, grocery, outdated (Woche 3) |
 | **Teil 3** | Woche 4 — Mitschrieb aus der Vorlesung (Libraries) |
+| **Teil 4** | Problem Set 4 — emojize, figlet, adieu (Woche 4) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -865,3 +866,221 @@ Das ist der Punkt, an dem Programmieren vom Selbermachen zum Zusammensetzen
 wird — und der Grund, warum das FM-Werkzeug überhaupt baubar ist. Eine
 Oberfläche, PDF-Ausgabe, Daten speichern: alles schon geschrieben, von
 anderen. Meine Arbeit daran ist die Fachlogik, nicht die Technik darunter.
+
+---
+
+# Teil 4 — Problem Set 4 (Libraries)
+
+Wieder eigene Lösungen, wie in Teil 1 und 2. Alle drei benutzen fremde
+Bibliotheken — das ist das Thema der Woche.
+
+## Aufgabe 1 — emojize.py
+
+```python
+import emoji
+# Die BIBLIOTHEK heisst emoji. Nicht emojize - das ist die Funktion darin,
+# und auch der Name meiner Datei. Drei aehnliche Namen:
+#   emoji       die Bibliothek, die man importiert
+#   emojize     die Funktion darin
+#   emojize.py  meine Datei
+# "import emojize" wuerde die eigene Datei importieren.
+
+text = input("Input: ")
+# Fragen und MERKEN. Der Text muss vom Benutzer kommen, nicht im Code stehen.
+
+smiley = emoji.emojize(text, language="alias")
+#                      ^^^^  ^^^^^^^^^^^^^^^
+#                      |     benannter Parameter - wie indent=2 bei
+#                      |     json.dumps. Ohne ihn funktionieren nur die
+#                      |     offiziellen Codes, nicht die Spitznamen.
+#                      text OHNE Anfuehrungszeichen: der Inhalt,
+#                      nicht das Wort "text".
+
+print(f"Output: {smiley}")
+```
+
+**Warum `language="alias"` nicht optional ist.** Es gibt zwei Schreibweisen
+pro Emoji — den offiziellen Code (`:thumbs_up:`) und den Spitznamen
+(`:thumbsup:`). Nachgemessen:
+
+| Eingabe | ohne `language` | mit `language="alias"` |
+|---|---|---|
+| `:1st_place_medal:` | 🥇 | 🥇 |
+| `:money_bag:` | 💰 | 💰 |
+| `:smile_cat:` | **nichts** | 😸 |
+| `:thumbsup:` | **nichts** | 👍 |
+
+`:smile_cat:` ist eines der drei Beispiele der Aufgabenstellung — ohne den
+Parameter fällt die Aufgabe durch.
+
+> **Stolperstein, zweimal passiert.** `text = print(...)`. `print` legt etwas
+> auf den Bildschirm und gibt **nichts** zurück — in `text` landet `None`.
+> **`print` steht nie rechts vom `=`.** Fragen, umwandeln und ausgeben sind
+> drei getrennte Zeilen.
+
+## Aufgabe 2 — figlet.py
+
+```python
+from pyfiglet import Figlet
+# Die Bibliothek heisst pyfiglet, meine Datei figlet.py. Waeren sie gleich
+# benannt, koennte Python sie nicht auseinanderhalten.
+import random
+import sys
+
+figlet = Figlet()
+# Hier entsteht das DING. Es merkt sich, welche Schriftart eingestellt ist.
+# Muss VOR die Weiche, weil getFonts() unten von ihm kommt.
+
+fonts = figlet.getFonts()
+# Die Liste aller verfuegbaren Schriftarten. Wird zweimal gebraucht:
+# zum Zufallsziehen und zum Pruefen.
+
+if len(sys.argv) == 1:
+    font = random.choice(fonts)
+    # Keine Argumente -> zufaellige Schrift. random.choice zieht EIN
+    # Element aus einer Liste, genau wie bei ["heads", "tails"].
+
+elif len(sys.argv) == 3 and sys.argv[1] in ("-f", "--font"):
+    #   ^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   genau drei Argumente    erstes ist -f ODER --font
+    #
+    # python figlet.py -f slant
+    #        ^^^^^^^^^ ^^ ^^^^^
+    #        argv[0]   [1]  [2]     -> Laenge 3
+    #
+    # "in" mit einer Liste/Tupel statt zwei == mit or - kuerzer und
+    # leichter zu erweitern.
+
+    font = sys.argv[2]
+    if font not in fonts:
+        sys.exit("Invalid usage")
+    # Die dritte Pruefung als eigenes if IM Zweig, nicht in der
+    # elif-Bedingung. Meine eigene Entscheidung - die Bedingung bleibt
+    # kurz, und die Pruefung steht direkt bei der Variablen um die es geht.
+
+else:
+    sys.exit("Invalid usage")
+    # Alles andere. sys.exit gibt die Meldung aus UND beendet.
+    # Der einzige Ausgang OHNE gemeinsamen Schluss.
+
+figlet.setFont(font=font)
+text = input("Input: ")
+output = figlet.renderText(text=text)
+print(output)
+# Ab hier gemeinsam. Beide guten Zweige haben EINE Variable gefuellt -
+# font. Deshalb steht der Rest nur einmal da. Genau wie bei outdated.py,
+# wo beide Zweige month, day und year gefuellt haben.
+```
+
+**Die Weiche mit drei Ausgängen:**
+
+```
+         ┌─ keine Argumente ────→ font = eine zufällige
+         │
+Weiche ──┼─ -f slant (geprüft) ─→ font = sys.argv[2]
+         │
+         └─ alles andere ───────→ sys.exit("Invalid usage")
+                                       ↑ Ende
+
+dann gemeinsam:  einstellen → fragen → zeichnen → ausgeben
+```
+
+**Was ist die Schriftart, was ist der Text?** Das war die erste
+Verwechslung:
+
+| | kommt aus |
+|---|---|
+| Schriftart (`slant`) | `sys.argv[2]` — beim Start mitgegeben |
+| der Text (`CS50`) | `input()` — tippt der Benutzer danach |
+
+> **Stolperstein.** Hier **kein** `Output: ` davor, anders als bei emojize.
+> Das verschiebt die erste Zeile der Buchstabengrafik um acht Zeichen, das
+> `C` bricht ab, und check50 fällt durch. Die Aufgabe zeigt nur die Grafik
+> allein.
+
+> **Stolperstein.** Tabs und Leerzeichen gemischt → `IndentationError`.
+> In VS Code: Statusleiste unten rechts, `Spaces: 4` anklicken,
+> „Convert Indentation to Spaces".
+
+## Aufgabe 3 — adieu.py
+
+```python
+import inflect
+
+p = inflect.engine()
+# Wieder ein Ding, dasselbe Muster wie Figlet(). Zweites Mal am selben Tag.
+
+persons = []
+# Eine LISTE, keine {}. Bei grocery habe ich gezaehlt (Name -> Anzahl),
+# hier sammle ich nur, in Reihenfolge. .append() und join wollen Listen.
+# Muss VOR die Schleife, sonst ist sie bei jedem Durchlauf wieder leer.
+
+while True:
+    try:
+        item = input().strip()
+        # Nur die riskante Zeile steht im try. Hier entsteht der EOFError,
+        # wenn der Benutzer Strg+Z drueckt.
+    except EOFError:
+        break
+
+    persons.append(item)
+    # AUSSERHALB des try, aber INNERHALB der Schleife.
+    # Durchgespielt: input klappt -> anhaengen -> naechste Runde.
+    #                input wirft EOFError -> break -> append laeuft nicht.
+
+print("Adieu, adieu, to", p.join(persons))
+# NACH der Schleife, am linken Rand - sonst kaeme die Ausgabe bei jedem
+# Namen. Erstes Wort gross, zweites klein: "Adieu, adieu".
+```
+
+**Was `join` allein erledigt.** Das ist der Punkt der ganzen Aufgabe:
+
+| Namen | Ausgabe |
+|---|---|
+| 1 | `Adieu, adieu, to Liesl` |
+| 2 | `Adieu, adieu, to Liesl and Friedrich` |
+| 3 | `Adieu, adieu, to Liesl, Friedrich, and Louisa` |
+| 4 | `Adieu, adieu, to Liesl, Friedrich, Louisa, and Kurt` |
+
+Kein Komma bei einem Namen. Nur „and" bei zwei. Kommas **und** „and" bei
+drei oder mehr. Ein Anfänger baut dafür eine `if`-Kette mit Sonderfällen —
+`join` macht alle sieben Fälle der Aufgabenseite mit einem Argument und
+ohne jede Zusatzeinstellung.
+
+**Wie ich `join` gefunden habe** — zum ersten Mal selbst Doku gelesen. Erst
+`plural` geraten, das ist aber ein Wort rein, ein Wort raus (`name` →
+`names`). Dann durch Eingrenzen: *was geht rein, was kommt raus?* Eine
+Liste rein, ein fertiger Satzteil raus. Das war die Methode, nicht das
+Finden eines Beispiels.
+
+> **Stolperstein.** `.title()` aus taqueria mitgeschleppt. Dort war es
+> nötig, weil die Eingabe zu den Schlüsseln der Speisekarte passen musste.
+> Hier gibt es nichts zu vergleichen — aus `von Trapp` würde `Von Trapp`.
+
+---
+
+## Was in Teil 4 neu dazukam
+
+| Baustein | wofür |
+|---|---|
+| benannter Parameter | `emojize(text, language="alias")`, wie `indent=2` |
+| `Figlet()` / `inflect.engine()` | ein **Ding** erzeugen, das sich etwas merkt |
+| `.setFont()` / `.renderText()` | Fähigkeiten dieses Dings — erst einstellen, dann benutzen |
+| `getFonts()` | Liste der Möglichkeiten, zum Ziehen und zum Prüfen |
+| `x in ("-f", "--font")` | eine von mehreren erlaubten Schreibweisen |
+| `.append()` | an eine Liste hinten anhängen |
+| `p.join(liste)` | Liste → lesbare Aufzählung mit Kommas und „and" |
+
+**Das Muster des Tages, dreimal passiert:** Werkzeug aus der vorigen Aufgabe
+mitgeschleppt. `import sys` und `import json` bei emojize, weil sie im Video
+vorkamen. `Output: ` bei figlet, weil emojize es wollte. `{}` und `.title()`
+bei adieu, weil grocery und taqueria es brauchten.
+
+Die Frage gehört an den Anfang jeder Aufgabe: **brauche ich das hier, oder
+habe ich es nur zuletzt benutzt?**
+
+**Und der Kerngedanke:** die schwierigste Logik in allen drei Aufgaben —
+zwei Emoji-Schreibweisen, Buchstabengrafik aus ASCII, Kommaregeln für
+Aufzählungen — habe ich nicht geschrieben. Das hat jemand anders schon
+gelöst. Meine Arbeit war, das richtige Werkzeug zu finden und die Teile
+richtig zusammenzustecken.

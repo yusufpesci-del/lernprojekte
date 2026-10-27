@@ -13,7 +13,7 @@ while True:
         break
 
     persons.append(item)
-print("Adieu, Adieu, to", p.join(persons))
+print("Adieu, adieu, to", p.join(persons))
 
 
 

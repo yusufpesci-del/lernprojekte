@@ -361,3 +361,61 @@
 - Noch offen: generate.py aus Woche 4, print(cards) muss print(card)
   werden
 - Naechstes Mal: Rest von Problem Set 4 am Samstag
+## 24.10.2026
+- Problem Set 4: figlet und adieu geloest. Stand 3 von 6.
+  12:45 bis 16:10 mit einer Pause - der lange Samstag wie im Lernplan
+- Zuerst die Aufgabenseite geholt statt aus dem Kopf zu raten. Ergebnis:
+  SECHS Aufgaben, alle einzureichen. Claudes "drei auswaehlen" von
+  Mittwoch war falsch
+- figlet: mein erstes OBJEKT. Figlet() erzeugt ein DING, das sich etwas
+  merkt - naemlich die eingestellte Schriftart. Der Punkt heisst hier
+  nicht mehr Bibliothek.Werkzeug, sondern mein Ding.seine Faehigkeit
+- Deshalb braucht es eine Variable: mit dem Ding passieren ZWEI Dinge
+  nacheinander, erst setFont, dann renderText.
+  Figlet().renderText(...) direkt verketten geht nicht - dazwischen gab
+  es nie Gelegenheit, die Schrift einzustellen
+- Verwechselt: sys.argv[2] ist die SCHRIFTART, input() ist der TEXT.
+  Habe erstmal die Schriftart gerendert
+- Tabs und Leerzeichen gemischt -> IndentationError. Fuer mich sehen die
+  gleich aus. Fix in VS Code: Statusleiste unten rechts auf Spaces
+  klicken, Convert Indentation to Spaces
+- Bei figlet KEIN "Output: " davor, anders als bei emojize. Das verschiebt
+  die erste Zeile der Grafik um acht Zeichen, das C bricht ab, check50
+  faellt durch
+- import figlet haette wieder die eigene Datei importiert. Die Bibliothek
+  heisst pyfiglet. Zweiter Tag in Folge derselbe Fehler - merken: die
+  Bibliothek heisst NIE so wie meine Datei
+- Die Weiche mit drei Ausgaengen gebaut: keine Argumente -> Zufallsschrift,
+  geprueftes -f -> die gewuenschte, sonst sys.exit("Invalid usage").
+  Beide guten Zweige fuellen EINE Variable (font), danach geht es
+  gemeinsam weiter. Dieselbe Struktur wie outdated.py
+- sys.argv[1] in ("-f", "--font") statt zweimal == mit or
+- Habe die Schriftart-Pruefung ANDERS gebaut als Claudes Geruest: nicht in
+  die elif-Bedingung, sondern als eigenes if im Zweig. Claude sagt das ist
+  sauberer, weil die Bedingung kurz bleibt und die Pruefung direkt bei der
+  Variablen steht. Erste eigene Strukturentscheidung
+- adieu: zum ersten Mal die Doku einer Bibliothek selbst gelesen. Erst
+  p.plural geraten - das macht aber Mehrzahl aus EINEM Wort. Dann join
+  gefunden, durch Eingrenzen: was geht rein, was kommt raus? Liste rein,
+  fertiger Satzteil raus. Das Eingrenzen war die Methode, nicht das
+  Finden eines Beispiels
+- join macht alle sieben Faelle der Aufgabe allein: 1 Name ohne Komma,
+  2 mit and, 3+ mit Kommas UND and. Ein Anfaenger baut dafuer eine
+  if-Kette. Das ist Woche 4 in einem Satz
+- {} ist ein Dictionary, [] eine Liste. Bei grocery habe ich GEZAEHLT
+  (Name -> Anzahl), hier SAMMLE ich nur, in Reihenfolge. .append() gibt
+  es nur bei Listen, und join will eine Liste
+- .title() aus taqueria mitgeschleppt. Dort noetig, weil die Eingabe zu
+  den Schluesseln der Speisekarte passen musste. Hier gibt es nichts zu
+  vergleichen - aus "von Trapp" wuerde "Von Trapp"
+- append AUSSERHALB des try platziert, von selbst. Nur die riskante Zeile
+  gehoert ins try. Dasselbe wie bei grocery
+- MUSTER DES TAGES, dreimal passiert: Werkzeug aus der vorigen Aufgabe
+  mitgeschleppt. sys und json bei emojize, Output: bei figlet, {} und
+  .title() bei adieu. Die Frage gehoert an den Anfang jeder Aufgabe:
+  brauche ich das HIER, oder habe ich es nur zuletzt benutzt?
+- "Adieu, adieu" - erstes Wort gross, zweites klein. Erst beide klein
+  geschrieben, dann beide gross. check50 vergleicht buchstabengetreu
+- Noch offen: generate.py aus Woche 4, print(cards) muss print(card)
+  werden. Steht seit Mittwoch im Log
+- Naechstes Mal: game, professor, bitcoin. Spaetabends oder Sonntag

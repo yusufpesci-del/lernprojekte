@@ -419,3 +419,51 @@
 - Noch offen: generate.py aus Woche 4, print(cards) muss print(card)
   werden. Steht seit Mittwoch im Log
 - Naechstes Mal: game, professor, bitcoin. Spaetabends oder Sonntag
+## 25.-27.10.2026
+- Sonntag ab etwa 12:30 nichts mehr gemacht. Seit Sonntag in Belgien und
+  remote fuer INDUZEIT gearbeitet. CS50P lag drei Tage still
+- Ab Mittwoch abend (28.10.) wieder dabei
+- Keine Schuldgefuehle dafuer. Genau dafuer stehen die zwei Pufferwochen
+  im Lernplan, und die Regel dort heisst: nicht nachholen, nicht
+  verdoppeln, da weitermachen wo ich aufgehoert habe. Im September hat
+  das nach fuenf Tagen Zwangspause schon einmal funktioniert
+- Stand unveraendert: Woche 0-4 durch, Problem Set 0-3 komplett,
+  Problem Set 4 bei 3 von 6 (emojize, figlet, adieu)
+- Naechstes Mal: game.py, und zwar nur der Level-Teil. Fragen, pruefen,
+  bei einer positiven ganzen Zahl raus aus der Schleife
+## 28.10.2026
+- Zurueck nach drei Tagen Belgien. game.py geloest, Problem Set 4 steht
+  bei 4 von 6. 21:30 bis 22:00 - nach der Pause erstaunlich glatt
+- Habe mehr gebaut als gefragt war: statt nur dem Level-Teil gleich den
+  ganzen Normalfall mit Rateschleife. Reihenfolge der drei Faelle stimmte
+  sofort - zu klein, zu gross, else - und break nur beim Treffer.
+  else statt "elif guess == number": wenn weder kleiner noch groesser,
+  bleibt nur gleich
+- Dann die Pruefung drumherum. NEU: eine Funktion, die so lange fragt bis
+  etwas Brauchbares kommt, und die Zahl dann ZURUECKGIBT
+- return statt break. break verlaesst nur die Schleife, return verlaesst
+  die ganze Funktion UND bringt einen Wert mit
+- Was bei schlechter Eingabe passieren soll, muss man gar nicht
+  hinschreiben: wird return nicht erreicht, dreht die Schleife von selbst
+  noch eine Runde. Kein else, kein continue
+- Der Gewinn: EINE Funktion, zweimal benutzt.
+  get_positive("Level: ") und get_positive("Guess: ").
+  Die Beschriftung kommt als Parameter rein
+- Unterschied zu ist_brauchbar aus der Stueckliste: das gab True/False
+  zurueck und der Aufrufer musste selbst entscheiden. get_positive gibt
+  die ZAHL zurueck und kuemmert sich selbst um den Fehlerfall
+- WICHTIGSTE EINSICHT DES ABENDS: pruefen, wo der Wert hereinkommt -
+  nicht dort, wo er spaeter Schaden anrichtet. Level: -1 stuerzte NICHT
+  am int() ab, int("-1") ist ja in Ordnung, sondern zwei Zeilen spaeter
+  bei random.randint(1, -1) mit "empty range in randrange(1, 0)".
+  Die Fehlermeldung zeigte auf eine Zeile, die nichts dafuer konnte
+- main() muss HINTER alle def stehen, die darin benutzt werden. Sonst
+  NameError. Letzte Zeile der Datei
+- random.randint(1, level) nimmt beide Grenzen mit - bei Level 10 also
+  auch die 10
+- Tabs in main(), Leerzeichen in get_positive(). Laeuft, weil jede
+  Funktion fuer sich einheitlich ist, aber eine Zeitbombe. Noch zu
+  konvertieren
+- Noch offen: generate.py print(cards) -> print(card), und die aeusseren
+  Klammern in figlet.py
+- Naechstes Mal: professor und bitcoin, dann ist Problem Set 4 durch

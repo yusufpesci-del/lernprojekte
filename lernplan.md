@@ -58,31 +58,48 @@ September schon einmal funktioniert.
 
 ## Phase 1 — CS50P fertig (Oktober bis Mitte Dezember)
 
-Eine CS50P-Woche pro Kalenderwoche. **Stand 17.10.: Woche 0–3 durch,
-Problem Set 3 komplett.** Der Plan sah die Woche bis zum 18.10. vor —
-fertig am 17.10., also einen Tag früher. Zweite Woche im Takt.
+Eine CS50P-Woche pro Kalenderwoche. **Stand 28.10.: Woche 0–4 durch,
+Problem Set 0–3 komplett, Problem Set 4 bei 4 von 6.**
+
+Zwei Wochen im Takt (11.10. und 17.10., die zweite einen Tag früher),
+dann eine Unterbrechung: vom 25. bis 27.10. Belgien und Remote-Arbeit für
+INDUZEIT, drei Tage ohne CS50P. Weiter ab Mittwochabend, 28.10.
 
 | Zeitraum | Inhalt |
 |---|---|
 | ~~05.–11.10.~~ | ~~Problem Set 2~~ ✅ fertig am 11.10. |
 | ~~12.–18.10.~~ | ~~Wiederholung Woche 0–2, Woche 3 (Exceptions) + Problem Set 3~~ ✅ fertig am 17.10. |
-| 19.–25.10. | Woche 4 (Libraries) + Problem Set 4 |
-| 26.10.–01.11. | Woche 5 (Unit Tests) + Problem Set |
-| 02.–08.11. | Woche 6 (File I/O) + Problem Set |
-| 09.–15.11. | Woche 7 (Regular Expressions) + Problem Set |
-| 16.–22.11. | Woche 8 (Object-Oriented Programming) + Problem Set |
-| 23.–29.11. | Woche 9 (Et Cetera) + Problem Set |
-| 30.11.–14.12. | Abschlussprojekt |
+| ~~19.–25.10.~~ | ~~Woche 4 (Libraries)~~ ✅ · Problem Set 4 **3 von 6** (emojize, figlet, adieu) |
+| 26.10.–01.11. | Mo–Mi Belgien. ~~game~~ ✅ 28.10. · offen: professor, bitcoin, dann Woche 5 (Unit Tests) |
+| 02.–08.11. | Problem Set 5, dann Woche 6 (File I/O) |
+| 09.–15.11. | Problem Set 6, dann Woche 7 (Regular Expressions) |
+| 16.–22.11. | Problem Set 7, dann Woche 8 (Object-Oriented Programming) |
+| 23.–29.11. | Problem Set 8, dann Woche 9 (Et Cetera) |
+| 30.11.–06.12. | Problem Set 9 |
+| 07.–21.12. | Abschlussprojekt |
 
-**Zwei Wochen Puffer sind eingerechnet** — eine Krankheitswoche oder eine
-Projektphase im Job wirft den Plan damit nicht um. Werden sie nicht
-gebraucht, bist du früher fertig.
+**Die Wochen verschieben sich um eine halbe.** Ab hier beginnt jede Woche
+mit dem Problem Set der vorigen und endet mit dem nächsten Video. Das ist
+kein Rückstand, nur eine andere Taktung — und sie passt besser zu „abends
+aufnehmen, am Wochenende bauen".
+
+**Zwei Wochen Puffer waren eingerechnet.** Die Unterbrechung Ende Oktober
+hat davon etwa eine halbe verbraucht; es bleibt rund eineinhalb. Genau
+dafür war der Puffer da. Die Regel bleibt: **nicht nachholen, nicht
+verdoppeln.** Aufgeben passiert fast nie wegen zu wenig Zeit, sondern wegen
+der Schuldgefühle nach einer verpassten Woche.
+
+**Rückenwind ab Ende November:** vom 25.11. bis 06.01. arbeitest du remote.
+Das fällt genau auf Woche 8, Woche 9 und den Anfang des Abschlussprojekts —
+also auf den Teil, der am meisten Zeit am Stück braucht.
 
 > **Meilenstein 1 (Ende Oktober):** Du kannst Fehler abfangen (`try`/`except`)
 > und fremde Bibliotheken einbinden. Ab da kannst du Programme schreiben, die
 > nicht beim ersten Tippfehler des Benutzers abstürzen.
-> **Erste Hälfte erreicht am 17.10.** — vier Programme mit `try`/`except`,
-> keines stürzt bei falscher Eingabe ab. Bleibt: die Bibliotheken.
+> **Erreicht.** `try`/`except` am 17.10. — vier Programme, keines stürzt bei
+> falscher Eingabe ab. Bibliotheken am 24.10. — `emoji`, `pyfiglet`,
+> `inflect`, `requests`, dazu eigene Module und das erste Objekt.
+> Meilenstein 1 steht, zwei Tage vor Monatsende.
 
 > **Meilenstein 2 (Mitte Dezember):** CS50P komplett, neun Problem Sets und
 > ein Abschlussprojekt im öffentlichen Repo.

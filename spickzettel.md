@@ -881,6 +881,9 @@ Regeln:
 - Unter jedem `def` muss mindestens eine eingerückte Zeile stehen.
   Eine leere Funktion ist ein Syntaxfehler.
 - `def` legt die Funktion nur an. Ausgeführt wird sie erst beim Aufruf.
+- `main()` muss **hinter** allen `def` stehen, die darin benutzt werden —
+  sonst `NameError`, weil Python die Funktion noch nicht kennt. Deshalb ist
+  der Aufruf die **letzte Zeile der Datei**.
 - `return n * n`, nicht `return(n * n)` — `return` ist kein Befehl mit
   Klammern.
 
@@ -1103,6 +1106,42 @@ nochmal fragt. Der Benutzer sieht ja, dass die Frage wiederkommt.
 `return` beendet die Funktion **und** die Schleife, sobald die Umwandlung
 geklappt hat. Danach ist der Aufruf wieder eine Zeile — nur eine, die nicht
 mehr abstürzen kann.
+
+**Mit fachlicher Prüfung.** Oft genügt die Umwandlung nicht — die Zahl muss
+auch in einen Bereich passen:
+
+```python
+def get_positive(prompt):
+    while True:
+        try:
+            n = int(input(prompt))
+            if n > 0:
+                return n
+        except ValueError:
+            pass
+```
+
+Zwei Hürden hintereinander: `int()` wirft bei `cat` einen `ValueError`, und
+`-1` kommt sauber durch die Umwandlung und scheitert erst am `if`.
+
+Was bei einer schlechten Eingabe passieren soll, muss man **nicht**
+hinschreiben: wird `return` nicht erreicht, dreht die Schleife von selbst
+noch eine Runde. Kein `else`, kein `continue`.
+
+Der Gewinn ist, dass dieselbe Funktion an mehreren Stellen taugt — die
+Beschriftung kommt als Parameter herein:
+
+```python
+level = get_positive("Level: ")
+guess = get_positive("Guess: ")
+```
+
+> **Prüfen, wo der Wert hereinkommt** — nicht dort, wo er später Schaden
+> anrichtet. Bei `game.py` stürzte ein `Level: -1` **nicht** am `int()` ab,
+> sondern zwei Zeilen später bei `random.randint(1, -1)`:
+> `ValueError: empty range in randrange(1, 0)`. Die Fehlermeldung zeigte
+> auf eine Zeile, die nichts dafür konnte. Mit der Prüfung an der Tür kommt
+> der schlechte Wert gar nicht erst ins Programm.
 
 ### Ein `except` fängt mehrere Fälle
 

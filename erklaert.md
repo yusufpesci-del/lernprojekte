@@ -7,7 +7,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 | **Teil 1** | die vier Wiederholungsaufgaben (Woche 0–2) |
 | **Teil 2** | Problem Set 3 — fuel, taqueria, grocery, outdated (Woche 3) |
 | **Teil 3** | Woche 4 — Mitschrieb aus der Vorlesung (Libraries) |
-| **Teil 4** | Problem Set 4 — emojize, figlet, adieu (Woche 4) |
+| **Teil 4** | Problem Set 4 — emojize, figlet, adieu, game (Woche 4) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -1057,6 +1057,102 @@ Finden eines Beispiels.
 > nötig, weil die Eingabe zu den Schlüsseln der Speisekarte passen musste.
 > Hier gibt es nichts zu vergleichen — aus `von Trapp` würde `Von Trapp`.
 
+## Aufgabe 4 — game.py
+
+```python
+import random
+
+
+def main():
+    level = get_positive("Level: ")
+    # Statt int(input(...)) der Aufruf der eigenen Prueffunktion.
+    # Danach steht in level garantiert eine positive ganze Zahl -
+    # diese Zeile kann nicht mehr abstuerzen.
+
+    number = random.randint(1, level)
+    # randint nimmt BEIDE Grenzen mit: bei Level 10 also auch die 10.
+
+    while True:
+        guess = get_positive("Guess: ")
+        # Dieselbe Funktion, andere Beschriftung. DAS ist der Grund,
+        # warum es Funktionen gibt.
+
+        if guess < number:
+            print("Too small!")
+        elif guess > number:
+            print("Too large!")
+        else:
+            print("Just right!")
+            break
+        # Drei Faelle, und nur einer bricht ab. Die ersten zwei geben
+        # etwas aus und lassen die Schleife weiterlaufen - ohne continue,
+        # weil danach sowieso nichts mehr kommt.
+        # else statt "elif guess == number": wenn weder kleiner noch
+        # groesser, bleibt nur gleich.
+
+
+def get_positive(prompt):
+    # prompt ist die Beschriftung - "Level: " oder "Guess: ".
+    # Dadurch taugt dieselbe Funktion fuer beide Stellen.
+    while True:
+        try:
+            n = int(input(prompt))
+            # Hier entsteht der ValueError bei "cat".
+            if n > 0:
+                return n
+            # return verlaesst die GANZE Funktion und bringt n mit.
+            # Nicht break - break wuerde nur die Schleife verlassen und
+            # die Funktion wuerde ohne Wert weiterlaufen.
+        except ValueError:
+            pass
+    # Was bei schlechter Eingabe passieren soll, steht NICHT da.
+    # Wird return nicht erreicht, dreht die Schleife von selbst noch eine
+    # Runde. Kein else, kein continue.
+
+
+main()
+# Muss HINTER beide def stehen. Python liest von oben nach unten -
+# steht der Aufruf darueber, kennt es get_positive noch nicht: NameError.
+```
+
+**Zwei Hürden hintereinander, auf zwei verschiedenen Wegen abgewiesen:**
+
+| Eingabe | wo sie scheitert |
+|---|---|
+| `cat` | am `int()` → `ValueError` → `except` |
+| `-1` | **nicht** am `int()` — `int("-1")` ist in Ordnung — sondern am `if n > 0` |
+| `0` | ebenfalls am `if` |
+
+### Die wichtigste Einsicht der Aufgabe
+
+Vor der Prüfung sah der Absturz bei `Level: -1` so aus:
+
+```
+ValueError: empty range in randrange(1, 0)
+```
+
+Die Fehlermeldung zeigte auf `random.randint(1, level)` — eine Zeile, die
+nichts dafür konnte. Der schlechte Wert war durch die Tür gekommen und erst
+zwei Schritte weiter explodiert.
+
+**Deshalb: prüfen, wo der Wert hereinkommt — nicht dort, wo er später
+Schaden anrichtet.** Mit `get_positive` erreicht `-1` das `randint` gar
+nicht mehr.
+
+### Der Unterschied zu `ist_brauchbar` aus der Stückliste
+
+Beides sind Funktionen mit `return`, aber sie tun Verschiedenes:
+
+| | gibt zurück | wer fragt |
+|---|---|---|
+| `ist_brauchbar(zeile)` | `True` / `False` | der Aufrufer entscheidet dann selbst |
+| `get_positive(prompt)` | **die Zahl** | die Funktion fragt selbst, so lange es dauert |
+
+Die zweite Form ist mächtiger: der Aufrufer bekommt garantiert etwas
+Brauchbares und muss sich um den Fehlerfall nicht mehr kümmern. Aus zwei
+absturzgefährdeten Zeilen in `main()` sind zwei geworden, die nicht mehr
+abstürzen können.
+
 ---
 
 ## Was in Teil 4 neu dazukam
@@ -1070,6 +1166,8 @@ Finden eines Beispiels.
 | `x in ("-f", "--font")` | eine von mehreren erlaubten Schreibweisen |
 | `.append()` | an eine Liste hinten anhängen |
 | `p.join(liste)` | Liste → lesbare Aufzählung mit Kommas und „and" |
+| `random.randint(1, n)` | ganze Zahl von 1 bis n, **beide** Grenzen dabei |
+| Funktion mit `return` in der Schleife | fragt, bis es passt, und **bringt den Wert mit** |
 
 **Das Muster des Tages, dreimal passiert:** Werkzeug aus der vorigen Aufgabe
 mitgeschleppt. `import sys` und `import json` bei emojize, weil sie im Video

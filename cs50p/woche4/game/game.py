@@ -16,18 +16,18 @@
 import random
 
 def main():
-	level = get_positive("Level: ")
-	number = random.randint(1, level)
-	while True:
-		guess = get_positive("Guess: ")
-		if guess < number:
-			print("Too small!")
-		elif guess > number:
-			print("Too large!")
-		else:
-			print("Just right!")
+    level = get_positive("Level: ")
+    number = random.randint(1, level)
+    while True:
+        guess = get_positive("Guess: ")
+        if guess < number:
+            print("Too small!")
+        elif guess > number:
+            print("Too large!")
+        else:
+            print("Just right!")
 
-			break
+            break
 
 def get_positive(prompt):
     while True:
@@ -37,5 +37,4 @@ def get_positive(prompt):
                 return n
         except ValueError:
             pass
-
 main()

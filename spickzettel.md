@@ -1155,6 +1155,43 @@ int(menge)                          # ValueError, wenn keine Zahl
 Beides ist `ValueError`, also genügt ein `except ValueError`. Man muss die
 Fälle nicht auseinanderhalten, wenn die Reaktion dieselbe ist.
 
+### Selbst einen Fehler werfen — raise
+
+Bisher hast du Fehler nur **gefangen**. Man kann auch selbst einen auslösen:
+
+```python
+def generate_integer(level):
+    if level == 1:
+        return random.randint(0, 9)
+    elif level == 2:
+        return random.randint(10, 99)
+    else:
+        raise ValueError
+```
+
+**Wann das sinnvoll ist:** wenn eine Funktion ein Argument bekommt, mit dem
+sie nichts anfangen kann. Ohne `raise` fällt sie unten heraus und gibt
+stillschweigend `None` zurück — und der Fehler schlägt dann woanders zu:
+
+```
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'NoneType'
+```
+
+Die Zeile, die abstürzt, kann gar nichts dafür. Mit `raise` meldet sich die
+Funktion sofort und an der richtigen Stelle.
+
+**Zwei Seiten derselben Sache:**
+
+| | |
+|---|---|
+| `raise` | *ich* kann damit nichts anfangen — ich melde das |
+| `try`/`except` | *jemand anders* hat gemeldet — ich fange es auf |
+
+Dieselbe Regel wie bei `game.py`: **prüfen, wo der Wert hereinkommt**, nicht
+dort, wo er später Schaden anrichtet.
+
+---
+
 **Der Vorteil gegenüber selbst geschriebenen Prüfungen:** `try` prüft mit
 **genau den Operationen**, die danach ohnehin ausgeführt werden. Eine
 nachgebaute `if`-Prüfung kann auseinanderlaufen, wenn man den eigentlichen
@@ -1304,6 +1341,45 @@ for result in o["results"]:      # ["results"] ist eine LISTE
 
 Erst mit `json.dumps(..., indent=2)` anschauen, **dann** den Weg zum
 gewünschten Wert heraussuchen. Blind raten geht schief.
+
+**Verschachtelt nachschlagen.** Manche Antworten sind Dictionaries in
+Dictionaries. Dann hängt man die eckigen Klammern aneinander, eines pro
+Ebene:
+
+```json
+{ "data": { "id": "bitcoin", "priceUsd": "38761.0833" } }
+```
+
+```python
+daten = response.json()
+preis = float(daten["data"]["priceUsd"])
+```
+
+Zwei getrennte Klammerpaare — **nicht** `["data", "priceUsd"]`. Das wäre
+eine Liste mit zwei Wörtern, und danach sucht niemand.
+
+> **Stolperstein.** Zahlen kommen aus JSON oft als **Text**:
+> `"38761.0833"`, mit Anführungszeichen. Ohne `float()` drum herum rechnest
+> du mit Text.
+
+**Fehlertypen aus Bibliotheken.** `requests` bringt eigene mit:
+
+```python
+try:
+    response = requests.get(adresse)
+except requests.RequestException:
+    sys.exit("Request failed")
+```
+
+`requests.` davor, weil der Typ nicht zu Python gehört. `ValueError` und
+`IndexError` gibt es immer, `RequestException` nur mit der Bibliothek.
+
+> **Stolperstein.** Das `except` muss zu dem passen, was an **dieser**
+> Stelle schiefgehen kann. `float("cat")` wirft `ValueError`,
+> `requests.get(...)` wirft `RequestException`. Zwei Stellen, zwei
+> Fehlertypen, **zwei getrennte `try`-Blöcke**. Ein falsch gewähltes
+> `except` fängt nicht nur das Falsche — es kann beim Prüfen selbst
+> abstürzen (`NameError: name 'requests' is not defined`).
 
 ### Eigene Module
 
@@ -1488,6 +1564,38 @@ git pull                             Änderungen von GitHub holen
 miterfasst. `-A` wirkt vom ganzen Repo aus, egal in welchem Unterordner
 du stehst.
 
+### Geheimnisse gehören nicht ins Repo
+
+API-Schlüssel, Passwörter, Zugangsdaten: wer sie in eine Datei schreibt und
+committet, veröffentlicht sie. Bei einem öffentlichen Repo sofort — und sie
+bleiben in der **Historie** stehen, auch wenn man sie später herausnimmt.
+
+Der Weg: eine eigene Datei dafür, und die in `.gitignore`.
+
+```python
+# secret.py          <- wird NICHT committet
+API_KEY = "..."
+```
+
+```python
+# bitcoin.py         <- wird committet
+from secret import API_KEY
+```
+
+```powershell
+Add-Content .gitignore "secret.py"
+```
+
+Technisch ist das dasselbe wie `sayings.py` und `say.py`: eine eigene Datei,
+aus der man etwas importiert. Nur dass diese das Repo nie verlässt.
+
+Danach mit `git status` kontrollieren — die Datei darf **nicht** in der
+Liste auftauchen.
+
+> **Achtung.** `.gitignore` wirkt nur auf Dateien, die git noch nicht kennt.
+> Was schon einmal committet wurde, muss erst mit `git rm --cached` wieder
+> herausgenommen werden — und steht trotzdem noch in der Historie.
+
 > **Stolperstein.** `git commit .m "..."` — Punkt statt Bindestrich.
 > Git meldet `pathspec did not match` und committet nichts.
 
@@ -1574,11 +1682,12 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 4
+- Woche 5: Unit Tests
 
-**Woche 4 ist angeschaut** — Bibliotheken, `pip`, `sys.argv`, APIs, eigene
-Module. Damit sind Woche 0 bis 4 durch und die Problem Sets 0 bis 3 gelöst.
+**Problem Set 4 ist komplett** — emojize, figlet, adieu, game, professor,
+bitcoin. Damit sind **Woche 0 bis 4 durch und die Problem Sets 0 bis 4
+gelöst**.
 
 Zeile für Zeile erklärt stehen alle Programme in `erklaert.md`: die vier
-Wiederholungsaufgaben, die vier aus Problem Set 3 und der Mitschrieb
-aus Woche 4.
+Wiederholungsaufgaben, Problem Set 3, der Mitschrieb aus Woche 4 und
+Problem Set 4.

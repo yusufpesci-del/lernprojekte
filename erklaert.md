@@ -7,7 +7,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 | **Teil 1** | die vier Wiederholungsaufgaben (Woche 0–2) |
 | **Teil 2** | Problem Set 3 — fuel, taqueria, grocery, outdated (Woche 3) |
 | **Teil 3** | Woche 4 — Mitschrieb aus der Vorlesung (Libraries) |
-| **Teil 4** | Problem Set 4 — emojize, figlet, adieu, game (Woche 4) |
+| **Teil 4** | Problem Set 4 — alle sechs Aufgaben (Woche 4) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -1153,6 +1153,176 @@ Brauchbares und muss sich um den Fehlerfall nicht mehr kümmern. Aus zwei
 absturzgefährdeten Zeilen in `main()` sind zwei geworden, die nicht mehr
 abstürzen können.
 
+## Aufgabe 5 — professor.py
+
+```python
+import random
+
+
+def main():
+    level = get_level()
+    score = 0
+    # Der Punktezaehler steht VOR der aeusseren Schleife - er soll ueber
+    # alle zehn Aufgaben mitwachsen.
+
+    for _ in range(10):
+        # Genau zehn Aufgaben. for statt while, weil die Anzahl feststeht.
+        # Der Unterstrich heisst "diesen Wert brauche ich nicht".
+
+        x = generate_integer(level)
+        y = generate_integer(level)
+        answer = x + y
+        solved = False
+        # Das Merker-bool steht IN der aeusseren Schleife - es muss bei
+        # jeder Aufgabe wieder auf False stehen. Stuende es oben, waere es
+        # nach der ersten richtigen Antwort fuer immer True und die Loesung
+        # wuerde nie mehr gezeigt.
+
+        for _ in range(3):
+            # Hoechstens drei Versuche. Danach ist die Schleife von selbst
+            # zu Ende - kein Abbruch noetig.
+            try:
+                guess = int(input(f"{x} + {y} = "))
+            except ValueError:
+                print("EEE")
+                continue
+                # Keine Zahl zaehlt wie eine falsche Antwort: EEE, und der
+                # Versuch ist verbraucht.
+
+            if guess == answer:
+                solved = True      # merken, dass es geklappt hat
+                score += 1         # und einen Punkt dazu
+                break
+            print("EEE")
+
+        if not solved:
+            print(f"{x} + {y} = {answer}")
+        # NACH der inneren Schleife. Von aussen sieht man nicht, ob sie
+        # durch einen Treffer oder durch Erschoepfung geendet hat -
+        # deshalb der Merker. Dasselbe Muster wie bei plates.py.
+
+    print(f"Score: {score}")
+
+
+def get_level():
+    # Kein Parameter: die Beschriftung ist immer "Level: " und wird nur an
+    # einer Stelle gebraucht. Anders als get_positive in game.py, wo mal
+    # "Level: " und mal "Guess: " noetig war.
+    while True:
+        try:
+            level = int(input("Level: "))
+            if level in (1, 2, 3):
+                return level
+        except ValueError:
+            pass
+
+
+def generate_integer(level):
+    if level == 1:
+        return random.randint(0, 9)      # einstellig
+    elif level == 2:
+        return random.randint(10, 99)    # zweistellig
+    elif level == 3:
+        return random.randint(100, 999)  # dreistellig
+    else:
+        raise ValueError
+        # Selbst einen Fehler werfen. Ohne diese Zeile faellt die Funktion
+        # bei level=7 unten heraus und gibt stillschweigend None zurueck -
+        # und in main() knallt es dann bei x + y, an einer Zeile die nichts
+        # dafuer kann.
+
+
+if __name__ == "__main__":
+    main()
+```
+
+### Die eigentliche Schwierigkeit: wer wird zurückgesetzt, wer wächst mit?
+
+| | wo es steht | warum |
+|---|---|---|
+| `score = 0` | **vor** der äußeren Schleife | soll über alle zehn Aufgaben mitwachsen |
+| `solved = False` | **in** der äußeren Schleife | muss bei jeder Aufgabe neu bei Null anfangen |
+
+Das ist die ganze Buchhaltung. Ein Fehler an dieser Stelle fällt nicht
+sofort auf — das Programm läuft, es verhält sich nur falsch.
+
+### Zwei Schleifen, zwei verschiedene Gründe
+
+| | |
+|---|---|
+| `for _ in range(10)` | die **Anzahl** steht fest: zehn Aufgaben |
+| `for _ in range(3)` | die **Obergrenze** steht fest: höchstens drei Versuche, `break` bei Treffer |
+
+Bei `while True` wäre beides unbegrenzt. `range` begrenzt von selbst.
+
+## Aufgabe 6 — bitcoin.py
+
+```python
+import sys
+import requests
+from secret import API_KEY
+# secret.py enthaelt nur eine Zeile: API_KEY = "...".
+# Sie steht in .gitignore und wird NICHT committet - sonst waere der
+# Schluessel im oeffentlichen Repo und bliebe auch in der Historie stehen.
+
+
+if len(sys.argv) != 2:
+    sys.exit("Missing command-line argument")
+# Laengenpruefung wie in name.py. sys.exit gibt die Meldung aus UND beendet.
+
+try:
+    bitcoins = float(sys.argv[1])
+except ValueError:
+    sys.exit("Command-line argument is not a number")
+# float, nicht int - "2.5" Bitcoin muss gehen.
+# Hier kann NUR ein ValueError entstehen.
+
+try:
+    response = requests.get(f"https://rest.coincap.io/v3/assets/bitcoin?apiKey={API_KEY}")
+except requests.RequestException:
+    sys.exit("Request failed")
+# Zweites, GETRENNTES try - weil hier ein anderer Fehler moeglich ist.
+# requests.RequestException gehoert zur Bibliothek, nicht zu Python.
+# Der f-String setzt den Schluessel ein, ohne dass er im Code steht.
+
+data = response.json()
+price = float(data["data"]["priceUsd"])
+# Die Antwort ist ein Dictionary im Dictionary:
+#   { "data": { "id": "bitcoin", "priceUsd": "38761.0833" } }
+# Also zwei eckige Klammerpaare hintereinander, eins pro Ebene.
+# float() drum, weil der Preis als TEXT kommt - mit Anfuehrungszeichen.
+
+print(f"${bitcoins * price:,.4f}")
+# Das Komma ist das Tausendertrennzeichen: 38761.0833 wird zu 38,761.0833.
+# .4f sind vier Nachkommastellen.
+```
+
+### Welches `except` gehört wohin?
+
+Das war der Stolperstein: zuerst stand `except requests.RequestException`
+beim `float()`. Die Frage ist immer, **was an dieser Stelle überhaupt
+schiefgehen kann**:
+
+| Stelle | möglicher Fehler |
+|---|---|
+| `float(sys.argv[1])` | `ValueError` |
+| `requests.get(...)` | `requests.RequestException` |
+
+Zwei Stellen, zwei Fehlertypen, zwei getrennte `try`-Blöcke. Ein falsch
+gewähltes `except` fängt nicht nur das Falsche — es kann beim Prüfen selbst
+abstürzen, hier mit `NameError: name 'requests' is not defined`.
+
+### Der Schlüssel und das öffentliche Repo
+
+Die Aufgabenstellung sagt schlicht „schreib den Schlüssel in die URL". Das
+geht für Leute, deren Lösung nicht öffentlich im Netz steht. Bei einem
+öffentlichen Repo ist ein committeter Schlüssel sofort für jeden lesbar —
+und bleibt in der Git-Historie, auch wenn man ihn später herausnimmt.
+
+Deshalb `secret.py` plus `.gitignore`: dieselbe Technik wie bei
+`sayings.py` und `say.py`, eine eigene Datei zum Importieren. Nur dass
+diese eine das Repo nie verlässt.
+
 ---
 
 ## Was in Teil 4 neu dazukam
@@ -1168,6 +1338,11 @@ abstürzen können.
 | `p.join(liste)` | Liste → lesbare Aufzählung mit Kommas und „and" |
 | `random.randint(1, n)` | ganze Zahl von 1 bis n, **beide** Grenzen dabei |
 | Funktion mit `return` in der Schleife | fragt, bis es passt, und **bringt den Wert mit** |
+| `raise ValueError` | selbst einen Fehler werfen, statt `None` zurückzugeben |
+| `daten["a"]["b"]` | verschachtelt nachschlagen, ein Klammerpaar pro Ebene |
+| `requests.RequestException` | Fehlertyp **aus einer Bibliothek**, nicht aus Python |
+| `:,.4f` | Tausenderkomma und vier Nachkommastellen |
+| `from secret import API_KEY` | Geheimnisse in eine eigene, ignorierte Datei |
 
 **Das Muster des Tages, dreimal passiert:** Werkzeug aus der vorigen Aufgabe
 mitgeschleppt. `import sys` und `import json` bei emojize, weil sie im Video

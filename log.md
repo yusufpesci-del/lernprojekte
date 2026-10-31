@@ -467,3 +467,59 @@
 - Noch offen: generate.py print(cards) -> print(card), und die aeusseren
   Klammern in figlet.py
 - Naechstes Mal: professor und bitcoin, dann ist Problem Set 4 durch
+## 31.10.2026
+- PROBLEM SET 4 IST KOMPLETT. professor.py und bitcoin.py geloest, damit
+  alle sechs. 15:40 bis 18:30 mit zwei Pausen
+- Stand: Woche 0-4 durch, Problem Sets 0-4 geloest. Trotz der drei Tage
+  Belgien wieder im Plan - die Woche sah genau das vor
+- professor: die Schwierigkeit war nicht die Logik, sondern die
+  BUCHHALTUNG. score = 0 VOR der aeusseren Schleife, weil es mitwachsen
+  soll. solved = False IN der aeusseren Schleife, weil es bei jeder
+  Aufgabe neu anfangen muss. Stuende solved oben, waere es nach der
+  ersten richtigen Antwort fuer immer True und die Loesung wuerde nie
+  mehr gezeigt
+- Dabei haengengeblieben: ich dachte True sei die Variable. Falsch -
+  True und False sind WERTE, wie 0 und 5. Ein bool braucht einen Namen,
+  genau wie score = 0. Dann steht dieser Name an drei Stellen:
+  anlegen (False), umschalten (True), abfragen (if not ...)
+- range(True) haette uebrigens range(1) bedeutet, weil True als 1 zaehlt -
+  also nur EIN Versuch statt drei
+- if not solved, nicht "answer is not solved". Ein bool IST schon die
+  Antwort, man vergleicht es mit nichts
+- NEU: raise ValueError. Bisher habe ich Fehler nur GEFANGEN, jetzt werfe
+  ich selbst einen. Ohne die Zeile faellt generate_integer(7) unten raus
+  und gibt stillschweigend None zurueck - und es knallt erst in main()
+  bei x + y, an einer Zeile die nichts dafuer kann
+- Zwei Schleifen, zwei Gruende: for _ in range(10) weil die ANZAHL
+  feststeht, for _ in range(3) weil die OBERGRENZE feststeht
+- get_level() ohne Parameter, anders als get_positive(prompt) bei game.
+  Ein Parameter verdient sich erst, wenn er sich auch aendert - hier ist
+  die Beschriftung immer "Level: ". Habe ich dreimal falsch gemacht
+- bitcoin: musste mich bei CoinCap anmelden und einen API-Schluessel
+  anlegen. Die alte Schnittstelle ohne Schluessel ist abgeschaltet
+- Claude hat darauf bestanden, den Schluessel NICHT ins Repo zu lassen -
+  mein Repo ist oeffentlich. Loesung: secret.py mit einer Zeile, in
+  .gitignore, und in bitcoin.py steht from secret import API_KEY.
+  Technisch dasselbe wie sayings.py und say.py. Steht nicht in der
+  Aufgabenstellung - CS50 rechnet nicht mit oeffentlichen Loesungen
+- Einmal committet bliebe der Schluessel auch in der HISTORIE stehen,
+  selbst wenn man ihn danach loescht. Deshalb vorher aufpassen
+- Stolperstein: except requests.RequestException beim float() gesetzt.
+  Falsch - float("cat") wirft ValueError. Und weil requests dort noch
+  gar nicht importiert war, kam beim BEHANDELN des Fehlers ein
+  NameError. Die Frage ist immer: was kann an DIESER Stelle schiefgehen?
+- Zwei Stellen, zwei Fehlertypen, zwei getrennte try-Bloecke
+- Verschachtelt nachschlagen: data["data"]["priceUsd"], zwei eckige
+  Klammerpaare hintereinander, eins pro Ebene. NICHT ["data","priceUsd"],
+  das waere eine Liste mit zwei Woertern
+- Der Preis kommt als TEXT aus dem JSON, mit Anfuehrungszeichen.
+  Ohne float() rechnet man mit Text
+- Ich hatte das Beispiel-JSON aus Claudes Erklaerung in meinen Code
+  kopiert. Das schickt der Server, das schreibe ich nicht hin
+- :,.4f - das Komma ist das Tausendertrennzeichen
+- Wieder der Klassiker: $1.0 statt des Kurses, weil die Datei nicht
+  gespeichert war. Zweites Mal. Erst speichern, dann wundern
+- Zwei verirrte Ordner gefunden und geloescht: mkdir war zweimal
+  gelaufen, waehrend ich schon IM Zielordner stand. Mit $HOME davor
+  passiert das nicht
+- Naechstes Mal: Woche 5 (Unit Tests)

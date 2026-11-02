@@ -8,6 +8,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 | **Teil 2** | Problem Set 3 — fuel, taqueria, grocery, outdated (Woche 3) |
 | **Teil 3** | Woche 4 — Mitschrieb aus der Vorlesung (Libraries) |
 | **Teil 4** | Problem Set 4 — alle sechs Aufgaben (Woche 4) |
+| **Teil 5** | Woche 5 — Mitschrieb aus der Vorlesung (Unit Tests) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -1357,3 +1358,176 @@ zwei Emoji-Schreibweisen, Buchstabengrafik aus ASCII, Kommaregeln für
 Aufzählungen — habe ich nicht geschrieben. Das hat jemand anders schon
 gelöst. Meine Arbeit war, das richtige Werkzeug zu finden und die Teile
 richtig zusammenzustecken.
+
+---
+
+# Teil 5 — Woche 5, Mitschrieb (Unit Tests)
+
+Wie Teil 3: die Beispiele aus der Vorlesung, mitgetippt. Problem Set 5
+kommt danach.
+
+## calculator.py — die geprüfte Datei
+
+```python
+def main():
+     x = int(input("What's x? "))
+     print("x squared is", square(x))
+
+def square(n):
+     return n * n
+
+if __name__ == "__main__":
+     main()
+```
+
+Unspektakulär — aber die letzten zwei Zeilen sind diese Woche **Pflicht**.
+Die Testdatei **importiert** diese Datei. Ohne das `if` würde beim
+Importieren `main()` anlaufen und mitten im Test nach `What's x?` fragen.
+
+## test_calculator.py — drei Stufen
+
+Die Vorlesung baut dieselbe Prüfung dreimal um. Die ersten beiden Fassungen
+stehen in der Datei als Kommentar; unten steht die, die bleibt.
+
+**Stufe 1 — von Hand mit `if`:**
+
+```python
+def test_square():
+    if square(2) != 4:
+        print("2 squared was not 4")
+    if square(3) != 9:
+        print("3 squared was not 9")
+```
+
+Funktioniert, ist aber umständlich: für jede Prüfung zwei Zeilen, und die
+Meldung muss man jedesmal selbst formulieren.
+
+**Stufe 2 — mit `assert`:**
+
+```python
+try:
+    assert square(2) == 4
+except AssertionError:
+    print("2 squared was not 4")
+```
+
+`assert` dreht die Logik um: man schreibt hin, was **stimmen soll**, statt
+zu prüfen was schiefgehen könnte. Stimmt es, passiert nichts. Stimmt es
+nicht, kommt ein `AssertionError`.
+
+Das `try`/`except` ist hier nur nötig, weil ohne pytest sonst beim ersten
+Fehlschlag alles abbricht.
+
+**Stufe 3 — mit pytest, die Endfassung:**
+
+```python
+import pytest
+from calculator import square
+
+def test_positive():
+        assert square(2) == 4
+        assert square(3) == 9
+
+def test_negative():
+        assert square(-2) == 4
+        assert square(-3) == 9
+
+def test_zero():
+        assert square(0) == 0
+
+def test_str():
+        with pytest.raises(TypeError):
+            square("cat")
+```
+
+Kein `main()`, kein `if __name__`, kein `try`/`except` mehr. **pytest ruft
+selbst auf** — es sucht alle Funktionen, die mit `test_` anfangen.
+
+```powershell
+pytest test_calculator.py
+```
+
+### Warum vier kleine Funktionen statt einer großen
+
+| | |
+|---|---|
+| **pytest meldet pro Funktion** | fällt `test_negative` durch, weißt du sofort wo |
+| **assert bricht die Funktion ab** | nach dem ersten Fehlschlag laufen die Zeilen darunter nicht mehr |
+
+Stünde alles in einer Funktion, würde ein Fehler bei `square(-2)` die
+Prüfungen für `0` und `"cat"` verschlucken — du hieltest sie für in Ordnung,
+obwohl sie nie gelaufen sind.
+
+### `pytest.raises` — prüfen, dass es knallt
+
+```python
+def test_str():
+    with pytest.raises(TypeError):
+        square("cat")
+```
+
+Hier ist der **Fehler das gewünschte Verhalten**. `square("cat")` darf nicht
+stillschweigend etwas zurückgeben; es soll scheitern. Kommt kein
+`TypeError`, fällt der Test durch.
+
+Das ist die Gegenseite zu `raise ValueError` aus `generate_integer` in
+Problem Set 4: dort wirft man selbst, hier prüft man, dass geworfen wird.
+
+## hello.py und test_hello.py — Standardwerte
+
+```python
+def main():
+    name = input("What is your name? ")
+    print(hello(name))
+
+def hello(to="world"):
+    return f"hello, {to}"
+
+if __name__ == "__main__":
+    main()
+```
+
+```python
+from hello import hello
+
+def test_default():
+    assert hello() == "hello, world"
+
+def test_argument():
+    assert hello("Yusuf") == "hello, Yusuf"
+```
+
+`to="world"` ist ein **Standardwert**: der Parameter wird optional. Ruft man
+`hello()` ohne Argument auf, greift `"world"`; mit Argument gewinnt das
+Argument.
+
+Von der anderen Seite kennst du das längst — bei
+`emoji.emojize(text, language="alias")` und `json.dumps(o, indent=2)` hast
+du Standardwerte überschrieben, die jemand anders gesetzt hatte. Jetzt
+setzt du selbst welche.
+
+Und beachte, was hier getestet wird: **beide Wege**. Ein Test für den
+Standardfall, einer für den übergebenen Wert. Eine Funktion mit zwei
+Verhaltensweisen braucht zwei Tests.
+
+---
+
+## Was in Teil 5 neu dazukam
+
+| Baustein | wofür |
+|---|---|
+| `assert x == y` | behaupten, dass etwas stimmt — Schweigen heißt in Ordnung |
+| `AssertionError` | der Fehler, wenn eine Behauptung nicht stimmt |
+| `pytest datei.py` | findet und startet alle `test_`-Funktionen selbst |
+| `test_...()` | Namenskonvention, an der pytest Tests erkennt |
+| `with pytest.raises(X)` | prüfen, dass ein Fehler **entsteht** |
+| `def f(to="world")` | Standardwert — der Parameter wird optional |
+| `__init__.py` | leere Datei, die einen Ordner zum Package macht |
+
+**Der Kerngedanke der Woche:** bisher war Testen eine Tätigkeit — starten,
+tippen, hinschauen, und nach jeder Änderung von vorn. Ab jetzt ist es ein
+**Artefakt**: eine Datei, die bleibt, in einer Sekunde läuft und sich meldet,
+wenn eine spätere Änderung etwas kaputtmacht, das vorher ging.
+
+Für ein Werkzeug wie das FM-Auslegungstool ist das der Unterschied zwischen
+„läuft bei mir" und „ich kann belegen, dass es rechnet".

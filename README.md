@@ -19,8 +19,8 @@ kleine Programme, Notizen.
 
 ## Stand
 
-**CS50P Woche 0 bis 4 durch, Problem Set 0 bis 4 vollständig gelöst.**
-Als Nächstes Woche 5 (Unit Tests).
+**CS50P Woche 0 bis 5 durch, Problem Set 0 bis 4 vollständig gelöst.**
+Als Nächstes Problem Set 5.
 
 Gelernt bisher: Variablen und Datentypen, Bedingungen, Schleifen, Listen,
 Dictionaries, Funktionen, Fehler abfangen mit `try`/`except`,

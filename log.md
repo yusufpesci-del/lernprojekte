@@ -523,3 +523,45 @@
   gelaufen, waehrend ich schon IM Zielordner stand. Mit $HOME davor
   passiert das nicht
 - Naechstes Mal: Woche 5 (Unit Tests)
+## 02.11.2026
+- Woche 5 (Unit Tests) komplett angeschaut, 21:10 bis 23:05. Alle vier
+  Dateien mitgebaut: calculator.py, test_calculator.py, hello.py,
+  test_hello.py
+- Der Kerngedanke: Testen war bisher eine TAETIGKEIT - starten, tippen,
+  hinschauen, nach jeder Aenderung von vorn. Ab jetzt ist es ein ARTEFAKT.
+  Eine Datei, die bleibt und in einer Sekunde laeuft
+- assert dreht die Logik um: ich schreibe hin, was STIMMEN SOLL, statt zu
+  pruefen was schiefgehen koennte. Stimmt es, passiert NICHTS. Schweigen
+  heisst in Ordnung
+- pytest sucht selbst alle Funktionen, die mit test_ anfangen. In der
+  Testdatei braucht man weder main() noch if __name__ == "__main__"
+- Vier kleine Testfunktionen statt einer grossen, aus zwei Gruenden:
+  pytest meldet pro Funktion, man weiss also sofort WO. Und ein
+  fehlgeschlagenes assert bricht die Funktion ab - alles darunter laeuft
+  gar nicht mehr und wuerde unbemerkt ungeprueft bleiben
+- with pytest.raises(TypeError) - pruefen, dass es KNALLT. Hier ist der
+  Fehler das gewuenschte Verhalten. Gegenstueck zu raise ValueError aus
+  generate_integer: dort werfe ich, hier pruefe ich dass geworfen wird
+- with ist neu, kommt in Woche 6 richtig dran
+- Standardwerte: def hello(to="world"). Der Parameter wird optional.
+  Kenne ich von der anderen Seite - bei emojize(text, language="alias")
+  und json.dumps(o, indent=2) habe ich fremde Standardwerte ueberschrieben
+- Und test_hello prueft BEIDE Wege: einmal mit Standardwert, einmal mit
+  Argument. Zwei Verhaltensweisen, zwei Tests
+- Warum Randfaelle: in der Vorlesung stand versehentlich n + n statt
+  n * n. Bei square(2) kommt trotzdem 4 raus - der Fehler fiel erst bei
+  square(3) auf. Ein Test, der nur das Naheliegende prueft, beweist nichts
+- if __name__ == "__main__" ist ab jetzt PFLICHT in der getesteten Datei.
+  Ohne das wuerde beim Importieren das Programm anlaufen und mitten im
+  Test nach Eingaben fragen
+- AI-Vervollstaendigung in VS Code abgeschaltet. Sie schreibt ganze Zeilen
+  und nimmt mir genau das weg, woran ich gerade arbeite - das
+  Zusammensetzen. Steht so auch in meinen Regeln im README
+- Gelernt: Strg + # kommentiert markierte Zeilen aus und wieder ein.
+  Spart viel Tipperei bei meiner Gewohnheit, alte Fassungen stehenzulassen
+- NOCH OFFEN: der Package-Teil. Ordner test/ angelegt, test_hello.py darin
+  ist aber noch leer und __init__.py fehlt. Das nachholen
+- Di-Fr Schulung von 9 bis 17 Uhr. Abends bleiben 1-2 Stunden, aber nach
+  acht Stunden Schulung. Deshalb diese Woche: abends nur lesen und
+  wiederholen, Problem Set 5 am Wochenende
+- Naechstes Mal: Problem Set 5

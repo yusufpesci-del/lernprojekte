@@ -1461,6 +1461,143 @@ Variable legen, dann einstellen und benutzen.
 
 ---
 
+## Unit Tests (Woche 5)
+
+Bisher hast du so getestet: Programm starten, Werte eintippen, hinschauen.
+Nach jeder Änderung von vorn. Ab jetzt schreibst du die Prüfungen als **Code**
+auf — einmal hingeschrieben laufen sie in einer Sekunde, beliebig oft.
+
+### assert
+
+```python
+assert square(2) == 4
+```
+
+*„Behaupte, dass das stimmt."* Stimmt es, passiert **nichts** und das
+Programm läuft weiter. Stimmt es nicht, gibt es einen `AssertionError`.
+
+Kein `print`, keine Ausgabe im guten Fall. **Schweigen heißt: alles in
+Ordnung.**
+
+### pytest
+
+```powershell
+pip install pytest
+pytest test_calculator.py
+```
+
+`pytest` sucht in der Datei alle Funktionen, deren Name mit **`test_`**
+anfängt, ruft sie auf und sammelt die Ergebnisse. In der Testdatei brauchst
+du weder `main()` noch `if __name__ == "__main__"` — `pytest` ruft selbst
+auf.
+
+```python
+import pytest
+from calculator import square
+
+
+def test_positive():
+    assert square(2) == 4
+    assert square(3) == 9
+
+
+def test_negative():
+    assert square(-2) == 4
+
+
+def test_zero():
+    assert square(0) == 0
+```
+
+**Viele kleine Testfunktionen statt einer großen.** Zwei Gründe:
+
+1. `pytest` meldet pro Funktion. Fällt `test_negative` durch, weißt du
+   sofort **wo** — bei einer einzigen Riesenfunktion nur, dass irgendetwas
+   kaputt ist.
+2. Nach dem ersten fehlgeschlagenen `assert` **bricht die Funktion ab**. Die
+   Zeilen darunter laufen nicht mehr und werden gar nicht erst geprüft.
+
+### Prüfen, dass etwas schiefgeht
+
+Manchmal ist der **Fehler** das richtige Verhalten:
+
+```python
+def test_str():
+    with pytest.raises(TypeError):
+        square("cat")
+```
+
+Wörtlich: *„hier drin muss ein `TypeError` entstehen."* Kommt keiner, fällt
+der Test durch — denn `square("cat")` soll nicht stillschweigend irgendetwas
+zurückgeben.
+
+Das Gegenstück zu `raise` aus Woche 4: dort **wirfst** du Fehler, hier
+prüfst du, dass sie geworfen werden.
+
+`with` ist neu und kommt in Woche 6 richtig dran. Fürs Erste genügt: es
+umschließt einen Block, für den eine besondere Regel gilt.
+
+### Was man testet
+
+Nicht nur den Normalfall. Die Ränder sind es, wo Programme brechen:
+
+| | Beispiel |
+|---|---|
+| der Normalfall | `square(2)` |
+| negative Zahlen | `square(-2)` |
+| die Null | `square(0)` |
+| der falsche Typ | `square("cat")` |
+
+**Warum das nicht pedantisch ist:** in der Vorlesung stand versehentlich
+`n + n` statt `n * n`. Bei `square(2)` kommt dabei trotzdem `4` heraus — der
+Fehler fiel erst bei `square(3)` auf. Ein Test, der nur das Naheliegende
+prüft, beweist nichts.
+
+### Standardwerte für Parameter
+
+```python
+def hello(to="world"):
+    return f"hello, {to}"
+```
+
+```python
+hello()           # "hello, world"  — Standardwert greift
+hello("Yusuf")    # "hello, Yusuf"  — Argument gewinnt
+```
+
+Ein Parameter mit `=` dahinter ist **optional**. Von der anderen Seite
+kennst du das längst: bei `emoji.emojize(text, language="alias")` und
+`json.dumps(o, indent=2)` hast du Standardwerte überschrieben.
+
+### Tests in einen eigenen Ordner
+
+Liegen mehrere gleichnamige Testdateien in verschiedenen Ordnern, verwirrt
+das `pytest` (`import file mismatch`). Die Lösung heißt **Package**: eine
+**leere** Datei namens `__init__.py` im Testordner.
+
+```
+woche5/
+    test/
+        __init__.py        ← leer, muss aber da sein
+        test_hello.py
+```
+
+```powershell
+pytest test
+```
+
+Dann behandelt Python den Ordner als zusammengehörige Einheit und die Namen
+kollidieren nicht mehr.
+
+> **Stolperstein.** Ohne `if __name__ == "__main__"` in der **getesteten**
+> Datei läuft beim Importieren das ganze Programm an und fragt mitten im
+> Test nach Eingaben. Ab Woche 5 ist die Zeile Pflicht, nicht Kür.
+
+> **Stolperstein.** `pytest` legt beim Laufen `.pytest_cache/` und
+> `__pycache__/` an. Beides gehört in `.gitignore`.
+
+---
+
 ## Stil
 
 **Variablen nach dem Inhalt benennen, Funktionen nach der Tätigkeit.**
@@ -1682,7 +1819,10 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 5: Unit Tests
+- Problem Set 5
+
+**Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
+`pytest.raises`, Standardwerte, Packages.
 
 **Problem Set 4 ist komplett** — emojize, figlet, adieu, game, professor,
 bitcoin. Damit sind **Woche 0 bis 4 durch und die Problem Sets 0 bis 4

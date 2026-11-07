@@ -1596,6 +1596,59 @@ kollidieren nicht mehr.
 > **Stolperstein.** `pytest` legt beim Laufen `.pytest_cache/` und
 > `__pycache__/` an. Beides gehört in `.gitignore`.
 
+### Code testbar bauen
+
+Die wichtigste Erkenntnis aus Problem Set 5: **testbarer Code und gut
+gebauter Code sind dasselbe.**
+
+Ein Programm, das alles in `main()` erledigt und direkt `print`t, kann man
+nicht prüfen — nur starten und hingucken:
+
+```python
+greeting = input("Greeting: ").strip().lower()
+if greeting.startswith("hello"):
+    print("$0")
+```
+
+Testbar wird es durch zwei Trennungen:
+
+| | |
+|---|---|
+| **Logik in eine Funktion, die `return`t** | `value(greeting)` gibt `0` zurück |
+| **Darstellung bleibt in `main()`** | `print(f"${value(greeting)}")` |
+
+Das `$` gehört nicht in `value`. Eine Zahl kann man vergleichen und damit
+rechnen; `"$0"` ist Text und nur zum Angucken gut. **Die Darstellung gehört
+an den Rand des Programms, nicht in die Logik.**
+
+> **Die Funktion muss für sich allein richtig sein.** Ein Test ruft sie
+> **direkt** auf, nicht über `main()`. Bleibt `.lower()` oben bei `input()`
+> stehen, bekommt `value("Hello")` ein großes H herein und antwortet falsch —
+> obwohl das Programm beim normalen Starten stimmt. Alles, was die Funktion
+> zum Richtigsein braucht, muss **in** ihr passieren.
+
+### Den erwarteten Wert selbst bestimmen
+
+Nicht das Programm laufen lassen und die Ausgabe in den Test schreiben. Dann
+prüfst du nur, dass das Programm tut was es tut — Fehler inklusive.
+
+Sondern aus der Aufgabenstellung ableiten, was **richtig wäre**, und das
+behaupten.
+
+> **Stolperstein.** `assert value("hello") == "0"` schlägt fehl, obwohl alles
+> stimmt. `value` liefert die **Zahl** `0`, nicht den Text `"0"` — und
+> `0 == "0"` ist `False`. pytest zeigt den Unterschied an den
+> Anführungszeichen: `assert 0 == '0'`.
+
+> **Der Testname ist die Fehlermeldung.** pytest meldet
+> `FAILED test_bank.py::test_uppercase`. Ein Name wie `test_argument`, aus
+> der vorigen Aufgabe mitgeschleppt, sagt dir im Fehlerfall nichts.
+
+> **In jede Testfunktion gehört ein Beispiel vom Rand.** Beide ersten
+> Fassungen dieser Woche — `shorten("Yusuf")` und `value("hi")` — prüften nur
+> Kleinschreibung und gingen gegen eine absichtlich kaputte Fassung glatt
+> durch. Erst `TWITTER` und `How are you` haben den Fehler gefunden.
+
 ---
 
 ## Stil
@@ -1819,7 +1872,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 5
+- Problem Set 5: `plates` und `fuel` (twttr und bank sind fertig)
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

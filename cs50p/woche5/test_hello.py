@@ -4,5 +4,10 @@ from hello import hello
 def test_default():
     assert hello() == "hello, world"
 
+# def test_argument():
+#     assert hello("Yusuf") == "hello, Yusuf"
+
 def test_argument():
-    assert hello("Yusuf") == "hello, Yusuf"
+    for name in ["Yusuf", "Alice", "Jackson"]:
+        assert hello(name) == f"hello, {name}"
+

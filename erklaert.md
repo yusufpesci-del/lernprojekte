@@ -9,6 +9,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 | **Teil 3** | Woche 4 — Mitschrieb aus der Vorlesung (Libraries) |
 | **Teil 4** | Problem Set 4 — alle sechs Aufgaben (Woche 4) |
 | **Teil 5** | Woche 5 — Mitschrieb aus der Vorlesung (Unit Tests) |
+| **Teil 6** | Problem Set 5 — Tests für meine alten Programme |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -1531,3 +1532,196 @@ wenn eine spätere Änderung etwas kaputtmacht, das vorher ging.
 
 Für ein Werkzeug wie das FM-Auslegungstool ist das der Unterschied zwischen
 „läuft bei mir" und „ich kann belegen, dass es rechnet".
+
+---
+
+# Teil 6 — Problem Set 5 (Unit Tests)
+
+Keine neuen Programme: **Tests für meine alten.** Und damit die eigentliche
+Arbeit — die alten Programme so umbauen, dass man sie überhaupt prüfen kann.
+
+*(Stand: 2 von 4. plates und fuel folgen.)*
+
+## Aufgabe 1 — twttr.py und test_twttr.py
+
+```python
+def main():
+    twitter = input("Input: ")
+    print("Output:", shorten(twitter))
+
+def shorten(word):
+    ergebnis = ""
+    for zeichen in word:
+        if zeichen not in ["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]:
+            ergebnis += zeichen
+    return ergebnis
+
+if __name__ == "__main__":
+    main()
+```
+
+Gegenüber Problem Set 2 nur drei Änderungen: die Datei hiess `twttr` **ohne
+`.py`** und war damit nicht importierbar, `convert` wurde zu `shorten` (die
+Aufgabe schreibt den Namen vor), und aus `main()` unten wurde das `if
+__name__`.
+
+Dass sonst nichts zu tun war, liegt daran, dass ich die Aufgabe im Oktober
+schon mit einer **zurückgebenden** Funktion gebaut hatte. Eine Fassung, die
+in der Schleife direkt `print`t, hätte man komplett umbauen müssen.
+
+```python
+from twttr import shorten
+
+
+def test_lowercase():
+    assert shorten("hello") == "hll"
+
+
+def test_uppercase():
+    assert shorten("TWITTER") == "TWTTR"
+
+def test_numbers():
+    assert shorten("CS50") == "CS50"
+```
+
+### Warum `TWITTER` und nicht `Yusuf`
+
+Meine erste Fassung prüfte `shorten("hello")` und `shorten("Yusuf")`. Beide
+Behauptungen stimmten — und beide gingen trotzdem durch, als die Funktion
+absichtlich kaputtgemacht wurde (nur kleine Vokale entfernen):
+
+```
+2 passed in 0.00s
+```
+
+Der Grund: in keinem der beiden Wörter steckt ein **großer Vokal**. `hello`
+ist komplett klein, und bei `Yusuf` ist das `Y` zwar groß — aber `Y` ist
+kein Vokal.
+
+Mit `TWITTER` statt `Yusuf`:
+
+```
+E       AssertionError: assert 'TWITTER' == 'TWTTR'
+FAILED test_twttr.py::test_uppercase
+1 failed, 2 passed
+```
+
+Ein Wort Unterschied zwischen einem Test, der nichts beweist, und einem, der
+den Fehler findet.
+
+## Aufgabe 2 — bank.py und test_bank.py
+
+Hier war echte Umbauarbeit nötig. Die Fassung aus Problem Set 1 hatte **gar
+keine Funktionen**:
+
+```python
+greeting = input("Greeting: ").strip().lower()
+
+if greeting.startswith("hello"):
+    print("$0")
+elif greeting.startswith("h"):
+    print("$20")
+else:
+    print("$100")
+```
+
+Daraus wurde:
+
+```python
+def main():
+    greeting = input("Greeting: ").strip()
+    print(f"${value(greeting)}")
+
+def value(greeting):
+    greeting = greeting.lower()
+    if greeting.startswith("hello"):
+        return 0
+    elif greeting.startswith("h"):
+        return 20
+    else:
+        return 100
+
+if __name__ == "__main__":
+    main()
+```
+
+Zwei Verschiebungen, und beide haben einen Grund.
+
+**Das `$` wanderte von der Logik in die Ausgabe.** Vorher stand `print("$0")`
+— ein Text mit Dollarzeichen. Jetzt gibt `value` die reine Zahl `0` zurück
+und `main()` setzt das `$` davor. Eine Zahl kann man vergleichen und damit
+rechnen; `"$0"` ist nur zum Angucken gut.
+
+**Das `.lower()` wanderte von `main()` nach `value()`.** Das ist die
+wichtigere Verschiebung. Der Test ruft `value` **direkt** auf:
+
+```python
+value("Hello")
+```
+
+Stünde `.lower()` noch oben bei `input()`, bekäme `value` ein großes
+`"Hello"` herein. `"Hello".startswith("hello")` ist **False** — die Funktion
+gäbe 20 zurück statt 0, obwohl das Programm beim normalen Starten stimmt.
+
+**Eine Funktion muss für sich allein richtig sein.** Ein Test ist genau der
+Aufrufer, der sich nicht an die Gewohnheiten des Programms hält.
+
+```python
+from bank import value
+
+
+def test_lowercase():
+    assert value("hello") == 0
+
+
+def test_uppercase():
+    assert value("Hello") == 0
+
+def test_uppercase_2():
+    assert value("HELLO") == 0
+
+def test_startswith_h():
+    assert value("hi") == 20
+    assert value("How are you") == 20
+    assert value("hey") == 20
+
+def test_any():
+    assert value("What's up") == 100
+    assert value("good morning") == 100
+```
+
+### Der Stolperstein: 0 ist nicht "0"
+
+Die erste Fassung hatte überall Anführungszeichen — `== "0"`, `== "20"`,
+`== "100"`. Alle fünf Tests fielen durch:
+
+```
+E       assert 0 == '0'
+5 failed in 0.02s
+```
+
+`value` liefert eine **Zahl**. `0` und `"0"` sind verschiedene Dinge: eine
+Zahl und ein Text, der aussieht wie eine Zahl. pytest zeigt es an den
+Anführungszeichen — links keine, rechts welche.
+
+Dasselbe von der anderen Seite kenne ich seit Woche 1: `input()` liefert
+immer Text, deshalb muss überall `int(...)` drum. Hier läuft es umgekehrt.
+
+### Die Gegenprobe
+
+`greeting = greeting.lower()` aus `bank.py` gelöscht:
+
+```
+FAILED test_bank.py::test_uppercase     - assert 100 == 0
+FAILED test_bank.py::test_uppercase_2   - assert 100 == 0
+FAILED test_bank.py::test_startswith_h  - assert 100 == 20
+3 failed, 2 passed
+```
+
+Drei statt der erwarteten zwei. `value("How are you")` fiel mit durch, weil
+das grosse `H` ohne `.lower()` weder `startswith("hello")` noch
+`startswith("h")` erfüllt — also 100 statt 20.
+
+Und `test_lowercase` und `test_any` blieben **grün**. Richtig so: die prüfen
+Eingaben, bei denen Groß- und Kleinschreibung keine Rolle spielt. Ein gutes
+Testset meldet nicht alles, sondern genau das, was kaputt ist.

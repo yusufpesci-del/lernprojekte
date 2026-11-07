@@ -565,3 +565,64 @@
   acht Stunden Schulung. Deshalb diese Woche: abends nur lesen und
   wiederholen, Problem Set 5 am Wochenende
 - Naechstes Mal: Problem Set 5
+## 07.11.2026
+- Erster Abend nach FUENF Tagen Pause (Di-Fr Schulung 9-17). Problem
+  Set 5 angefangen: twttr und bank fertig, 2 von 4. 21:40 bis 23:00
+- Selbst gemerkt und notiert: die Pause war spuerbar. Aber WAS weg war,
+  ist der Rhythmus, nicht das Verstaendnis. Ich wusste die ganze Zeit was
+  assert tut und wozu die Testdatei da ist - gestolpert bin ich beim
+  Zusammensetzen. Wie Joggen nach zwei Wochen: die Lunge ist da, der
+  Rhythmus nicht. Konsequenz: kurz und oft schlaegt lang und selten
+- Problem Set 5 verlangt keine neuen Programme, sondern TESTS fuer die
+  alten. Und damit den Umbau: die Logik muss in eine Funktion, die etwas
+  ZURUECKGIBT. Ein Programm, das alles in main() erledigt und direkt
+  printet, kann man nicht pruefen - nur starten und hingucken
+- Erkenntnis der Woche: testbarer Code und gut gebauter Code sind
+  DASSELBE
+- twttr war fast fertig, weil ich es im Oktober schon mit einer
+  zurueckgebenden Funktion gebaut hatte. Nur: Datei hiess twttr OHNE
+  .py und war damit nicht importierbar, convert musste shorten heissen,
+  und main() unten wurde zum if __name__
+- Dabei einmal den Rumpf von shorten geloescht, weil ich vom leeren
+  Geruest der Aufgabenseite neu angefangen habe statt meine Datei zu
+  aendern. Das Geruest zeigt die FORM, es ist keine Vorlage zum Abtippen
+- Und das if __name__ landete in der for-Schleife. Es gehoert ganz nach
+  unten an den linken Rand, ausserhalb jeder Funktion - es ist die
+  Startzeile der DATEI, kein Teil einer Funktion
+- return ergebnis vergessen. Ohne return gibt eine Funktion None zurueck,
+  der Test haette None mit "hll" verglichen
+- WICHTIGSTE LEKTION DES ABENDS: meine ersten Tests prueften nichts.
+  shorten("hello") und shorten("Yusuf") gingen BEIDE durch, als die
+  Funktion absichtlich kaputtgemacht wurde (nur kleine Vokale). Grund:
+  in keinem der Woerter steckt ein grosser Vokal - bei Yusuf ist das Y
+  gross, aber Y ist kein Vokal. Mit TWITTER statt Yusuf hat der Test
+  sofort angeschlagen
+- Daraus: in JEDE Testfunktion gehoert ein Beispiel vom Rand
+- bank war echte Umbauarbeit, die Fassung aus Problem Set 1 hatte gar
+  keine Funktionen. Zwei Verschiebungen:
+  1. Das $ wanderte von der Logik in die Ausgabe. value gibt die ZAHL 0
+     zurueck, main setzt das $ davor. Eine Zahl kann man vergleichen,
+     "$0" ist nur zum Angucken
+  2. Das .lower() wanderte von main() nach value(). Das ist die
+     wichtigere: der Test ruft value DIREKT auf. Mit .lower() in main
+     bekaeme value("Hello") ein grosses H und antwortete 20 statt 0 -
+     obwohl das Programm beim normalen Starten stimmt
+- EINE FUNKTION MUSS FUER SICH ALLEIN RICHTIG SEIN. Ein Test ist genau
+  der Aufrufer, der sich nicht an die Gewohnheiten des Programms haelt
+- Stolperstein: == "0" statt == 0 geschrieben, alle fuenf Tests fielen
+  durch. value liefert eine ZAHL. pytest zeigt es an den
+  Anfuehrungszeichen: assert 0 == '0'. Von der anderen Seite kenne ich
+  das seit Woche 1 - input() liefert immer Text, deshalb int() drum
+- Testnamen aus der vorigen Aufgabe mitgeschleppt (test_default,
+  test_argument aus test_hello.py) und pytest.raises aus
+  test_calculator.py, wo hier gar nichts schiefgehen soll. Zum x-ten Mal
+  dasselbe Muster. Der Testname ist die FEHLERMELDUNG - pytest meldet
+  FAILED test_bank.py::test_uppercase, da hilft test_argument nicht
+- Den erwarteten Wert bestimme ICH, nicht das Programm. Sonst pruefe ich
+  nur, dass das Programm tut was es tut - Fehler inklusive
+- Gegenprobe bei bank: .lower() geloescht -> 3 failed, 2 passed. Eine
+  mehr als erwartet, weil value("How are you") mit grossem H auch
+  durchfiel. Und test_lowercase und test_any blieben gruen - richtig so,
+  ein gutes Testset meldet genau das was kaputt ist, nicht alles
+- Noch 18 Tage bis Uebersee, tagsuber viel zu tun
+- Naechstes Mal: plates und fuel, dann ist Problem Set 5 durch

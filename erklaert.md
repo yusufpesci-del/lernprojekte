@@ -1540,7 +1540,7 @@ Für ein Werkzeug wie das FM-Auslegungstool ist das der Unterschied zwischen
 Keine neuen Programme: **Tests für meine alten.** Und damit die eigentliche
 Arbeit — die alten Programme so umbauen, dass man sie überhaupt prüfen kann.
 
-*(Stand: 2 von 4. plates und fuel folgen.)*
+*(Alle vier Aufgaben.)*
 
 ## Aufgabe 1 — twttr.py und test_twttr.py
 
@@ -1725,3 +1725,295 @@ das grosse `H` ohne `.lower()` weder `startswith("hello")` noch
 Und `test_lowercase` und `test_any` blieben **grün**. Richtig so: die prüfen
 Eingaben, bei denen Groß- und Kleinschreibung keine Rolle spielt. Ein gutes
 Testset meldet nicht alles, sondern genau das, was kaputt ist.
+
+## Aufgabe 3 — plates.py und test_plates.py
+
+Hier war fast nichts zu tun: `plates.py` aus Problem Set 2 hatte bereits
+`main()` und ein `is_valid(plate)`, das `True` oder `False` **zurückgibt**.
+Die einzige Änderung war die Wächterzeile unten.
+
+```python
+def main():
+    plate = input("Plate: ")
+    if is_valid(plate):
+        print("Valid")
+    else:
+        print("Invalid")
+
+
+def is_valid(plate):
+    if len(plate) < 2 or len(plate) > 6:
+        return False
+    if not plate[:2].isalpha():
+        return False
+    if not plate.isalnum():
+        return False
+
+    for zeichen in plate:              # erste Ziffer darf keine 0 sein
+        if zeichen.isdigit():
+            if zeichen == "0":
+                return False
+            break                      # nur die ERSTE Ziffer interessiert
+
+    zahl_gekommen = False              # Merker, wie bei plates in Woche 2
+    for zeichen in plate:
+        if zeichen.isdigit():
+            zahl_gekommen = True
+        elif zahl_gekommen:            # Buchstabe NACH einer Ziffer
+            return False
+    return True
+
+
+if __name__ == "__main__":
+    main()
+```
+
+```python
+from plates import is_valid
+
+
+def test_length():
+    assert is_valid("AA")
+    assert is_valid("AAAAAA")
+    assert not is_valid("H")
+    assert not is_valid("OUTATIME")
+
+
+def test_two_letters():
+    assert is_valid("CS50")
+    assert not is_valid("50")
+    assert not is_valid("1A")
+
+
+def test_digits_at_end():
+    assert is_valid("AAA22")
+    assert is_valid("NRVOUS")
+    assert not is_valid("CS50P")
+    assert not is_valid("H3LLO")
+
+
+def test_no_leading_zero():
+    assert is_valid("CS50")
+    assert not is_valid("CS05")
+
+
+def test_nopunctuation():
+    assert is_valid("CS50")
+    assert not is_valid("PI3-14")
+    assert not is_valid("PI3.14")
+    assert not is_valid("CS 50")
+    assert not is_valid("CS50!")
+```
+
+### Eine Regel pro Funktion — die Probe
+
+Mein erster Entwurf von `test_length` enthielt `assert not is_valid("CS05")`.
+Das ist zwar ungültig, aber **nicht wegen der Länge** — `CS05` hat vier
+Zeichen. Der Test wäre grün geblieben, auch wenn die Längenprüfung komplett
+aus `plates.py` verschwindet.
+
+**Die Probe für jeden Test:** *wenn ich genau diese eine Regel aus dem
+Programm entferne — fällt dann genau dieser Test durch?* Wenn nicht, prüft
+er etwas anderes als sein Name behauptet.
+
+Gegenprobe mit auskommentierter Längenprüfung:
+
+```
+test_plates.py F....
+FAILED test_plates.py::test_length - AssertionError: assert not True
+1 failed, 4 passed
+```
+
+Einer rot, vier grün. Genau richtig.
+
+### `assert is_valid(...)` statt `== True`
+
+`is_valid` gibt schon `True` oder `False` zurück — da vergleicht man mit
+nichts mehr. Dasselbe wie `if not solved` bei `professor.py`.
+
+## Aufgabe 4 — fuel.py und test_fuel.py
+
+Der grösste Umbau der vier. Die Fassung aus Problem Set 3 hatte **gar keine
+Funktionen** — alles steckte in einer Schleife, die obendrein ihre eigenen
+Fehler abfing:
+
+```python
+while True:
+    try:
+        x, y = input("Fraction: ").split("/")
+        x = int(x)
+        y = int(y)
+        if x > y:
+            continue
+        fuel = round(x / y * 100)
+        if fuel <= 1:
+            print("E")
+        ...
+    except (ValueError, ZeroDivisionError):
+        pass
+```
+
+Daraus wurden drei Teile:
+
+```python
+def main():
+    while True:
+        try:
+            fraction = input("Fraction: ")
+            percentage = convert(fraction)
+            break
+        except (ValueError, ZeroDivisionError):
+            pass
+    print(gauge(percentage))
+
+
+def convert(fraction):
+    x, y = fraction.split("/")
+    x = int(x)
+    y = int(y)
+    if y == 0:
+        raise ZeroDivisionError
+    if x > y:
+        raise ValueError
+    return round(x / y * 100)
+
+
+def gauge(percentage):
+    if percentage <= 1:
+        return "E"
+    elif percentage >= 99:
+        return "F"
+    else:
+        return f"{percentage}%"
+
+
+if __name__ == "__main__":
+    main()
+```
+
+| | rein | raus |
+|---|---|---|
+| `convert` | `"3/4"` — ein Text | `75` — eine Zahl |
+| `gauge` | `75` — eine Zahl | `"75%"` — ein Text |
+| `main` | — | druckt, sonst nichts |
+
+### Der Kerngedanke: wer wirft, und wer fängt?
+
+Vorher machte eine Stelle beides. Jetzt:
+
+```
+convert    wirft den Fehler      weiß nur, dass "cat/50" Unsinn ist
+main       fängt ihn auf         entscheidet, was dann passiert
+```
+
+`convert` **kann nicht wissen**, was der Aufrufer tun will — nochmal fragen,
+abbrechen, protokollieren? Das ist Sache des Aufrufers.
+
+Und genau deshalb ist sie testbar. Ein Test will nicht, dass `convert`
+nochmal fragt; er will sehen, dass sie sich beschwert. Eine Funktion mit
+eingebauter Schleife würde im Test ewig auf eine Eingabe warten.
+
+Aus `continue` wurde deshalb `raise ValueError`. Und zwei Fehler musste ich
+gar nicht selbst werfen: `int("cat")` wirft von allein, `x / 0` auch.
+
+### Die Reihenfolge der Prüfungen
+
+Mein erster Entwurf hatte `if x > y` vor der Null-Prüfung. Ergebnis:
+
+```
+'1/0'  ->  ValueError          die Aufgabe will ZeroDivisionError
+'0/0'  ->  ZeroDivisionError   nur hier stimmte es
+```
+
+Bei `1/0` ist `1 > 0` wahr — der `ValueError` fliegt raus, bevor überhaupt
+geteilt wird. **Die Reihenfolge der Prüfungen entscheidet, welchen Fehler
+der Aufrufer sieht.** Also die Null-Prüfung zuerst.
+
+### Das `print` aus der Schleife heraus
+
+```python
+    while True:
+        try:
+            ...
+            break
+        except ...:
+            pass
+    print(gauge(percentage))        # NACH der Schleife
+```
+
+Eigene Entscheidung, und eine gute: die Schleife hat genau eine Aufgabe —
+eine brauchbare Eingabe beschaffen. Die Ausgabe passiert danach, einmal.
+
+### Die Tests
+
+```python
+import pytest
+from fuel import convert, gauge
+
+def test_convert():
+    assert convert("1/2") == 50
+    assert convert("3/4") == 75
+
+
+def test_convert_errors():
+    with pytest.raises(ValueError):
+        convert("cat/4")
+    with pytest.raises(ZeroDivisionError):
+        convert("1/0")
+
+
+def test_gauge():
+    assert gauge(1) == "E"
+    assert gauge(99) == "F"
+    assert gauge(50) == "50%"
+    assert gauge(0) == "E"
+
+
+def test_too_big():
+    with pytest.raises(ValueError):
+        convert("5/4")
+```
+
+Hier ist `pytest.raises` **richtig** eingesetzt — anders als beim ersten
+Versuch an twttr, wo ich danach gegriffen hatte, obwohl nichts schiefgehen
+sollte. `convert("5/4")` *muss* sich beschweren; der Fehler ist das
+gewünschte Verhalten.
+
+`test_too_big` kam erst im zweiten Anlauf dazu. Der erste Entwurf hatte
+stattdessen ein `test_str`, das dasselbe prüfte wie `test_convert_errors` —
+und die `x > y`-Regel blieb ungetestet.
+
+### Vier Gegenproben
+
+| in `fuel.py` kaputtgemacht | Ergebnis |
+|---|---|
+| `convert` gibt Text statt Zahl | 1 failed, 3 passed |
+| `gauge` lässt das `%` weg | 1 failed, 3 passed |
+| `x > y`-Prüfung entfernt | 1 failed, 3 passed |
+| Null-Prüfung entfernt | 1 failed, 3 passed |
+
+**Jede Macke macht genau einen Test rot.** Das ist das Gütezeichen: null rot
+heißt, die Regel wird von keinem Test bewacht; alle rot heißt, die Tests
+sind nicht getrennt und der Name verrät nicht, wo es klemmt.
+
+---
+
+## Was Problem Set 5 im Ganzen war
+
+Vier alte Programme, auseinandergenommen und so wieder zusammengesetzt, dass
+man sie prüfen kann. Die Techniken dabei waren immer dieselben:
+
+| | |
+|---|---|
+| **Rechnen und Ausgeben trennen** | die Funktion `return`t, nur `main` druckt |
+| **Werfen und Fangen trennen** | die Funktion `raise`t, der Aufrufer fängt |
+| **Alles Nötige in die Funktion** | `.lower()` gehört zu `value`, nicht zu `main` |
+| **Darstellung an den Rand** | das `$` setzt `main` davor, nicht `value` |
+
+Alle vier laufen auf dasselbe hinaus: **eine Funktion muss für sich allein
+richtig und für sich allein benutzbar sein.** Ein Test ist genau der
+Aufrufer, der sich nicht an die Gewohnheiten des Programms hält — und
+deshalb deckt er auf, wo eine Funktion heimlich von ihrer Umgebung abhängt.
+
+Dass testbarer Code und gut gebauter Code dasselbe sind, ist nicht
+Python-Wissen. Das gilt in jeder Sprache.

@@ -1649,6 +1649,84 @@ behaupten.
 > Kleinschreibung und gingen gegen eine absichtlich kaputte Fassung glatt
 > durch. Erst `TWITTER` und `How are you` haben den Fehler gefunden.
 
+### Wer wirft, und wer fängt?
+
+Vor dem Umbau machte `fuel.py` beides an einer Stelle: rechnen **und** die
+eigenen Fehler abfangen und nochmal fragen. Testbar wird es erst, wenn man
+das trennt:
+
+```
+convert    wirft den Fehler      weiß nur, dass "cat/50" Unsinn ist
+main       fängt ihn auf         entscheidet, was dann passiert
+```
+
+Der Grund: **`convert` kann nicht wissen, was der Aufrufer tun will.**
+Nochmal fragen? Abbrechen? Protokollieren? Das ist Sache des Aufrufers. Die
+Funktion meldet nur: *damit kann ich nichts anfangen.*
+
+Und genau deshalb ist sie testbar. Ein Test will **nicht**, dass `convert`
+nochmal fragt — er will sehen, dass sie sich beschwert:
+
+```python
+with pytest.raises(ValueError):
+    convert("5/4")
+```
+
+Eine Funktion mit eingebauter Schleife und eingebautem `except` kann das
+nicht liefern. Sie würde im Test ewig auf eine Eingabe warten.
+
+**Faustregel:** die Berechnung wirft, der Ablauf fängt. `convert` bekommt
+kein `try` und keine Schleife — die stehen in `main`.
+
+> **Die Reihenfolge der Prüfungen entscheidet, welchen Fehler der Aufrufer
+> sieht.** Steht `if x > y: raise ValueError` vor der Division, liefert
+> `convert("1/0")` einen `ValueError` — denn `1 > 0` ist wahr, und zur
+> Division kommt es nie. Verlangt war `ZeroDivisionError`. Also die
+> Null-Prüfung zuerst.
+
+> **Zwei Fehler muss man gar nicht selbst werfen.** `int("cat")` wirft von
+> allein `ValueError`, `x / 0` von allein `ZeroDivisionError`. Ein eigenes
+> `raise` braucht nur die Regel, die **niemand außer dir** kennt — hier
+> `x > y`.
+
+### Woran man merkt, dass ein Testsatz taugt
+
+Nicht daran, dass alles grün ist. Sondern daran, was passiert, wenn man das
+Programm absichtlich kaputtmacht:
+
+**Jede eingebaute Macke darf genau einen Test rot machen** — nie null, nie
+alle.
+
+| kaputtgemacht | Ergebnis |
+|---|---|
+| `convert` gibt Text statt Zahl | 1 failed, 3 passed |
+| `gauge` lässt das `%` weg | 1 failed, 3 passed |
+| `x > y`-Prüfung entfernt | 1 failed, 3 passed |
+| Null-Prüfung entfernt | 1 failed, 3 passed |
+
+**Null rot** heißt: diese Regel wird von keinem Test bewacht.
+**Alle rot** heißt: die Tests sind nicht getrennt und der Name verrät nicht,
+wo es klemmt.
+
+> **Die eigenen `raise` und `return False` sind die Checkliste.** Jede
+> Ablehnung, die im Code steht, braucht einen Test. Dreimal an einem
+> Wochenende war genau das die Lücke: bei twttr die Großschreibung, bei
+> plates die Länge, bei fuel der zu große Zähler. Die Regel, an die man beim
+> Testen nicht denkt, ist die, die man beim Programmieren selbst eingebaut
+> hat.
+
+### Bools nicht vergleichen
+
+Gibt eine Funktion schon `True` oder `False` zurück, vergleicht man mit
+nichts:
+
+```python
+assert is_valid("CS50")          # statt == True
+assert not is_valid("CS05")      # statt == False
+```
+
+Dasselbe wie `if not solved` bei `professor.py`.
+
 ---
 
 ## Stil
@@ -1872,14 +1950,13 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 5: `plates` und `fuel` (twttr und bank sind fertig)
+- Woche 6: File I/O
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.
 
-**Problem Set 4 ist komplett** — emojize, figlet, adieu, game, professor,
-bitcoin. Damit sind **Woche 0 bis 4 durch und die Problem Sets 0 bis 4
-gelöst**.
+**Problem Set 5 ist komplett** — twttr, bank, plates, fuel. Damit sind
+**Woche 0 bis 5 durch und die Problem Sets 0 bis 5 gelöst**.
 
 Zeile für Zeile erklärt stehen alle Programme in `erklaert.md`: die vier
 Wiederholungsaufgaben, Problem Set 3, der Mitschrieb aus Woche 4 und

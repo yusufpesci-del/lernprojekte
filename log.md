@@ -626,3 +626,74 @@
   ein gutes Testset meldet genau das was kaputt ist, nicht alles
 - Noch 18 Tage bis Uebersee, tagsuber viel zu tun
 - Naechstes Mal: plates und fuel, dann ist Problem Set 5 durch
+## 08.11.2026
+- PROBLEM SET 5 IST KOMPLETT. plates und fuel geloest, damit alle vier.
+  16:00 bis 17:35. Woche 0-5 durch, Problem Sets 0-5 geloest - einen Tag
+  vor Plan
+- plates war fast geschenkt: die Fassung aus Problem Set 2 hatte schon
+  main() und ein is_valid(plate), das True/False ZURUECKGIBT. Nur die
+  Waechterzeile fehlte. Claude hat is_valid gegen 13 Faelle geprueft,
+  keine Abweichung
+- Bei den Testnamen gehangen und gefragt. Hatte aber selbst schon fuenf
+  brauchbare: test_length, test_startswith, test_endswith, test_notzero,
+  test_nopunctuation. Claude hat nur geschaerft - test_digits_at_end
+  statt test_endswith, weil die Regel nicht "endet mit" heisst (NRVOUS
+  ohne Zahl ist gueltig), sondern "WENN Ziffern kommen, dann nur am Ende"
+- Erster Entwurf von test_length enthielt is_valid("CS05") - das ist aber
+  wegen der fuehrenden Null ungueltig, nicht wegen der Laenge. Der Test
+  waere gruen geblieben, auch ohne Laengenpruefung
+- DIE PROBE FUER JEDEN TEST: wenn ich genau diese eine Regel aus dem
+  Programm entferne - faellt dann genau DIESER Test durch? Wenn nicht,
+  prueft er etwas anderes als sein Name sagt
+- Gegenprobe plates: Laengenpruefung auskommentiert -> 1 failed,
+  4 passed. Einer rot, vier gruen
+- assert is_valid("CS50") statt == True. Ein bool ist schon die Antwort,
+  wie if not solved bei professor
+- fuel war der groesste Umbau: die alte Fassung hatte GAR KEINE
+  Funktionen, alles in einer Schleife, die obendrein ihre eigenen Fehler
+  abfing
+- KERNGEDANKE DER AUFGABE: wer wirft, und wer faengt?
+  convert wirft den Fehler - sie weiss nur, dass "cat/50" Unsinn ist
+  main faengt ihn auf - sie entscheidet, was dann passiert
+  Grund: convert KANN NICHT WISSEN, was der Aufrufer tun will. Nochmal
+  fragen? Abbrechen? Protokollieren? Sache des Aufrufers
+- Und genau deshalb ist sie testbar. Ein Test will nicht, dass convert
+  nochmal fragt - er will sehen, dass sie sich beschwert. Eine Funktion
+  mit eingebauter Schleife wuerde im Test ewig auf Eingabe warten
+- Aus continue wurde raise ValueError. Zwei Fehler musste ich gar nicht
+  selbst werfen: int("cat") wirft von allein, x / 0 auch. Ein eigenes
+  raise braucht nur die Regel, die NIEMAND AUSSER MIR kennt: x > y
+- Verwechselt: ich dachte convert zerlegt nur und gibt zwei Zahlen
+  zurueck. Nein - convert macht den GANZEN Weg, "3/4" rein, 75 raus
+- DIE REIHENFOLGE DER PRUEFUNGEN entscheidet, welchen Fehler der Aufrufer
+  sieht. Mit if x > y vor der Division gibt convert("1/0") einen
+  ValueError, weil 1 > 0 wahr ist und zur Division nie kommt. Verlangt
+  war ZeroDivisionError. Also Null-Pruefung zuerst
+- gauge(percentage) musste von print auf return umgebaut werden. Einmal
+  dabei gauge(percentage) ohne print geschrieben - Ergebnis ausgerechnet
+  und weggeworfen
+- Das print habe ich aus der Schleife herausgenommen und dahinter
+  gesetzt. Claude sagt, das ist besser als sein Vorschlag: die Schleife
+  hat genau eine Aufgabe, naemlich eine brauchbare Eingabe beschaffen.
+  Die Ausgabe passiert danach, einmal
+- Bei fuel ist pytest.raises RICHTIG - anders als bei twttr gestern, wo
+  ich danach gegriffen hatte, obwohl nichts schiefgehen sollte.
+  convert("5/4") MUSS sich beschweren, der Fehler ist das gewuenschte
+  Verhalten
+- Erster Testentwurf hatte ein test_str, das dasselbe prueft wie
+  test_convert_errors - und die x > y-Regel blieb ungetestet. Claude hat
+  die Pruefung aus fuel.py entfernt: 4 passed, nichts gemerkt
+- ZUM DRITTEN MAL AN DIESEM WOCHENENDE dieselbe Luecke. Bei twttr die
+  Grossschreibung, bei plates die Laenge, bei fuel der zu grosse Zaehler.
+  MEINE EIGENEN raise UND return False SIND DIE CHECKLISTE. Die Regel,
+  an die man beim Testen nicht denkt, ist die, die man beim
+  Programmieren selbst eingebaut hat
+- Mit test_too_big dann vier Gegenproben, jede macht GENAU EINEN Test
+  rot. Das ist das Guetezeichen: null rot heisst, die Regel wird von
+  keinem Test bewacht. Alle rot heisst, die Tests sind nicht getrennt
+- Was Problem Set 5 im Ganzen war: vier alte Programme so umbauen, dass
+  man sie pruefen kann. Rechnen und Ausgeben trennen, Werfen und Fangen
+  trennen, alles Noetige IN die Funktion, Darstellung an den Rand.
+  Laeuft alles auf dasselbe hinaus: eine Funktion muss fuer sich allein
+  richtig und fuer sich allein benutzbar sein
+- Naechstes Mal: Woche 6 (File I/O)

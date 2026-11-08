@@ -696,4 +696,36 @@
   trennen, alles Noetige IN die Funktion, Darstellung an den Rand.
   Laeuft alles auf dasselbe hinaus: eine Funktion muss fuer sich allein
   richtig und fuer sich allein benutzbar sein
-- Naechstes Mal: Woche 6 (File I/O)
+- Abends noch Woche 6 angefangen (File I/O), bis Minute 30 von 92.
+  Doppelter Tag also: Problem Set 5 fertig UND die halbe naechste Woche
+- Gefragt, warum Malan erst die Listen-Fassung schreiben laesst und sie
+  dann wegwirft. Antwort: die zeigt das PROBLEM, das die Datei loest.
+  Liste dreimal starten -> jedes Mal leer. Datei dreimal starten -> die
+  Namen sammeln sich. Erst die Wand, dann die Tuer. Dasselbe Muster wie
+  Woche 3 (if-Ketten -> try/except) und Woche 4 (selbst schreiben ->
+  import)
+- Die Listen-Fassung hatte ausserdem range(3), also genau drei Namen,
+  vorher festgelegt. Die Datei kennt keine Obergrenze
+- open(name, modus) mit drei Betriebsarten: "r" lesen, "w" NEU schreiben
+  (alter Inhalt weg), "a" anhaengen. Mit "w" haette jeder Start die Datei
+  ueberschrieben und nur der letzte Name waere uebrig
+- append heisst dasselbe wie bei liste.append(x) - hinten dran. Einmal
+  fuer Listen im Speicher, einmal fuer Dateien auf der Platte. Hatte ich
+  bei adieu.py schon benutzt, war mir aber nicht mehr praesent
+- write setzt KEINEN Zeilenumbruch, den muss man selbst mitschicken:
+  f"{name}\n"
+- with open(...) as file: kein close() mehr noetig. Am Ende des Blocks
+  wird die Datei zugemacht, AUCH wenn dazwischen ein Fehler fliegt.
+  Genau dafuer ist with da
+- with kannte ich schon von with pytest.raises(TypeError) aus Woche 5 -
+  dasselbe Bauprinzip, ein Block mit besonderer Regel und Aufraeumen am
+  Ende. Jetzt weiss ich auch, was es wirklich tut
+- for line in file: eine Datei verhaelt sich wie eine Liste ihrer Zeilen,
+  man laeuft direkt darueber
+- .rstrip() noetig, weil jede Zeile ihren Zeilenumbruch mitbringt:
+  "Hermione\n". Ohne rstrip steht der in der Ausgabe und jeder Vergleich
+  schlaegt fehl
+- sorted(names, reverse=True) dreht die Reihenfolge um. Wieder ein
+  benannter Parameter mit Standardwert, wie language="alias" und indent=2
+- Noch offen in Woche 6: CSV und Bilder (PIL)
+- Naechstes Mal: zweite Haelfte Woche 6

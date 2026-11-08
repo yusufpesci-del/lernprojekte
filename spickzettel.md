@@ -1729,6 +1729,86 @@ Dasselbe wie `if not solved` bei `professor.py`.
 
 ---
 
+## Dateien lesen und schreiben (Woche 6)
+
+*(Erste Hälfte der Lektion. CSV und Bilder folgen.)*
+
+Bis Woche 5 hat **jedes** Programm alles vergessen, sobald es zu Ende war.
+Die Stückliste, der Punktestand bei `professor`, die Namen bei `adieu` —
+weg beim Schließen des Fensters.
+
+| | |
+|---|---|
+| Liste | lebt, solange das Programm läuft |
+| Datei | **überlebt** das Programm |
+
+### Öffnen, schreiben, schließen
+
+```python
+file = open("names.txt", "a")
+file.write(f"{name}\n")
+file.close()
+```
+
+Die drei Betriebsarten:
+
+| | |
+|---|---|
+| `"r"` | read — lesen (gilt auch, wenn nichts dasteht) |
+| `"w"` | write — **neu** schreiben, der alte Inhalt ist weg |
+| `"a"` | append — hinten anhängen, der alte Inhalt bleibt |
+
+*append* heißt dasselbe wie bei `liste.append(x)`: hinten dran. Einmal für
+Listen im Speicher, einmal für Dateien auf der Platte.
+
+> **Stolperstein.** `"w"` überschreibt. Wer bei jedem Programmstart einen
+> Namen anhängen will und `"w"` nimmt, hat am Ende genau **einen** Namen in
+> der Datei.
+
+> **Stolperstein.** `write` setzt **keinen** Zeilenumbruch. Den muss man
+> selbst mitschicken: `f"{name}\n"`. Sonst klebt alles in einer Zeile.
+
+### with — die Datei schließt sich von selbst
+
+```python
+with open("names.txt") as file:
+    for line in file:
+        names.append(line.rstrip())
+```
+
+Kein `close()` mehr. Am Ende des eingerückten Blocks wird die Datei
+zugemacht — **auch dann, wenn dazwischen ein Fehler fliegt.** Genau das ist
+der Grund für `with`: ein vergessenes oder durch eine Ausnahme
+übersprungenes `close()` lässt die Datei offen.
+
+`with` kennst du schon von `with pytest.raises(TypeError):`. Dasselbe
+Bauprinzip: ein Block, für den eine besondere Regel gilt, und am Ende wird
+aufgeräumt.
+
+### Eine Datei durchlaufen
+
+```python
+for line in file:
+```
+
+Eine Datei verhält sich wie eine Liste ihrer Zeilen — man läuft direkt
+darüber, ohne sie vorher irgendwohin zu kopieren.
+
+> **Stolperstein.** Jede Zeile bringt ihren Zeilenumbruch mit:
+> `"Hermione\n"`. Ohne `.rstrip()` steht der mitten in der Ausgabe, und
+> jeder Vergleich schlägt fehl — `"Hermione\n" == "Hermione"` ist `False`.
+
+### Rückwärts sortieren
+
+```python
+for name in sorted(names, reverse=True):
+```
+
+`reverse=True` dreht die Reihenfolge um. Wieder ein benannter Parameter mit
+Standardwert, wie `language="alias"` und `indent=2`.
+
+---
+
 ## Stil
 
 **Variablen nach dem Inhalt benennen, Funktionen nach der Tätigkeit.**
@@ -1950,7 +2030,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 6: File I/O
+- Woche 6 zweite Hälfte (CSV, Bilder), dann Problem Set 6
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

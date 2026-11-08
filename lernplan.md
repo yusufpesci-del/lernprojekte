@@ -59,8 +59,8 @@ September schon einmal funktioniert.
 ## Phase 1 — CS50P fertig (Oktober bis Mitte Dezember)
 
 Eine CS50P-Woche pro Kalenderwoche. **Stand 08.11.: Woche 0–5 durch,
-Problem Sets 0–5 komplett.** Sechs Problem Sets, über fünfzig eigene
-Programme und Testdateien.
+Problem Sets 0–5 komplett, Woche 6 zur Hälfte angeschaut.** Sechs Problem
+Sets, über fünfzig eigene Programme und Testdateien.
 
 Zwei Wochen im Takt (11.10. und 17.10., die zweite einen Tag früher),
 dann eine Unterbrechung: vom 25. bis 27.10. Belgien und Remote-Arbeit für
@@ -73,7 +73,7 @@ INDUZEIT, drei Tage ohne CS50P. Weiter ab Mittwochabend, 28.10.
 | ~~19.–25.10.~~ | ~~Woche 4 (Libraries)~~ ✅ · Problem Set 4 **3 von 6** (emojize, figlet, adieu) |
 | ~~26.10.–01.11.~~ | Mo–Mi Belgien. ~~Problem Set 4 (game, professor, bitcoin)~~ ✅ **komplett am 31.10.** |
 | ~~02.–08.11.~~ | ~~Woche 5 (Unit Tests)~~ ✅ 02.11. · Di–Fr Schulung 9–17 Uhr · ~~Problem Set 5~~ ✅ **komplett am 08.11.** |
-| 09.–15.11. | Woche 6 (File I/O) + Problem Set 6 |
+| 09.–15.11. | Woche 6 (File I/O) — **erste Hälfte schon am 08.11.** — + Problem Set 6 |
 | 16.–22.11. | Woche 7 (Regular Expressions) + Problem Set 7 |
 | 23.–29.11. | Woche 8 (Object-Oriented Programming) + Problem Set 8 |
 | 30.11.–06.12. | Woche 9 (Et Cetera) + Problem Set 9 |

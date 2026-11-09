@@ -47,5 +47,8 @@ names = []
 with open("names.txt") as file:
      for line in file:
          names.append(line.rstrip())
-for name in sorted(names, reverse=True):
+
+for name in sorted(names, reverse=True): # das reverse=true dient dazu dass man die sortierung andersherum macht
    print(f"hello, {name}")
+
+   #append= anhängen

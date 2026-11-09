@@ -8,6 +8,61 @@ Die lohnen sich am meisten.
 
 ---
 
+## Inhalt
+
+Das Ding ist über zweitausend Zeilen lang. **Nicht scrollen — suchen:**
+`Strg + F`, Begriff eintippen, Enter. Oder hier klicken.
+
+**Die Sprache**
+
+| | |
+|---|---|
+| [Das Grundgerüst](#das-grundgerüst) | wie jedes kleine Programm aufgebaut ist |
+| [Variablen](#variablen) | Namen vergeben, Namen überschreiben |
+| [Datentypen](#datentypen) | `str`, `int`, `float`, `bool`, umwandeln |
+| [Text bearbeiten](#text-bearbeiten) | `strip`, `split`, `title`, `in`, Zeichen zählen |
+| [Ausgabe formatieren](#ausgabe-formatieren) | f-Strings, `:.2f`, `:,`, `end=`, `sep=` |
+| [Bedingungen](#bedingungen) | `if`/`elif`/`else`, `and`/`or`/`not`, Ketten |
+| [Rechnen](#rechnen) | `//`, `%`, `round`, `abs` |
+| [Schleifen](#schleifen) | `while`, `for`, `range`, `break`, `continue` |
+| [Listen](#listen) | anlegen, anhängen, durchlaufen, `sorted`, `len` |
+| [Dictionaries](#dictionaries) | Schlüssel und Wert, `.get`, verschachteln |
+| [Funktionen](#funktionen) | `def`, `return`, Parameter, Shadowing |
+
+**Wenn etwas schiefgeht**
+
+| | |
+|---|---|
+| [Fehler lesen](#fehler-lesen) | welche Meldung heißt was |
+| [Fehler abfangen (Woche 3)](#fehler-abfangen-woche-3) | `try`/`except`, `raise`, `pass` |
+
+**Was danach kam**
+
+| | |
+|---|---|
+| [Bibliotheken benutzen (Woche 4)](#bibliotheken-benutzen-woche-4) | `import`, `pip`, `sys.argv`, `requests`, eigene Module |
+| [Unit Tests (Woche 5)](#unit-tests-woche-5) | `assert`, `pytest`, `pytest.raises` |
+| [Dateien lesen und schreiben (Woche 6)](#dateien-lesen-und-schreiben-woche-6) | `open`, `with`, `.rstrip`, CSV, `lambda` |
+
+**Werkzeuge**
+
+| | |
+|---|---|
+| [Stil](#stil) | wie Code aussehen soll, damit man ihn morgen noch liest |
+| [Terminal (PowerShell)](#terminal-powershell) | `cd`, `ls`, `mkdir`, `python` |
+| [Git](#git) | `add`, `commit`, `push`, `status -uall` |
+| [VS Code](#vs-code) | alle Tastenkürzel, Zeichen im Explorer |
+
+**Für mich**
+
+| | |
+|---|---|
+| [Nachschlagen statt auswendig lernen](#nachschlagen-statt-auswendig-lernen) | was man wissen muss und was man googelt |
+| [Arbeitsweise, die sich bewährt hat](#arbeitsweise-die-sich-bewährt-hat) | was bei mir funktioniert, mit Beweis |
+| [Noch offen](#noch-offen) | wo ich gerade stehe |
+
+---
+
 ## Das Grundgerüst
 
 Fast jedes kleine Programm hat dieselbe Form:
@@ -1731,7 +1786,7 @@ Dasselbe wie `if not solved` bei `professor.py`.
 
 ## Dateien lesen und schreiben (Woche 6)
 
-*(Erste Hälfte der Lektion. CSV und Bilder folgen.)*
+*(Bilder mit PIL fehlen noch.)*
 
 Bis Woche 5 hat **jedes** Programm alles vergessen, sobald es zu Ende war.
 Die Stückliste, der Punktestand bei `professor`, die Namen bei `adieu` —
@@ -1806,6 +1861,165 @@ for name in sorted(names, reverse=True):
 
 `reverse=True` dreht die Reihenfolge um. Wieder ein benannter Parameter mit
 Standardwert, wie `language="alias"` und `indent=2`.
+
+### Sortieren nach einem Kriterium — `key=`
+
+`sorted(names)` ist klar: Text, alphabetisch. Aber wonach soll Python eine
+Liste aus **Dictionaries** sortieren? Nach dem Namen? Nach dem Haus? Es kann
+es nicht wissen — also muss man es sagen.
+
+`key=` nimmt eine **Funktion**. `sorted` ruft sie für jedes Element einmal
+auf und sortiert nach dem, was zurückkommt:
+
+```python
+def get_name(student):
+    return student["name"]
+
+for student in sorted(students, key=get_name):
+```
+
+Ohne Klammern hinter `get_name`. Nicht das *Ergebnis* wird übergeben,
+sondern die Funktion selbst — `sorted` ruft sie schon noch auf, einmal pro
+Element.
+
+> **Stolperstein.** `key=get_name()` ist falsch. Die Klammern heißen
+> "jetzt ausführen", und ausgeführt wird sie hier nicht — sie wird
+> *abgegeben*.
+
+### `lambda` — eine Funktion ohne Namen
+
+```python
+for student in sorted(students, key=lambda student: student["name"]):
+```
+
+Dasselbe wie oben, in einer Zeile. Links von `:` der Parameter, rechts das,
+was zurückkommt. Kein `def`, kein `return`, kein Name.
+
+| | |
+|---|---|
+| `def get_name(student): return student["name"]` | eine Funktion mit Namen, drei Zeilen weiter oben |
+| `lambda student: student["name"]` | dieselbe Funktion, direkt an der Stelle, wo sie gebraucht wird |
+
+Wofür das gut ist: `get_name` wird genau **einmal** benutzt, und zwar genau
+hier. Eine Funktion, die nur an einer Stelle gebraucht wird, braucht keinen
+Namen — der Name wäre nur eine zweite Stelle, an der man nachschauen muss.
+
+Immer `return`-Charakter: ein `lambda` gibt zurück, es druckt nicht. Es
+passt also in `key=`, `max()`, `min()`, `sorted()` — überall da, wo etwas
+anderes die Funktion aufruft und auf das Ergebnis wartet.
+
+---
+
+### CSV — eine Tabelle als Textdatei
+
+CSV heißt *comma-separated values*: eine Zeile pro Datensatz, Kommas
+zwischen den Spalten. Erste Zeile oft die **Kopfzeile** mit den
+Spaltennamen.
+
+```
+name,home
+Harry,"Number Four, Privet Drive"
+Ron,The Burrow
+```
+
+| | |
+|---|---|
+| `.xlsx` / `.xlsm` | Excels eigenes Format. Zip-Archiv voller XML. Enthält Formeln, Formate, Farben, Makros. Nur Excel versteht es ganz |
+| `.csv` | reiner Text, mit Notepad lesbar. **Keine** Formeln, keine Formate, kein zweites Tabellenblatt. Nur Werte |
+
+Deshalb ist CSV das Format, in dem Programme Daten austauschen: jede
+Sprache kann Text lesen. Excel öffnet es auch — aber was man in Excel an
+Formeln und Formaten baut, ist beim Speichern als CSV weg.
+
+### Warum es ein `csv`-Modul gibt
+
+Die erste Fassung im Video kommt noch ohne aus:
+
+```python
+name, home = line.rstrip().split(",")
+```
+
+Das funktioniert, solange kein Wert selbst ein Komma enthält. Genau daran
+ist es dann gescheitert — Harrys Adresse *ist* "Number Four, Privet Drive".
+Ein Komma mitten im Wert.
+
+Die Lösung in CSV: Werte mit Komma kommen in Anführungszeichen. Nur
+versteht `split(",")` das nicht — der zählt stumpf Kommas. Das Modul
+versteht es.
+
+```python
+import csv
+
+with open("students.csv") as file:
+    reader = csv.reader(file)
+    for name, home in reader:
+        ...
+```
+
+Wieder dasselbe Muster wie in Woche 3 (`if`-Ketten → `try`/`except`) und
+Woche 4 (selbst schreiben → `import`): **erst die Wand, dann die Tür.**
+Malan lässt die Fassung schreiben, die das Problem *hat*, damit man sieht,
+wofür das Werkzeug gut ist.
+
+> **Stolperstein.** `ValueError: too many values to unpack (expected 2, got 3)`
+> bei `for name, home in reader:` zeigte auf die Python-Zeile — der Fehler
+> steckte aber in der **CSV-Datei**: ein Komma im Wert, ohne
+> Anführungszeichen. Lehre: wenn eine Datei gelesen wird, kann der Fehler in
+> der Datei liegen, nicht im Code. Erst nachzählen, was wirklich ankommt
+> (`print(row)` in der Schleife), dann suchen.
+
+### `csv.reader` und `csv.DictReader`
+
+| | Ergebnis pro Zeile | Zugriff über |
+|---|---|---|
+| `csv.reader(file)` | eine **Liste**: `["Harry", "Number Four, Privet Drive"]` | Position — `row[0]`, `row[1]` |
+| `csv.DictReader(file)` | ein **Dictionary**: `{"name": "Harry", "home": "..."}` | Spaltenname — `row["name"]` |
+
+`DictReader` nimmt die erste Zeile der Datei als Kopfzeile und baut daraus
+die Schlüssel. Deshalb muss `name,home` oben in der Datei stehen.
+
+```python
+with open("students.csv") as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        students.append({"name": row["name"], "home": row["home"]})
+```
+
+Warum `DictReader` besser ist: `row["home"]` hält, auch wenn jemand eine
+Spalte dazwischenschiebt. `row[1]` zeigt dann plötzlich auf etwas anderes —
+und das Programm stürzt nicht ab, es rechnet **falsch**. Das ist der
+schlimmere Fehler.
+
+> **Stolperstein.** Kopfzeile in der Datei **und** `csv.reader` im Code
+> heißt: die Kopfzeile kommt als Datensatz mit durch, die Ausgabe enthält
+> `name is from home`. Entweder `DictReader` nehmen oder die Kopfzeile
+> überspringen.
+
+### Anführungszeichen im f-String
+
+```python
+print(f"{student['name']} is from {student['home']}")
+```
+
+Außen `"`, also innen `'`. Dasselbe Zeichen zweimal würde den String in der
+Mitte beenden. Keine Regel über innen und außen — nur: **zwei
+verschiedene.**
+
+### Deutsche CSV-Dateien aus Excel
+
+Zwei Dinge, die in der Arbeit garantiert kommen:
+
+```python
+reader = csv.reader(file, delimiter=";")
+with open("daten.csv", encoding="cp1252") as file:
+```
+
+| | |
+|---|---|
+| `delimiter=";"` | deutsches Excel trennt mit **Semikolon**, weil das Komma hier das Dezimalzeichen ist |
+| `encoding="cp1252"` | Windows-Excel schreibt kein UTF-8. Ohne das werden Umlaute zu Kauderwelsch oder es fliegt ein `UnicodeDecodeError` |
+
+Erst `encoding="utf-8"` versuchen, bei Fehler `cp1252`.
 
 ---
 
@@ -1963,13 +2177,79 @@ git remote add origin https://github.com/yusufpesci-del/lernprojekte.git
 
 ## VS Code
 
+**Deutsche Tastatur.** Auf englischen Tastaturen heißen dieselben Kürzel
+anders (`Strg + Ö` ist dort `Ctrl + ~`, `Strg + #` ist `Ctrl + /`) — in
+Anleitungen im Netz steht meist die englische Fassung.
+
+### Suchen und springen
+
 | Kürzel | Wirkung |
 |---|---|
-| Strg + Ö | Terminal auf/zu |
+| **Strg + F** | **in dieser Datei suchen** |
+| Enter / Umschalt + Enter | nächster / voriger Treffer |
+| Esc | Suchleiste zu |
+| Strg + H | suchen **und ersetzen** |
+| Strg + Umschalt + F | in **allen** Dateien des Ordners suchen |
+| Strg + G | zu einer Zeilennummer springen |
+| Strg + Pos1 / Strg + Ende | Anfang / Ende der Datei |
+
+### Kommentieren
+
+| Kürzel | Wirkung |
+|---|---|
+| **Strg + #** | **markierte Zeilen aus- und wieder einkommentieren** |
+| Umschalt + Alt + A | Block-Kommentar `"""…"""` drumherum |
+
+Zeilen vorher markieren — mit der Maus ziehen oder `Umschalt + ↓`. Das
+Kürzel ist ein Schalter: einmal setzt die `#`, nochmal nimmt sie weg. Ohne
+Markierung gilt es für die Zeile, in der die Schreibmarke steht.
+
+### Bearbeiten
+
+| Kürzel | Wirkung |
+|---|---|
 | Strg + S | speichern |
+| Strg + Z / Strg + Y | zurück / wieder vor |
+| Alt + ↑ / ↓ | Zeile nach oben / unten verschieben |
+| Umschalt + Alt + ↑ / ↓ | Zeile verdoppeln |
+| Strg + Umschalt + K | Zeile löschen |
+| Tab / Umschalt + Tab | markierte Zeilen ein- / ausrücken |
+| Strg + D | **nächstes** gleiches Wort dazu markieren |
+| Strg + Umschalt + L | **alle** gleichen Wörter markieren |
+| Alt + Klick | zweite Schreibmarke setzen |
+| F2 | einen Namen überall umbenennen |
+
+`Strg + D` ist das praktischste davon: Wort anklicken, dann so oft `Strg + D`
+wie es Stellen gibt, dann einmal tippen — alle ändern sich gleichzeitig.
+Für ein Umbenennen in der ganzen Datei ist `F2` sicherer, weil es nur
+echte Variablennamen trifft und nicht denselben Text in einem String.
+
+### Dateien und Fenster
+
+| Kürzel | Wirkung |
+|---|---|
+| Strg + P | Datei per Namen öffnen |
+| Strg + Umschalt + P | Befehlspalette |
 | Strg + N | neue Datei |
-| Strg + P | Datei per Namen suchen |
-| Strg + Umschalt + Ö | zusätzliches Terminal |
+| Strg + W | Reiter schließen |
+| Strg + Ö | Terminal auf / zu |
+| Strg + Umschalt + Ö | zweites Terminal daneben |
+| Strg + B | Seitenleiste auf / zu |
+| Strg + Umschalt + E | in die Dateiliste springen |
+
+In der Dateiliste links: **F2** benennt eine Datei um, **Entf** löscht sie.
+
+### Befehlspalette — `Strg + Umschalt + P`
+
+Für alles, was kein Kürzel hat. Tippen genügt, der Rest wird gefunden.
+
+| Eintrag | Wofür |
+|---|---|
+| `Convert Indentation to Spaces` | wenn Tabs und Leerzeichen gemischt sind und `IndentationError` kommt |
+| `Format Document` | Einrückung und Abstände aufräumen |
+| `Python: Select Interpreter` | wenn das falsche Python läuft |
+
+### Die Zeichen am Rand
 
 **Punkt im Reiter** = nicht gespeichert → Strg+S
 **M im Explorer** = geändert, aber nicht committet → `git commit`
@@ -2030,7 +2310,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 6 zweite Hälfte (CSV, Bilder), dann Problem Set 6
+- Woche 6: der Rest des Videos (Bilder mit PIL), dann Problem Set 6
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

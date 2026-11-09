@@ -20,12 +20,13 @@ kleine Programme, Notizen.
 ## Stand
 
 **CS50P Woche 0 bis 5 durch, Problem Set 0 bis 5 vollständig gelöst.**
-Woche 6 (File I/O) zur Hälfte angeschaut.
+Woche 6 (File I/O) zu vier Fünfteln angeschaut.
 
 Gelernt bisher: Variablen und Datentypen, Bedingungen, Schleifen, Listen,
 Dictionaries, Funktionen, Fehler abfangen mit `try`/`except`,
 fremde Bibliotheken einbinden (`import`, `pip`), Dienste im Netz abfragen,
-eigene Module, Unit Tests mit `pytest`, Fehlermeldungen lesen, Git.
+eigene Module, Unit Tests mit `pytest`, Dateien lesen und schreiben,
+CSV-Tabellen verarbeiten, Fehlermeldungen lesen, Git.
 
 Ab Problem Set 3 heißen die Variablen **englisch**. Das Ziel ist der
 US-Arbeitsmarkt, die Dokumentation ist englisch — und zwei Sprachen in

@@ -58,9 +58,10 @@ September schon einmal funktioniert.
 
 ## Phase 1 — CS50P fertig (Oktober bis Mitte Dezember)
 
-Eine CS50P-Woche pro Kalenderwoche. **Stand 08.11.: Woche 0–5 durch,
-Problem Sets 0–5 komplett, Woche 6 zur Hälfte angeschaut.** Sechs Problem
-Sets, über fünfzig eigene Programme und Testdateien.
+Eine CS50P-Woche pro Kalenderwoche. **Stand 09.11.: Woche 0–5 durch,
+Problem Sets 0–5 komplett, Woche 6 zu vier Fünfteln angeschaut** — offen
+ist nur noch PIL. Sechs Problem Sets, über fünfzig eigene Programme und
+Testdateien.
 
 Zwei Wochen im Takt (11.10. und 17.10., die zweite einen Tag früher),
 dann eine Unterbrechung: vom 25. bis 27.10. Belgien und Remote-Arbeit für

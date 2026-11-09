@@ -729,3 +729,62 @@
   benannter Parameter mit Standardwert, wie language="alias" und indent=2
 - Noch offen in Woche 6: CSV und Bilder (PIL)
 - Naechstes Mal: zweite Haelfte Woche 6
+## 09.11.2026
+- Woche 6 weiter, von Minute 30 bis 1:13:52 von 1:32. Damit ist die
+  Lektion zu vier Fuenfteln durch. Offen bleibt nur noch PIL (Bilder)
+- Nebenfrage: Excel kennt auch csv - ist das dasselbe wie xlsm? Nein.
+  .xlsx/.xlsm ist Excels eigenes Format, ein Zip voller XML, mit Formeln,
+  Formaten und Makros. .csv ist reiner Text, mit Notepad lesbar, OHNE
+  Formeln, Formate und zweites Blatt. Deshalb tauschen Programme Daten
+  als CSV aus: Text kann jede Sprache lesen. Und deshalb ist beim
+  Speichern als CSV alles weg, was in Excel gebaut war
+- Der Spickzettel ist mir zu lang geworden - ich habe rstrip gesucht und
+  nicht gefunden. Gefragt, ob man ihn in zwei oder drei Dateien splitten
+  soll. Antwort: nein, das macht das Suchen schlimmer, weil man dann erst
+  raten muss, in welcher Datei es steht. Stattdessen Strg+F und ein
+  Inhaltsverzeichnis. Beides steht jetzt drin
+- Mir die VS-Code-Kuerzel geben lassen und in den Spickzettel aufnehmen.
+  Das wichtigste davon: Strg+# kommentiert markierte Zeilen aus UND
+  wieder ein. Genau das, was ich seit Wochen von Hand mit # gemacht habe
+- students.py wurde die laengste Datei bisher: acht Fassungen, jede
+  auskommentiert stehengelassen. Erst row[0]/row[1], dann Entpacken in
+  name/house, dann Dictionaries, dann sortieren, dann csv, dann
+  DictReader. Die alten Fassungen stehenzulassen war die richtige
+  Entscheidung - man sieht die ganze Entwicklung in einer Datei
+- DER FEHLER DES TAGES: ValueError: too many values to unpack (expected
+  2, got 3). Die Meldung zeigte auf Zeile 84 in students.py, der Fehler
+  steckte aber in students.csv. Harrys Adresse IST "Number Four, Privet
+  Drive" - ein Komma mitten im Wert. csv.reader zaehlte deshalb drei
+  Felder. Geloest mit Anfuehrungszeichen um den Wert
+- Lehre daraus: wenn ein Programm eine Datei liest, kann der Fehler in
+  der DATEI liegen und nicht im Code. Die Zeilennummer zeigt, wo es
+  aufgefallen ist, nicht wo es herkommt. Erst nachzaehlen lassen, was
+  wirklich ankommt (print(row) in der Schleife), dann suchen
+- Und genau das ist der Grund, warum es ein csv-Modul gibt. Erst hat
+  Malan line.rstrip().split(",") schreiben lassen - das zaehlt stumpf
+  Kommas und kann ein Komma im Wert nicht von einem Trennzeichen
+  unterscheiden. Dritte Mal dasselbe Muster: erst die Wand, dann die
+  Tuer. Woche 3 if-Ketten -> try/except, Woche 4 selbst schreiben ->
+  import, Woche 6 split -> csv
+- key= nimmt eine FUNKTION, keinen Wert. sorted ruft sie fuer jedes
+  Element einmal auf und sortiert nach dem, was zurueckkommt. Ohne
+  Klammern uebergeben: key=get_name, nicht key=get_name()
+- lambda ist dieselbe Funktion ohne Namen, direkt an der Stelle, wo sie
+  gebraucht wird: key=lambda student: student["name"]. Links vom
+  Doppelpunkt der Parameter, rechts das, was zurueckkommt. Sinnvoll,
+  weil get_name genau einmal und genau dort gebraucht wird - ein Name
+  waere nur eine zweite Stelle zum Nachschauen
+- csv.reader gibt pro Zeile eine LISTE, Zugriff ueber die Position
+  (row[0]). csv.DictReader gibt ein DICTIONARY, Zugriff ueber den
+  Spaltennamen (row["name"]), gebaut aus der Kopfzeile der Datei
+- Warum DictReader besser ist: row["home"] haelt auch, wenn jemand eine
+  Spalte dazwischenschiebt. row[1] zeigt dann auf etwas anderes - und
+  das Programm stuerzt nicht ab, es rechnet FALSCH. Das ist der
+  schlimmere Fehler
+- f"{student['name']}" - aussen " und innen ', weil dasselbe Zeichen
+  zweimal den String in der Mitte beenden wuerde. Keine Regel ueber
+  innen und aussen, nur: zwei verschiedene
+- Rainbow CSV wollte sich installieren. Faerbt die Spalten einer
+  CSV-Datei ein, damit man sie auseinanderhalten kann. Harmlos und
+  nuetzlich, aber nichts, was man braucht
+- Naechstes Mal: Rest von Woche 6 (PIL, Bilder), danach Problem Set 6

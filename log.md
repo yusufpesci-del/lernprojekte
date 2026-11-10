@@ -788,3 +788,49 @@
   CSV-Datei ein, damit man sie auseinanderhalten kann. Harmlos und
   nuetzlich, aber nichts, was man braucht
 - Naechstes Mal: Rest von Woche 6 (PIL, Bilder), danach Problem Set 6
+## 10.11.2026
+- WOCHE 6 IST DURCH. Video zu Ende geschaut, 1:32 von 1:32. Damit sind
+  Woche 0 bis 6 angeschaut und die Problem Sets 0 bis 5 geloest
+- Ehrlich geblieben: nach dem Video Schluss, weil ich fuer die Arbeit
+  morgen noch was vorbereiten musste. Steht so auch im Lernplan - Mo-Do
+  ist "abends aufnehmen", Problem Sets sind fuers Wochenende. Kein
+  Rueckstand, sondern Plan
+- csv.writer und csv.DictWriter als Gegenstueck zu den Lesern. writerow
+  setzt Kommas und Anfuehrungszeichen selbst - genau die Arbeit, die man
+  von Hand falsch macht. Bei DictWriter muss man fieldnames mitgeben,
+  weil es beim Schreiben keine Kopfzeile gibt, aus der sich die
+  Reihenfolge ablesen liesse
+- Vier Namen, zwei Paare - das ist die ganze Logik von Woche 6:
+  reader/writer ueber Positionen mit Listen, DictReader/DictWriter ueber
+  Spaltennamen mit Dictionaries
+- PIL: heisst beim Installieren pillow, beim Importieren PIL. Gross
+  geschrieben. Einer der wenigen Faelle, wo die beiden Namen verschieden
+  sind
+- images[0].save(...) - das ERSTE Bild speichert sich selbst und bekommt
+  die anderen als Anhang mit. Ungewohnt, aber so ist PIL gebaut: ein GIF
+  ist ein Bild mit weiteren Bildern dran. loop=0 heisst endlos, nicht
+  null Durchlaeufe
+- ZWEI FEHLER BEI costumes.py, beide NICHT im Code:
+  1. python costumes.py ohne Dateinamen -> sys.argv[1:] leer -> Schleife
+     laeuft nie -> images bleibt [] -> images[0] gibt IndexError. Das
+     Programm verhaelt sich richtig, die Eingabe fehlte
+  2. Mit Dateinamen -> FileNotFoundError: costume1.gif gibt es nicht.
+     Malan hat die Katzenbilder aus dem CS50-Downloadpaket, im Video
+     sieht man das nie
+- Das ist das ZWEITE Mal dieselbe Sache - bei itunes.py in Woche 4 war
+  es die Textdatei. Regel: wenn ein Programm eine Datei liest, die ich
+  nie angelegt habe, fehlt eine DATEI, keine Codezeile. Der
+  FileNotFoundError nennt sogar den gesuchten Namen
+- Zwei eigene Bilder gleicher Groesse tun es genauso. Mache ich, wenn
+  ich an der PIL-Aufgabe von Problem Set 6 sitze
+- erklaert.md hat jetzt Teil 7: der ganze Woche-6-Mitschrieb am Stueck -
+  names.py in sieben Fassungen, students.py in zehn, costumes.py
+- Rueckblick auf die Woche: dreimal dasselbe Muster gesehen. Erst die
+  Wand, dann die Tuer. Woche 3 if-Ketten -> try/except, Woche 4 selbst
+  schreiben -> import, Woche 6 split(",") -> csv-Modul. Deshalb lasse
+  ich die Zwischenfassungen auskommentiert stehen statt sie zu loeschen
+- Und die eigentliche Neuerung: bis Woche 5 hat jedes Programm alles
+  vergessen, sobald es zu Ende war. Ab jetzt nicht mehr. Genau das
+  braucht das FM-Auslegungstool spaeter, wenn es ein Projekt speichern
+  soll
+- Naechstes Mal: Problem Set 6 (vier Aufgaben, eine davon mit PIL)

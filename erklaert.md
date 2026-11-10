@@ -1,6 +1,6 @@
 # Mein Code, Zeile für Zeile
 
-Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
+Mein eigener Code, kommentiert zum Nachlesen:
 
 | Teil | Inhalt |
 |---|---|
@@ -10,6 +10,7 @@ Mein eigener Code, kommentiert zum Nachlesen. Zwei Teile:
 | **Teil 4** | Problem Set 4 — alle sechs Aufgaben (Woche 4) |
 | **Teil 5** | Woche 5 — Mitschrieb aus der Vorlesung (Unit Tests) |
 | **Teil 6** | Problem Set 5 — Tests für meine alten Programme |
+| **Teil 7** | Woche 6 — Mitschrieb aus der Vorlesung (Dateien) |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -2017,3 +2018,510 @@ deshalb deckt er auf, wo eine Funktion heimlich von ihrer Umgebung abhängt.
 
 Dass testbarer Code und gut gebauter Code dasselbe sind, ist nicht
 Python-Wissen. Das gilt in jeder Sprache.
+
+---
+
+# Teil 7 — Woche 6, Mitschrieb (Dateien)
+
+Drei Dateien, und in zweien davon stehen alle Zwischenfassungen
+auskommentiert untereinander. Das sieht nach Unordnung aus, ist aber die
+eigentliche Lektion: Malan baut jedes Mal erst die Fassung, die ein
+**Problem** hat, und erst danach das Werkzeug, das es löst. Wer nur die
+letzte Fassung sieht, weiß nicht, wofür sie gut ist.
+
+Bis Woche 5 hat **jedes** Programm alles vergessen, sobald es zu Ende war.
+Das ist die Wand, gegen die Woche 6 läuft.
+
+---
+
+## names.py — von der Liste zur Datei
+
+**Fassung 1: die Liste.** Das ist die Wand.
+
+```python
+names = []
+
+for _ in range(3):
+    names.append(input("What's your name? "))
+
+for name in sorted(names):
+    print(f"hello, {name}")
+```
+
+```python
+# for _ in range(3):
+#     ^
+#     Der Unterstrich ist ein Variablenname wie jeder andere. Man nimmt
+#     ihn, wenn man den Wert NICHT braucht - hier interessiert nur, dass
+#     dreimal durchlaufen wird, nicht die Nummer des Durchlaufs.
+#     "_" sagt dem Leser: ich weiss, dass hier etwas ankommt, und ich
+#     benutze es absichtlich nicht.
+```
+
+Zwei Probleme, die man erst sieht, wenn man das Programm zweimal startet:
+
+| | |
+|---|---|
+| `range(3)` | genau drei Namen, vorher festgelegt |
+| die Liste | beim Beenden weg. Dreimal starten = dreimal von vorn |
+
+**Fassung 2: die Datei.** Das ist die Tür.
+
+```python
+name = input("What's your name? ")
+
+file = open("names.txt", "a")
+file.write(f"{name}\n")
+file.close()
+```
+
+```python
+# open("names.txt", "a")
+#                    ^
+#   "r"  read   - lesen
+#   "w"  write  - NEU schreiben, der alte Inhalt ist weg
+#   "a"  append - hinten anhaengen, der alte Inhalt bleibt
+#
+#   Mit "w" haette jeder Start die Datei ueberschrieben und am Ende
+#   stuende genau EIN Name darin - der letzte.
+#
+#   append heisst dasselbe wie bei liste.append(x): hinten dran.
+#   Einmal fuer Listen im Speicher, einmal fuer Dateien auf der Platte.
+
+# file.write(f"{name}\n")
+#                     ^^
+#   write setzt KEINEN Zeilenumbruch. Ohne das \n klebt alles in einer
+#   Zeile aneinander: HermioneHarryRon
+
+# file.close()
+#   Muss sein. Vergisst man es, kann es passieren, dass das Geschriebene
+#   gar nicht auf der Platte ankommt.
+```
+
+**Fassung 3: `with`.** Dasselbe, ohne `close()`.
+
+```python
+name = input("What's your name? ")
+
+with open("names.txt", "a") as file:
+    file.write(f"{name}\n")
+```
+
+```python
+# with open(...) as file:
+#   Am Ende des eingerueckten Blocks wird die Datei zugemacht - AUCH
+#   dann, wenn dazwischen ein Fehler fliegt. Genau dafuer ist with da:
+#   ein vergessenes oder durch eine Ausnahme uebersprungenes close()
+#   laesst die Datei offen.
+#
+#   with kannte ich schon aus Woche 5:
+#       with pytest.raises(TypeError):
+#   Dasselbe Bauprinzip - ein Block, fuer den eine besondere Regel gilt,
+#   und am Ende wird aufgeraeumt.
+```
+
+**Fassung 4 und 5: zwei Arten zu lesen.**
+
+```python
+# Fassung 4
+with open("names.txt", "r") as file:
+    lines = file.readlines()
+
+for line in lines:
+    print("hello,", line.rstrip())
+```
+
+```python
+# Fassung 5
+with open("names.txt", "r") as file:
+    for line in file:
+        print("hello,", line.rstrip())
+```
+
+```python
+# readlines() holt ALLE Zeilen auf einmal in eine Liste.
+# for line in file: nimmt eine Zeile nach der anderen.
+#
+# Bei acht Namen egal. Bei einer Datei mit einer Million Zeilen nicht:
+# readlines() legt alles gleichzeitig in den Speicher, die Schleife
+# nicht. Deshalb ist Fassung 5 die, die man nimmt.
+
+# .rstrip()
+#   Jede Zeile bringt ihren Zeilenumbruch MIT: "Hermione\n".
+#   Ohne rstrip steht der in der Ausgabe - und jeder Vergleich geht
+#   schief: "Hermione\n" == "Hermione" ist False.
+```
+
+**Fassung 6: beides zusammen, sortiert.**
+
+```python
+names = []
+
+with open("names.txt") as file:
+    for line in file:
+        names.append(line.rstrip())
+
+for name in sorted(names, reverse=True):
+    print(f"hello, {name}")
+```
+
+```python
+# Warum erst sammeln und dann sortieren?
+# Sortieren geht nur, wenn ALLES da ist. Beim zeilenweisen Lesen weiss
+# man bei Zeile 1 noch nicht, was in Zeile 8 steht. Also: erst die
+# ganze Datei in eine Liste, dann sorted.
+#
+# "r" fehlt hier absichtlich - Lesen ist die Grundeinstellung.
+
+# reverse=True
+#   dreht die Reihenfolge um. Wieder ein benannter Parameter mit
+#   Standardwert, wie language="alias" bei emojize und indent=2 bei
+#   json.dumps. Drittes Mal dasselbe Muster.
+```
+
+**Die kompakte Fassung**, die Malan noch zeigt:
+
+```python
+with open("names.txt") as file:
+    for line in sorted(file):
+        print("hello,", line.rstrip())
+```
+
+`sorted(file)` sortiert die Zeilen direkt — ohne Zwischenliste. Kürzer,
+aber nicht besser: die Zeilenumbrüche sind beim Sortieren noch dran, und
+`line.rstrip()` muss trotzdem sein.
+
+---
+
+## students.py — von `split` zu `DictReader`
+
+Dieselbe Treppe nochmal, diesmal mit Tabellen statt einzelnen Namen.
+
+**Fassung 1: nach Position.**
+
+```python
+with open("students.csv") as file:
+    for line in file:
+        row = line.rstrip().split(",")
+        print(f"{row[0]} is in {row[1]}")
+```
+
+**Fassung 2: entpacken.**
+
+```python
+name, house = line.rstrip().split(",")
+```
+
+```python
+# Zwei Namen links, eine Liste mit zwei Teilen rechts: Python verteilt.
+# Kenne ich aus Woche 3, outdated.py:
+#       month, day, year = date.split("/")
+#
+# row[0] und row[1] sind Positionen, bei denen man nachzaehlen muss.
+# name und house sagen, was drinsteht.
+```
+
+**Fassung 3 bis 5: Dictionaries statt Text.**
+
+```python
+students = []
+
+with open("students.csv") as file:
+    for line in file:
+        name, house = line.rstrip().split(",")
+        student = {"name": name, "house": house}
+        students.append(student)
+
+for student in students:
+    print(f"{student['name']} is in {student['house']}")
+```
+
+```python
+# Warum nicht einfach Text sammeln?
+#   students.append(f"{name} is in {house}")
+# Dann steht in der Liste ein fertiger SATZ - und nach dem Namen
+# sortieren geht nicht mehr, weil "Harry is in Gryffindor" ein einziger
+# Brocken ist. Als Dictionary bleiben Name und Haus getrennt.
+
+# Eine Liste von Dictionaries ist die normale Form fuer Tabellendaten:
+#   aussen die Liste = die Zeilen
+#   innen das Dict    = die Spalten einer Zeile
+
+# print(f"{student['name']} is in {student['house']}")
+#                        ^^            ^^
+#   Aussen ", also innen '. Dasselbe Zeichen zweimal wuerde den String
+#   in der Mitte beenden. Keine Regel ueber innen und aussen - nur:
+#   zwei VERSCHIEDENE.
+```
+
+**Fassung 6: sortieren mit eigener Funktion.**
+
+```python
+def get_name(student):
+    return student["name"]
+
+for student in sorted(students, key=get_name):
+    print(f"{student['name']} is in {student['house']}")
+```
+
+```python
+# sorted(names) ist klar: Text, alphabetisch. Aber wonach soll Python
+# eine Liste aus DICTIONARIES sortieren? Nach Name? Nach Haus? Es kann
+# es nicht wissen - also muss man es sagen.
+
+# key= nimmt eine FUNKTION, keinen Wert.
+# sorted ruft sie fuer jedes Element einmal auf und sortiert nach dem,
+# was zurueckkommt.
+
+# key=get_name   OHNE Klammern.
+#   Nicht das Ergebnis wird uebergeben, sondern die Funktion SELBST -
+#   sorted ruft sie schon noch auf, einmal pro Element.
+#   key=get_name() waere falsch: die Klammern heissen "jetzt ausfuehren".
+```
+
+**Fassung 7: dasselbe als `lambda`.**
+
+```python
+for student in sorted(students, key=lambda student: student["name"]):
+```
+
+```python
+# lambda ist dieselbe Funktion ohne Namen, direkt an der Stelle, wo sie
+# gebraucht wird.
+#     links vom Doppelpunkt    der Parameter
+#     rechts davon             das, was zurueckkommt
+# Kein def, kein return, kein Name.
+
+# Wofuer das gut ist: get_name wird genau EINMAL benutzt, und zwar genau
+# hier. Eine Funktion, die nur an einer Stelle gebraucht wird, braucht
+# keinen Namen - der Name waere nur eine zweite Stelle, an der man
+# nachschauen muss.
+
+# Ein lambda GIBT ZURUECK, es druckt nicht. Deshalb passt es in key=,
+# max(), min(), sorted() - ueberall da, wo etwas anderes die Funktion
+# aufruft und auf das Ergebnis wartet.
+```
+
+**Fassung 8: das `csv`-Modul.**
+
+```python
+import csv
+
+students = []
+
+with open("students.csv") as file:
+    reader = csv.reader(file)
+    for name, home in reader:
+        students.append({"name": name, "home": home})
+
+for student in sorted(students, key=lambda student: student["name"]):
+    print(f"{student['name']} is from {student['home']}")
+```
+
+```python
+# WARUM es das Modul gibt - das war der Fehler des Abends:
+#
+#   ValueError: too many values to unpack (expected 2, got 3)
+#
+# Harrys Adresse IST "Number Four, Privet Drive" - ein Komma MITTEN im
+# Wert. split(",") zaehlt stumpf Kommas und sieht drei Felder.
+#
+# In CSV kommen Werte mit Komma in Anfuehrungszeichen:
+#       Harry,"Number Four, Privet Drive"
+# split versteht das nicht. csv.reader versteht es.
+#
+# Die Fehlermeldung zeigte auf die Python-Zeile, der Fehler steckte in
+# der CSV-DATEI. Wenn ein Programm eine Datei liest, kann der Fehler in
+# der Datei liegen. Die Zeilennummer sagt, wo es AUFFIEL, nicht, wo es
+# herkommt.
+```
+
+**Fassung 9: `DictReader`.**
+
+```python
+with open("students.csv") as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        students.append({"name": row["name"], "home": row["home"]})
+```
+
+```python
+# csv.reader      gibt pro Zeile eine LISTE:       ["Harry", "..."]
+#                 Zugriff ueber die Position:      row[0], row[1]
+#
+# csv.DictReader  gibt pro Zeile ein DICTIONARY:   {"name": "Harry", ...}
+#                 Zugriff ueber den Spaltennamen:  row["name"]
+#
+# DictReader nimmt die erste Zeile der Datei als KOPFZEILE und baut
+# daraus die Schluessel. Deshalb muss "name,home" oben in der Datei
+# stehen - und deshalb darf man dann nicht mehr csv.reader nehmen,
+# sonst kommt die Kopfzeile als Datensatz mit durch.
+
+# Warum DictReader besser ist:
+#   row["home"] haelt auch, wenn jemand eine Spalte dazwischenschiebt.
+#   row[1] zeigt dann ploetzlich auf etwas anderes - und das Programm
+#   stuerzt nicht ab, es rechnet FALSCH. Das ist der schlimmere Fehler.
+```
+
+---
+
+## students.py, zweite Hälfte — schreiben statt lesen
+
+```python
+import csv
+
+name = input("What's your name? ")
+home = input("Where's your home? ")
+
+with open("students.csv", "a") as file:
+    writer = csv.writer(file)
+    writer.writerow([name, home])
+```
+
+```python
+# Das Gegenstueck zu csv.reader. writerow nimmt eine LISTE und macht
+# daraus eine Zeile - mit Kommas dazwischen und Anfuehrungszeichen
+# drumherum, wo es noetig ist. Genau die Arbeit, die man von Hand
+# falsch machen wuerde.
+#
+# "a" nicht vergessen. Mit "w" waere die ganze Tabelle weg und es
+# stuende nur der neue Datensatz drin.
+```
+
+Und dasselbe mit Spaltennamen:
+
+```python
+with open("students.csv", "a") as file:
+    writer = csv.DictWriter(file, fieldnames=["name", "home"])
+    writer.writerow({"name": name, "home": home})
+```
+
+```python
+# fieldnames=["name", "home"]
+#   Muss man mitgeben - beim Schreiben gibt es keine Kopfzeile, aus der
+#   sich die Reihenfolge ablesen liesse. Die Liste legt fest, welche
+#   Spalte zuerst kommt.
+#
+# Dann nimmt writerow ein DICTIONARY statt einer Liste, und DictWriter
+# sortiert die Werte selbst in die richtige Spalte. Egal, in welcher
+# Reihenfolge sie im Dictionary stehen.
+#
+# Vier Namen, zwei Paare - das ist die ganze Logik von Woche 6:
+#       reader  <-> writer        ueber Positionen, mit Listen
+#       DictReader <-> DictWriter ueber Spaltennamen, mit Dictionaries
+```
+
+---
+
+## costumes.py — Bilder mit PIL
+
+```python
+import sys
+
+from PIL import Image
+
+images = []
+
+for arg in sys.argv[1:]:
+    image = Image.open(arg)
+    images.append(image)
+
+images[0].save(
+    "costume.gif", save_all=True, append_images=images[1:], duration=200, loop=0
+)
+```
+
+```python
+# from PIL import Image
+#      ^^^         ^^^^^
+#      |           Image ist eine KLASSE in dieser Bibliothek
+#      |
+#      Die Bibliothek heisst beim Installieren pillow
+#      (pip install pillow), beim Importieren aber PIL.
+#      Gross geschrieben. Einer der wenigen Faelle, wo der Name beim
+#      Installieren ein anderer ist als beim Importieren.
+
+# for arg in sys.argv[1:]:
+#   Drittes Mal sys.argv - nach name.py und bitcoin.py aus Woche 4.
+#   [1:] laesst den Dateinamen weg und nimmt alles, was dahinter stand.
+#   Damit funktioniert es fuer zwei Bilder genauso wie fuer zwanzig.
+
+# images[0].save(...)
+#        ^^^
+#   Das ERSTE Bild speichert sich selbst - und bekommt die anderen als
+#   Anhang mit. Ungewohnt, aber so ist PIL gebaut: ein GIF ist ein Bild
+#   mit weiteren Bildern dran.
+
+#   save_all=True             auch die angehaengten speichern, nicht nur
+#                             das erste. Ohne das: ein Standbild.
+#   append_images=images[1:]  alle AUSSER dem ersten - das speichert ja
+#                             schon. Wieder ein Ausschnitt ab Position 1,
+#                             dasselbe wie bei sys.argv[1:] drueber.
+#   duration=200              200 Millisekunden pro Bild
+#   loop=0                    0 heisst NICHT null Durchlaeufe, sondern
+#                             endlos. Eine Festlegung des GIF-Formats,
+#                             nichts, was man sich herleiten kann.
+```
+
+**Die zwei Fehler an diesem Abend** — beide nicht im Code:
+
+```
+python costumes.py
+IndexError: list index out of range
+```
+
+Ohne Dateinamen dahinter ist `sys.argv[1:]` leer, die Schleife läuft kein
+einziges Mal, `images` bleibt `[]` — und `images[0]` greift ins Leere. Das
+Programm verhält sich richtig; die Eingabe fehlte.
+
+```
+python costumes.py costume1.gif costume2.gif
+FileNotFoundError: [Errno 2] No such file or directory: 'costume1.gif'
+```
+
+Die beiden Bilder liegen nicht im Ordner. Malan hat sie aus dem
+CS50-Downloadpaket, im Video sieht man das nie. **Zweites Mal dieselbe
+Sache** — bei `itunes.py` in Woche 4 war es die Textdatei.
+
+> **Die Regel daraus:** Wenn ein Programm eine Datei liest, die man nie
+> angelegt hat, fehlt eine **Datei**, keine Codezeile. `FileNotFoundError`
+> nennt sogar den Namen, nach dem gesucht wurde. Mit zwei beliebigen
+> eigenen Bildern gleicher Größe läuft das Programm.
+
+---
+
+## Was in Teil 7 neu dazukam
+
+| | |
+|---|---|
+| `open(name, modus)` | `"r"` lesen, `"w"` neu schreiben, `"a"` anhängen |
+| `with open(...) as f:` | schließt von selbst, auch bei einem Fehler |
+| `file.write()` | setzt **keinen** Zeilenumbruch — `\n` selbst mitschicken |
+| `for line in file:` | zeilenweise, ohne alles in den Speicher zu holen |
+| `.rstrip()` | der Zeilenumbruch muss weg, sonst schlägt jeder Vergleich fehl |
+| `sorted(..., reverse=True)` | Reihenfolge umdrehen |
+| `key=` | sortieren nach einem Kriterium — nimmt eine **Funktion** |
+| `lambda` | dieselbe Funktion ohne Namen, an Ort und Stelle |
+| `csv.reader` / `writer` | über Positionen, mit Listen |
+| `csv.DictReader` / `DictWriter` | über Spaltennamen, mit Dictionaries |
+| `from PIL import Image` | Bilder öffnen und als GIF zusammenspeichern |
+| `_` | Variablenname für etwas, das man absichtlich nicht benutzt |
+
+**Das Muster, das sich zum dritten Mal wiederholt.** Erst die Fassung, die
+das Problem hat, dann das Werkzeug:
+
+| Woche | die Wand | die Tür |
+|---|---|---|
+| 3 | `if`-Ketten für jede falsche Eingabe | `try`/`except` |
+| 4 | alles selbst schreiben | `import` |
+| 6 | `line.split(",")` | das `csv`-Modul |
+
+Dass man das Werkzeug erst zu schätzen weiß, wenn man ohne es gearbeitet
+hat, ist kein Python-Thema. Deshalb lohnt es sich, die Zwischenfassungen
+stehen zu lassen statt sie zu löschen.
+
+**Und die eigentliche Neuerung der Woche:** bis Woche 5 hat jedes Programm
+alles vergessen, sobald es zu Ende war. Ab jetzt nicht mehr. Ein Programm,
+das etwas behält, ist der Unterschied zwischen einer Übung und einem
+Werkzeug — und genau das braucht das FM-Auslegungstool später, wenn es ein
+Projekt speichern soll.

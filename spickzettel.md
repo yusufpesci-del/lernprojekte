@@ -42,7 +42,7 @@ Das Ding ist über zweitausend Zeilen lang. **Nicht scrollen — suchen:**
 |---|---|
 | [Bibliotheken benutzen (Woche 4)](#bibliotheken-benutzen-woche-4) | `import`, `pip`, `sys.argv`, `requests`, eigene Module |
 | [Unit Tests (Woche 5)](#unit-tests-woche-5) | `assert`, `pytest`, `pytest.raises` |
-| [Dateien lesen und schreiben (Woche 6)](#dateien-lesen-und-schreiben-woche-6) | `open`, `with`, `.rstrip`, CSV, `lambda` |
+| [Dateien lesen und schreiben (Woche 6)](#dateien-lesen-und-schreiben-woche-6) | `open`, `with`, `.rstrip`, CSV, `lambda`, PIL |
 
 **Werkzeuge**
 
@@ -1786,8 +1786,6 @@ Dasselbe wie `if not solved` bei `professor.py`.
 
 ## Dateien lesen und schreiben (Woche 6)
 
-*(Bilder mit PIL fehlen noch.)*
-
 Bis Woche 5 hat **jedes** Programm alles vergessen, sobald es zu Ende war.
 Die Stückliste, der Punktestand bei `professor`, die Namen bei `adieu` —
 weg beim Schließen des Fensters.
@@ -2020,6 +2018,87 @@ with open("daten.csv", encoding="cp1252") as file:
 | `encoding="cp1252"` | Windows-Excel schreibt kein UTF-8. Ohne das werden Umlaute zu Kauderwelsch oder es fliegt ein `UnicodeDecodeError` |
 
 Erst `encoding="utf-8"` versuchen, bei Fehler `cp1252`.
+
+---
+
+### CSV schreiben
+
+Zu jedem Leser gehört ein Schreiber. Vier Namen, zwei Paare:
+
+| | lesen | schreiben | arbeitet mit |
+|---|---|---|---|
+| über Position | `csv.reader` | `csv.writer` | Listen |
+| über Spaltenname | `csv.DictReader` | `csv.DictWriter` | Dictionaries |
+
+```python
+with open("students.csv", "a") as file:
+    writer = csv.writer(file)
+    writer.writerow([name, home])
+```
+
+```python
+with open("students.csv", "a") as file:
+    writer = csv.DictWriter(file, fieldnames=["name", "home"])
+    writer.writerow({"name": name, "home": home})
+```
+
+`writerow` setzt die Kommas und die Anführungszeichen selbst — genau die
+Arbeit, die man von Hand falsch machen würde (siehe Harrys Adresse oben).
+
+`fieldnames` muss man beim Schreiben mitgeben: es gibt noch keine
+Kopfzeile, aus der sich die Reihenfolge der Spalten ablesen ließe. Danach
+sortiert `DictWriter` die Werte selbst an die richtige Stelle, egal in
+welcher Reihenfolge sie im Dictionary stehen.
+
+> **Stolperstein.** `"a"` nicht vergessen. Mit `"w"` ist die ganze Tabelle
+> weg und es steht nur noch der neue Datensatz drin.
+
+---
+
+### Bilder — PIL
+
+```python
+from PIL import Image
+
+image = Image.open("bild.png")
+```
+
+Heißt beim Installieren **`pillow`**, beim Importieren **`PIL`**. Groß
+geschrieben:
+
+```powershell
+pip install pillow
+```
+
+Ein animiertes GIF aus mehreren Bildern:
+
+```python
+images[0].save(
+    "costume.gif", save_all=True, append_images=images[1:], duration=200, loop=0
+)
+```
+
+Das **erste** Bild speichert sich selbst und bekommt die anderen als Anhang
+mit. Ungewohnt, aber so ist PIL gebaut: ein GIF ist ein Bild mit weiteren
+Bildern dran.
+
+| | |
+|---|---|
+| `save_all=True` | auch die angehängten speichern. Ohne das: ein Standbild |
+| `append_images=images[1:]` | alle außer dem ersten — das speichert ja schon |
+| `duration=200` | 200 Millisekunden pro Bild |
+| `loop=0` | **0 heißt endlos**, nicht null Durchläufe. Festlegung des GIF-Formats |
+
+> **Stolperstein.** `FileNotFoundError` beim Öffnen heißt: die **Datei**
+> fehlt, nicht eine Codezeile. Die Beispieldateien in den Vorlesungen
+> (Malans Kostüm-GIFs, die Textdatei bei `itunes.py`) stammen aus dem
+> CS50-Downloadpaket und sind im Video nie zu sehen. Eigene Dateien tun es
+> genauso.
+
+> **Stolperstein.** `IndexError: list index out of range` bei
+> `images[0]`, wenn das Programm ohne Argumente gestartet wird:
+> `sys.argv[1:]` ist dann leer, die Schleife läuft nie, die Liste bleibt
+> leer. Nicht der Code ist falsch — die Eingabe fehlt.
 
 ---
 
@@ -2310,7 +2389,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 6: der Rest des Videos (Bilder mit PIL), dann Problem Set 6
+- Problem Set 6 — vier Aufgaben, eine davon mit PIL
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

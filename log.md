@@ -834,3 +834,70 @@
   braucht das FM-Auslegungstool spaeter, wenn es ein Projekt speichern
   soll
 - Naechstes Mal: Problem Set 6 (vier Aufgaben, eine davon mit PIL)
+## 14.11.2026
+- Problem Set 6 angefangen, 16:40 bis 19:50 mit zwei Pausen. DREI VON VIER
+  durch: lines.py, pizza.py, scourgify.py. Nur shirt.py (PIL) fehlt
+- lines.py: Codezeilen zaehlen, Leerzeilen und Kommentare nicht. Den
+  Fehlerblock habe ich von allein in der richtigen Reihenfolge gebaut -
+  erst die Anzahl der Argumente, dann die Endung. Haette ich es andersrum
+  gemacht, waere bei "python lines.py" ohne Argument ein IndexError
+  gekommen statt meiner Meldung. Genau der Fehler, den ich bei fuel.py in
+  Problem Set 5 noch gemacht habe
+- Bei lines.py zuerst readlines() genommen (aus names.py von Dienstag),
+  dann doch auf Zaehler + for line in file umgestellt. Richtig so: ich
+  wollte nicht alle Zeilen HABEN, sondern nur zaehlen, wie viele eine
+  Bedingung erfuellen. Dafuer ist die Schleife mit Zaehler da
+- Neu gelernt ohne es zu merken: ein leerer String ist in Python False.
+  Man kann "if text:" schreiben statt "if text != ''". Gilt auch fuer
+  leere Listen, leere Dictionaries und die Null
+- Ein Docstring zaehlt ALS Codezeile. Sieht aus wie ein Kommentar, ist
+  aber ein String - steht so ausdruecklich in der Aufgabe
+- pizza.py: CSV einlesen und mit tabulate als Rahmentabelle ausgeben.
+  Bibliothek und Funktion heissen gleich, daher "from tabulate import
+  tabulate". headers="keys" nimmt die Spaltennamen aus der Kopfzeile
+- DER FEHLER, DER SICH ZIEHT: bei pizza.py habe ich erst den ganzen
+  Zaehlblock von lines.py mituebernommen, obwohl eine Pizzatabelle keine
+  Kommentarzeilen hat. Siebtes Mal dasselbe Muster. Die Frage lautet:
+  brauche ich das hier, oder habe ich es nur zuletzt benutzt?
+- Der FEHLERBLOCK war dagegen richtig mituebernommen. Das ist die Kunst:
+  unterscheiden, welcher Teil wiederverwendbar ist und welcher zur alten
+  Aufgabe gehoert. Der Rahmen bleibt, der Inhalt nicht
+- Zweiter Fehler bei pizza.py: open("pizza.csv", "a") statt
+  open(sys.argv[1]). Fest eingetragener Dateiname macht die vier
+  Pruefungen darueber zur Deko - ich pruefe sorgfaeltig das Argument und
+  oeffne dann eine andere Datei. Und "a" legt die Datei sogar an, wenn es
+  sie nicht gibt - dann kann except FileNotFoundError nie ausloesen
+- Dritter: row["small"] herausgepickt, statt row ganz anzuhaengen. Die
+  Spalten heissen gar nicht so, und regular.csv und sicilian.csv haben
+  VERSCHIEDENE Kopfzeilen. Das Programm darf die Spaltennamen nicht
+  kennen. Beide Dateien liefen danach durch dasselbe Programm mit je
+  eigener Ueberschrift - das war der Beweis
+- Gefragt, wo im Code "regular.csv" hin muss. Antwort: nirgends. Der Name
+  kommt beim Start aus dem Terminal, sys.argv[1] IST er. Ein Programm,
+  dem man von aussen sagt womit es arbeiten soll, ist ein Werkzeug. Eins
+  mit eingebautem Dateinamen ist eine Einbahnstrasse
+- scourgify.py: erste Aufgabe mit ZWEI Argumenten. len(sys.argv) muss
+  also 3 sein, nicht 2 - Position 0 ist immer die Datei selbst. Die Zahl
+  aendert sich an zwei Stellen, habe sie erst beide stehenlassen
+- Der Knoten des Abends: ich hatte "name, house = row['name'].split(', ')"
+  geschrieben. Falsch - aus dem Aufteilen fallen nur die ZWEI NAMENSTEILE
+  heraus, das Haus steht in einer eigenen Spalte und wird einfach
+  durchgereicht. Richtig: last, first - weil links vom Komma der
+  Nachname steht
+- Und das append stand ausserhalb der Schleife. Dann laeuft es einmal am
+  Ende statt einmal pro Zeile. Einrueckung ist keine Optik, sie ist die
+  Aussage
+- "w" statt "a" beim Schreiben, newline="" gegen die Leerzeilen unter
+  Windows, writeheader() fuer die Kopfzeile. after.csv kam sauber raus
+- DREIMAL heute hat "File does not exist" bzw "Could not read" voellig
+  korrekt ausgeloest, und dreimal lag es am Pfad oder am Tippen:
+  ..\students.py vom falschen Ordner aus, regualar.csv verdreht,
+  gibtsnicht.csv absichtlich. Das Programm hatte jedes Mal recht
+- Tab-Taste vervollstaendigt Dateinamen im Terminal. Haette mir heute
+  zweimal Zeit gespart
+- Ab etwa 19:15 kamen nur noch Tipp- und Einrueckungsfehler, keine
+  Denkfehler mehr. Claude hat es angesprochen, ich habe nach scourgify
+  Schluss gemacht. Genau das Muster vom 17.10., das im Lernplan steht
+- Naechstes Mal: shirt.py. Dafuer brauche ich zuerst shirt.png und die
+  Muppet-Fotos von der Aufgabenseite - sonst sitze ich wieder vor einem
+  FileNotFoundError wie bei costumes.py

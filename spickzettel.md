@@ -411,6 +411,25 @@ elif greeting.startswith("h"):     # sonst fängt dieser Zweig alles ab
 > **keine** Bedingung — das ist sein Sinn: "in allen anderen Fällen".
 > Braucht man eine Bedingung, heißt es `elif`.
 
+### Leer ist `False`
+
+Ein leerer Text, eine leere Liste, ein leeres Dictionary und die Null
+gelten in einer Bedingung als `False`. Alles andere als `True`.
+
+```python
+if text:            # statt  if text != ""
+if not students:    # statt  if len(students) == 0
+```
+
+| gilt als `False` | gilt als `True` |
+|---|---|
+| `""` · `[]` · `{}` · `0` · `None` | jeder nicht-leere Text, jede gefüllte Liste, jede Zahl außer 0 |
+
+Praktisch beim Prüfen von Zeilen: `line.strip()` wirft die Leerzeichen weg.
+Bleibt nichts übrig, ist das Ergebnis `""` und damit `False`. **Eine**
+Prüfung erschlägt damit beide Fälle — die ganz leere Zeile und die, in der
+nur Leerzeichen stehen.
+
 ### Eine Weiche mit gemeinsamem Schluss
 
 Wenn zwei verschiedene Eingabeformen zum selben Ergebnis führen sollen,
@@ -1346,6 +1365,38 @@ if len(sys.argv) < 2:
 `sys.exit("...")` gibt die Meldung aus **und** beendet. Ein `print` allein
 läuft weiter — bei einem größeren Programm dann mit fehlenden Daten.
 
+### Wie viele Argumente erwarte ich?
+
+`sys.argv` enthält **immer** den Dateinamen als Position 0. Die erwartete
+Länge ist also **Anzahl der Argumente + 1**:
+
+| das Programm will | `len(sys.argv)` muss sein |
+|---|---|
+| ein Argument — `python lines.py datei.py` | `2` |
+| zwei Argumente — `python scourgify.py rein.csv raus.csv` | `3` |
+
+> **Stolperstein.** Baut man ein Programm von einem auf zwei Argumente um,
+> ändert sich die Zahl an **zwei** Stellen — in beiden Prüfungen. Eine zu
+> vergessen fällt erst auf, wenn man genau diesen Fall testet.
+
+Der Block, der in Problem Set 6 viermal fast gleich vorkommt:
+
+```python
+if len(sys.argv) < 2:
+    sys.exit("Too few command-line arguments")
+elif len(sys.argv) > 2:
+    sys.exit("Too many command-line arguments")
+elif not sys.argv[1].endswith(".py"):
+    sys.exit("Not a Python file")
+```
+
+**Die Reihenfolge ist Pflicht: erst die Anzahl, dann der Name.** Prüft man
+die Endung zuerst, greift `sys.argv[1]` auf etwas zu, das es noch gar nicht
+geben muss — `IndexError` statt der eigenen Meldung.
+
+**Und ob eine Datei existiert, gehört nicht in diese Kette.** Das weiß man
+erst beim Öffnen: `try` / `except FileNotFoundError`.
+
 Bei `argv` ist das `if` üblicher als `try`, weil man die Länge einer Liste
 ohne Risiko abfragen kann. `try/except IndexError` wäre auch richtig.
 
@@ -2021,6 +2072,37 @@ Erst `encoding="utf-8"` versuchen, bei Fehler `cp1252`.
 
 ---
 
+### CSV als Tabelle anzeigen — `tabulate`
+
+```powershell
+pip install tabulate
+```
+
+```python
+from tabulate import tabulate
+
+print(tabulate(daten, headers="keys", tablefmt="grid"))
+```
+
+Bibliothek und Funktion heißen **gleich** — daher das doppelte Wort in der
+Importzeile. (Anders als `emoji`/`emojize` und `pyfiglet`/`figlet`.)
+
+| | |
+|---|---|
+| `daten` | eine Liste von Dictionaries, genau wie `DictReader` sie liefert |
+| `headers="keys"` | Spaltenüberschriften aus den **Schlüsseln** nehmen |
+| `tablefmt="grid"` | das Format mit den `+---+`-Rahmen |
+
+`tabulate` **gibt den Text zurück**, es druckt nicht — also `print` drum.
+Das ist die Stelle, an der `text = print(...)` schon zweimal passiert ist.
+
+Der eigentliche Gewinn: das Programm kennt die Spaltennamen **nicht** und
+darf sie nicht kennen. `headers="keys"` nimmt, was in der Kopfzeile der
+Datei steht. Dasselbe Programm läuft damit für `regular.csv` und
+`sicilian.csv` mit völlig verschiedenen Überschriften, ohne eine Änderung.
+
+---
+
 ### CSV schreiben
 
 Zu jedem Leser gehört ein Schreiber. Vier Namen, zwei Paare:
@@ -2052,6 +2134,27 @@ welcher Reihenfolge sie im Dictionary stehen.
 
 > **Stolperstein.** `"a"` nicht vergessen. Mit `"w"` ist die ganze Tabelle
 > weg und es steht nur noch der neue Datensatz drin.
+
+**Eine ganze Datei neu schreiben** — Kopfzeile plus alle Zeilen:
+
+```python
+with open(sys.argv[2], "w", newline="") as file:
+    writer = csv.DictWriter(file, fieldnames=["first", "last", "house"])
+    writer.writeheader()
+    for student in students:
+        writer.writerow(student)
+```
+
+| | |
+|---|---|
+| `"w"` | **neu** schreiben. Mit `"a"` hängt jeder Programmstart dieselben Daten nochmal hinten dran |
+| `newline=""` | **unter Windows Pflicht.** Ohne das steht zwischen jeder Zeile eine Leerzeile in der fertigen Datei |
+| `writeheader()` | schreibt die `fieldnames` als erste Zeile: `first,last,house` |
+
+> **Stolperstein.** `"a"` **legt die Datei an**, wenn es sie nicht gibt. Ein
+> `except FileNotFoundError` darum herum kann deshalb nie auslösen — statt
+> eines Fehlers entsteht still eine leere Datei. Zum Lesen gar keinen Modus
+> angeben; dann ist Lesen gemeint und ein falscher Pfad fliegt auch auf.
 
 ---
 
@@ -2176,6 +2279,11 @@ Pfad stecken.
 **Nicht viele Terminals offen lassen.** Steht eines in einem Ordner, lässt
 Windows den Ordner nicht verschieben oder löschen ("wird von einem anderen
 Prozess verwendet"). Überzählige mit dem Mülleimer-Symbol schließen.
+
+**Tab-Taste vervollständigt Dateinamen.** `regu` + Tab wird zu
+`regular.csv`. Passiert nichts, gibt es die Datei nicht — und das sieht man
+*bevor* man Enter drückt. Die meisten „File does not exist"-Fehler sind
+Tippfehler im Dateinamen.
 
 **Pfeil nach oben** holt den letzten Befehl zurück.
 **Esc** bringt dich raus, wenn du versehentlich in `fwd-i-search` gelandet
@@ -2389,7 +2497,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 6 — vier Aufgaben, eine davon mit PIL
+- Problem Set 6: `shirt.py` fehlt noch (PIL). `lines`, `pizza`, `scourgify` sind durch
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

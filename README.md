@@ -20,7 +20,7 @@ kleine Programme, Notizen.
 ## Stand
 
 **CS50P Woche 0 bis 6 durch, Problem Set 0 bis 5 vollständig gelöst.**
-Problem Set 6 steht als Nächstes an.
+Problem Set 6 zu drei Vierteln: `lines`, `pizza` und `scourgify` laufen.
 
 Gelernt bisher: Variablen und Datentypen, Bedingungen, Schleifen, Listen,
 Dictionaries, Funktionen, Fehler abfangen mit `try`/`except`,

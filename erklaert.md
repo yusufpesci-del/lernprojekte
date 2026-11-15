@@ -11,6 +11,7 @@ Mein eigener Code, kommentiert zum Nachlesen:
 | **Teil 5** | Woche 5 — Mitschrieb aus der Vorlesung (Unit Tests) |
 | **Teil 6** | Problem Set 5 — Tests für meine alten Programme |
 | **Teil 7** | Woche 6 — Mitschrieb aus der Vorlesung (Dateien) |
+| **Teil 8** | Problem Set 6 — lines, pizza, scourgify, shirt |
 
 **Achtung:** So dicht kommentiert man echten Code **nicht**. Das hier ist
 Lernmaterial. In den richtigen `.py`-Dateien erklären Kommentare nur das
@@ -2525,3 +2526,424 @@ alles vergessen, sobald es zu Ende war. Ab jetzt nicht mehr. Ein Programm,
 das etwas behält, ist der Unterschied zwischen einer Übung und einem
 Werkzeug — und genau das braucht das FM-Auslegungstool später, wenn es ein
 Projekt speichern soll.
+
+---
+
+# Teil 8 — Problem Set 6 (Dateien)
+
+Vier Programme, die alle dieselbe Form haben: **etwas kommt von außen rein,
+etwas wird daraus gemacht, etwas kommt heraus.** Keine einzige `input()`-Zeile
+im ganzen Problem Set. Das ist der Unterschied zwischen einer Übung und
+einem Werkzeug.
+
+Der Rahmen, der viermal wiederkommt:
+
+```python
+# 1. stimmt die Anzahl der Argumente?
+# 2. stimmt der NAME (Endung)?
+# 3. try: öffnen  /  except: Datei gibt es nicht
+# 4. die eigentliche Arbeit
+```
+
+**Die Reihenfolge ist Pflicht, nicht Geschmack.** Die Begründung steht bei
+Aufgabe 1.
+
+---
+
+## Aufgabe 1 — lines.py
+
+Zählt die Codezeilen einer Python-Datei. Leerzeilen und Kommentare zählen
+nicht, Docstrings schon.
+
+```python
+import sys
+
+if len(sys.argv) < 2:
+    sys.exit("Too few command-line arguments")
+elif len(sys.argv) > 2:
+    sys.exit("Too many command-line arguments")
+elif not sys.argv[1].endswith(".py"):
+    sys.exit("Not a Python file")
+```
+
+```python
+# DIE REIHENFOLGE: erst die Anzahl, dann der Name.
+#
+# Stuende die Endungspruefung zuerst, wuerde sys.argv[1] auf etwas
+# zugreifen, das es bei "python lines.py" ohne Argument gar nicht gibt:
+#       IndexError: list index out of range
+# statt der eigenen Meldung. Erst pruefen, DASS etwas da ist, dann
+# pruefen, WAS es ist.
+#
+# Genau der Fehler aus Problem Set 5, fuel.py: dort stand "if x > y"
+# vor der Division, und "1/0" lieferte ValueError statt
+# ZeroDivisionError. Diesmal von allein richtig.
+
+# "File does not exist" steht ABSICHTLICH nicht in dieser Kette.
+# Ob eine Datei existiert, weiss man erst beim Oeffnen.
+```
+
+```python
+line_count = 0
+try:
+    with open(sys.argv[1]) as file:
+        for line in file:
+            stripped_line = line.lstrip()
+            if stripped_line.strip() and not stripped_line.startswith("#"):
+                line_count += 1
+except FileNotFoundError:
+    sys.exit("File does not exist")
+
+print(line_count)
+```
+
+```python
+# ZAEHLER statt readlines().
+# Der erste Entwurf war:
+#       lines = file.readlines()
+#       print(len(lines))
+# Das zaehlt aber ALLES. Um Kommentare rauszuwerfen, muesste man jede
+# Zeile doch einzeln ansehen - also gleich die Schleife nehmen.
+#
+# Die Faustregel: readlines() gibt eine fertige Liste, gut wenn man die
+# GANZE Liste braucht (zum Sortieren etwa, wie bei names.py). Hier will
+# man die Zeilen gar nicht haben, sondern nur zaehlen, wie viele eine
+# Bedingung erfuellen. Dafuer ist Zaehler + Schleife gebaut.
+
+# if stripped_line.strip() and not ...
+#    ^^^^^^^^^^^^^^^^^^^^^
+#    Kein Vergleich! Ein leerer String gilt als False, ein nicht-leerer
+#    als True. "if text:" statt "if text != ''". Gilt auch fuer leere
+#    Listen, leere Dictionaries und die Null.
+#
+#    Damit erschlaegt EINE Pruefung beide Faelle: die ganz leere Zeile
+#    und die, in der nur Leerzeichen stehen - denn strip() macht aus
+#    "   \n" den leeren String.
+
+# .lstrip() VOR dem startswith:
+#    "    # Kommentar" faengt nicht mit # an, sondern mit Leerzeichen.
+#    Ohne das Abschneiden wuerde jeder eingerueckte Kommentar mitgezaehlt.
+#
+#    Kuerzer ginge es mit EINEM .strip() - das schneidet beide Seiten ab
+#    und erledigt Leerzeilenpruefung und #-Suche in einem.
+
+# Ein DOCSTRING faengt mit """ an, nicht mit #, und wird deshalb
+# mitgezaehlt. Steht so ausdruecklich in der Aufgabe: ein Docstring ist
+# ein String, kein Kommentar.
+```
+
+---
+
+## Aufgabe 2 — pizza.py
+
+Gibt eine CSV-Datei als Rahmentabelle aus.
+
+```python
+import sys
+import csv
+from tabulate import tabulate
+
+if len(sys.argv) < 2:
+    sys.exit("Too few command-line arguments")
+elif len(sys.argv) > 2:
+    sys.exit("Too many command-line arguments")
+elif not sys.argv[1].endswith(".csv"):
+    sys.exit("Not a CSV file")
+```
+
+```python
+# Derselbe Block wie in lines.py, mit genau ZWEI Aenderungen:
+#       .py  ->  .csv
+#       "Not a Python file"  ->  "Not a CSV file"
+#
+# Der RAHMEN war richtig mituebernommen. Der Zaehlblock darunter
+# anfangs auch - und der war falsch, weil eine Pizzatabelle keine
+# Kommentarzeilen hat. Das ist die Kunst beim Wiederverwenden:
+# unterscheiden, welcher Teil zur FORM gehoert und welcher zur alten
+# AUFGABE.
+```
+
+```python
+pizza = []
+
+try:
+    with open(sys.argv[1]) as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            pizza.append(row)
+except FileNotFoundError:
+    sys.exit("File does not exist")
+
+print(tabulate(pizza, headers="keys", tablefmt="grid"))
+```
+
+```python
+# pizza.append(row)   -   row GANZ anhaengen, nichts herauspicken.
+#
+# Der erste Entwurf war:
+#       pizza.append({"small": row["small"], "large": row["large"]})
+# Drei Fehler auf einmal:
+#   1. row IST schon ein Dictionary. DictReader hat die Arbeit gemacht.
+#      Auseinandernehmen und wieder zusammensetzen bringt nichts.
+#   2. Die Spalten heissen gar nicht so - sie heissen so, wie es in der
+#      KOPFZEILE der Datei steht.
+#   3. regular.csv und sicilian.csv haben VERSCHIEDENE Kopfzeilen. Das
+#      Programm darf die Spaltennamen also gar nicht kennen.
+#
+# Beweis: beide Dateien laufen durch dasselbe Programm und bringen je
+# ihre eigene Ueberschrift mit. Ohne eine einzige Aenderung im Code.
+
+# open("pizza.csv", "a")  war der zweite Entwurf - gleich doppelt falsch:
+#   - Fest eingetragener Name macht die vier Pruefungen darueber zur
+#     Deko. Man prueft sorgfaeltig das Argument und oeffnet dann eine
+#     andere Datei.
+#   - "a" LEGT DIE DATEI AN, wenn es sie nicht gibt. Dann kann
+#     except FileNotFoundError nie ausloesen - statt eines Fehlers
+#     entsteht still eine leere Datei. Zum Lesen gar keinen Modus
+#     angeben.
+
+# tabulate(...)
+#    headers="keys"    Ueberschriften aus den Schluesseln der
+#                      Dictionaries. Deshalb war DictReader die richtige
+#                      Wahl und nicht reader.
+#    tablefmt="grid"   das Format mit den +---+-Rahmen.
+#
+#    Bibliothek und Funktion heissen GLEICH, daher "from tabulate
+#    import tabulate". Anders als emoji/emojize und pyfiglet/figlet.
+#
+#    tabulate GIBT ZURUECK, es druckt nicht. Deshalb print drum.
+```
+
+---
+
+## Aufgabe 3 — scourgify.py
+
+Liest eine CSV mit `name,house`, trennt den Namen auf, schreibt eine neue
+mit `first,last,house`.
+
+```python
+import csv
+import sys
+
+if len(sys.argv) < 3:
+    sys.exit("Too few command-line arguments")
+elif len(sys.argv) > 3:
+    sys.exit("Too many command-line arguments")
+```
+
+```python
+# ZWEI Argumente, also len(sys.argv) == 3.
+#
+#       python scourgify.py before.csv after.csv
+#       ["scourgify.py",     "before.csv", "after.csv"]
+#         Position 0          Position 1    Position 2
+#
+# Position 0 ist IMMER die Datei selbst. Die erwartete Laenge ist
+# Anzahl der Argumente + 1.
+#
+# Beim Umbauen von einem auf zwei Argumente aendert sich die Zahl an
+# ZWEI Stellen. Eine zu vergessen faellt erst auf, wenn man genau
+# diesen Fall testet.
+
+# Keine Endungspruefung - verlangt die Aufgabe hier nicht.
+```
+
+```python
+students = []
+
+try:
+    with open(sys.argv[1]) as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            last, first = row["name"].split(", ")
+            students.append({"first": first, "last": last, "house": row["house"]})
+except FileNotFoundError:
+    sys.exit(f"Could not read {sys.argv[1]}")
+```
+
+```python
+# DER KNOTEN DES ABENDS war diese Zeile. Erster Versuch:
+#       name, house = row["name"].split(", ")
+#
+# Falsch, weil zwei Dinge vermischt wurden. Was in row steht:
+#
+#   row = {"name": "Potter, Harry",   "house": "Gryffindor"}
+#                   \___________/              \_________/
+#             split(", ") macht daraus zwei    bleibt wie es ist,
+#                "Potter"   "Harry"            kommt NICHT aus dem split
+#                  last      first
+#
+# Aus dem Aufteilen fallen nur die ZWEI NAMENSTEILE heraus. Das Haus
+# steht in einer eigenen Spalte und wird einfach durchgereicht.
+
+# last, first - nicht first, last.
+#   Links vom Komma steht der Nachname: "Potter, Harry".
+#   Also ist Position 0 der Nachname.
+#
+# Dass die Zeile "last, first" sagt und die naechste Zeile mit "first"
+# anfaengt, ist kein Fehler - das IST die Aufgabe. Die Eingabe hat eine
+# andere Reihenfolge als die Ausgabe.
+
+# split(", ") mit Komma UND Leerzeichen - genau wie in outdated.py
+# (Woche 3), wo "September 8, 1636" an derselben Stelle getrennt wurde.
+
+# f"Could not read {sys.argv[1]}" - erste Fehlermeldung im Problem Set,
+# die den Dateinamen EINSETZT. Deshalb f-String.
+```
+
+```python
+with open(sys.argv[2], "w", newline="") as file:
+    writer = csv.DictWriter(file, fieldnames=["first", "last", "house"])
+    writer.writeheader()
+    for student in students:
+        writer.writerow(student)
+```
+
+```python
+# "w"           NEU schreiben. Mit "a" haengt jeder Programmstart
+#               dieselben Leute nochmal hinten dran.
+#
+# newline=""    Unter Windows PFLICHT. Ohne das steht zwischen jeder
+#               Zeile eine Leerzeile in der fertigen Datei.
+#
+# writeheader() schreibt die fieldnames als erste Zeile: first,last,house
+#               Verlangt die Aufgabe ausdruecklich.
+#
+# fieldnames    muss man beim SCHREIBEN mitgeben - es gibt ja noch keine
+#               Kopfzeile, aus der sich die Reihenfolge ablesen liesse.
+#               Danach sortiert DictWriter die Werte selbst an die
+#               richtige Stelle, egal wie sie im Dictionary stehen.
+
+# Das append stand im ersten Entwurf AUSSERHALB der Schleife. Dann
+# laeuft es einmal am Ende statt einmal pro Zeile - und last/first sind
+# dann vom letzten Durchlauf oder gar nicht vorhanden.
+# Einrueckung ist keine Optik, sie ist die Aussage.
+
+# Dieses Programm gibt NICHTS auf dem Bildschirm aus. Sein Ergebnis ist
+# die Datei. Das ist in Ordnung so.
+```
+
+---
+
+## Aufgabe 4 — shirt.py
+
+Legt `shirt.png` auf ein Foto und speichert das Ergebnis.
+
+```python
+import os
+import sys
+from PIL import Image, ImageOps
+
+if len(sys.argv) < 3:
+    sys.exit("Too few command-line arguments")
+elif len(sys.argv) > 3:
+    sys.exit("Too many command-line arguments")
+
+input_ext = os.path.splitext(sys.argv[1])[1].lower()
+output_ext = os.path.splitext(sys.argv[2])[1].lower()
+
+if output_ext not in [".jpg", ".jpeg", ".png"]:
+    sys.exit("Invalid output")
+elif input_ext != output_ext:
+    sys.exit("Input and output have different extensions")
+```
+
+```python
+# FUENF Fehlermeldungen, die meisten im Problem Set. Und die schaerfsten
+# Regeln: drei erlaubte Endungen statt einer, Gross/Klein egal, und
+# beide muessen UEBEREINSTIMMEN.
+
+# os.path.splitext("Bild.JPG")  ->  ("Bild", ".JPG")
+#                            [1] ist die Endung, MIT Punkt.
+#                       .lower() macht Gross/Klein egal.
+#
+# Der Punkt gehoert dazu! In der Liste stand zuerst "jpeg" ohne Punkt -
+# damit haette foto.jpeg faelschlich "Invalid output" bekommen. Eine
+# Sorte Fehler, die nur auffaellt, wenn man MIT .jpeg testet. Genau wie
+# bei test_twttr.py, wo die ersten zwei Tests gegen ein kaputtes
+# shorten gruen waren, weil in "hello" kein grosser Vokal vorkam.
+
+# Die Anzahl MUSS wieder zuerst geprueft werden: splitext(sys.argv[2])
+# wuerde sonst bei fehlenden Argumenten einen IndexError werfen.
+
+# Zwei getrennte Meldungen fuer zwei getrennte Probleme:
+#       before1.jpg -> after1.gif   "Invalid output"
+#           .gif ist ueberhaupt nicht erlaubt
+#       before1.jpg -> after1.png   "Input and output have different..."
+#           .png waere erlaubt, passt nur nicht zur Eingabe
+```
+
+```python
+shirt = Image.open("shirt.png")
+
+try:
+    photo = Image.open(sys.argv[1])
+except FileNotFoundError:
+    sys.exit("Input does not exist")
+
+photo = ImageOps.fit(photo, shirt.size)
+photo.paste(shirt, shirt)
+photo.save(sys.argv[2])
+```
+
+```python
+# from PIL import Image, ImageOps
+#   Zwei Dinge aus derselben Bibliothek, mit Komma. ImageOps ist die
+#   Werkzeugkiste fuers Zuschneiden.
+#   Heisst beim Installieren pillow, beim Importieren PIL.
+
+# "shirt.png" steht FEST im Code - und das ist richtig. Das T-Shirt ist
+# immer dasselbe. Nur das Foto kommt von aussen. Nicht alles, was ein
+# Dateiname ist, gehoert in sys.argv.
+
+# shirt.size                 die Masse des T-Shirts als Paar (Breite, Hoehe)
+# ImageOps.fit(photo, ...)   verkleinert UND beschneidet das Foto auf
+#                            exakt diese Masse. Muss sein: zwei Bilder
+#                            lassen sich nur uebereinanderlegen, wenn
+#                            sie gleich gross sind.
+
+# photo.paste(shirt, shirt)
+#                    ^^^^^
+#   Zweimal dasselbe, mit Absicht:
+#       das erste shirt = WAS aufgeklebt wird
+#       das zweite      = die SCHABLONE
+#
+#   Nur wo das T-Shirt-Bild undurchsichtig ist, wird geklebt. Der
+#   transparente Rand bleibt frei und man sieht den Muppet darunter.
+#   Ohne Schablone kaeme ein rechteckiger Klotz ueber das halbe Foto.
+#
+#   Deshalb MUSS shirt.png ein PNG sein - JPG kann keine Transparenz.
+```
+
+---
+
+## Was Problem Set 6 im Ganzen war
+
+Technisch war nichts Neues dabei. `sys.argv` und `sys.exit` sind aus
+Woche 4, `open`, `with` und `csv` aus Woche 6. Die Aufgabe war die
+**Montage** — und genau die ist der Engpass, der im Lernplan seit Oktober
+als solcher benannt ist.
+
+Was viermal gleich war:
+
+| | |
+|---|---|
+| **Erst zählen, dann lesen** | `len(sys.argv)` prüfen, **bevor** man `sys.argv[1]` anfasst |
+| **Erst der Name, dann die Datei** | die Endung prüft man am String. Ob die Datei existiert, weiß man erst beim Öffnen |
+| **`try` nur um das Öffnen** | `FileNotFoundError` ist der einzige Fehler, der dort zu erwarten ist |
+| **Ein Fehler, eine Meldung** | `"Invalid output"` und `"Input and output have different extensions"` sind zwei verschiedene Probleme |
+
+Und die zwei Lehren, die über Python hinausgehen:
+
+**Ein Programm, dem man von außen sagt, womit es arbeiten soll, ist ein
+Werkzeug.** Eins mit fest eingebautem Dateinamen ist eine Einbahnstraße.
+Deshalb lief dasselbe `pizza.py` über `regular.csv` und `sicilian.csv`,
+und deshalb stand `"pizza.csv"` im Code falsch, obwohl das Programm damit
+sogar lief.
+
+**Wiederverwenden heißt auswählen.** Der Fehlerblock aus `lines.py` passte
+in `pizza.py` mit zwei Änderungen — der Zählblock darunter gehörte zur
+alten Aufgabe. Siebtes Mal dieses Muster, aber zum ersten Mal mit einer
+richtigen und einer falschen Entscheidung im selben Schritt. Die Frage
+bleibt dieselbe: **brauche ich das hier, oder habe ich es nur zuletzt
+benutzt?**

@@ -901,3 +901,58 @@
 - Naechstes Mal: shirt.py. Dafuer brauche ich zuerst shirt.png und die
   Muppet-Fotos von der Aufgabenseite - sonst sitze ich wieder vor einem
   FileNotFoundError wie bei costumes.py
+## 15.11.2026
+- PROBLEM SET 6 IST KOMPLETT. shirt.py geloest, 15:40 bis 16:30. Damit
+  Woche 0 bis 6 durch und die Problem Sets 0 bis 6 geloest - sieben
+  komplette Sets
+- Erst den Download verbockt, und zwar lehrreich: curl.exe -O holte bei
+  beiden Dateien genau 138 Bytes. Das war keine PNG und kein ZIP,
+  sondern eine Weiterleitungsseite. curl folgt Weiterleitungen NICHT von
+  allein, dafuer braucht es -L. Mit -L sah man es sogar im Protokoll:
+  erst 138 Bytes, dann die echte Datei mit 65 KB
+- MERKEN: eine heruntergeladene Datei mit ein paar hundert Bytes ist
+  fast immer eine Fehlerseite. Nach dem Download dir eingeben und auf
+  die Spalte Length schauen. Sonst sucht man den Fehler spaeter im Code,
+  wo er nicht ist - Expand-Archive hat nur gemeldet, es finde kein
+  Archiv-Ende, und das klang nach kaputtem ZIP
+- Und: in PowerShell heisst es curl.exe mit .exe. Blankes curl ist dort
+  ein Deckname fuer etwas anderes mit ganz anderer Schreibweise. wget
+  aus den Unix-Anleitungen gibt es unter Windows gar nicht
+- shirt.py hatte FUENF Fehlermeldungen, die meisten im ganzen Set, und
+  die schaerfsten Regeln: drei erlaubte Endungen, Gross/Klein egal, und
+  Ein- und Ausgabe muessen uebereinstimmen
+- os.path.splitext("Bild.JPG") gibt ("Bild", ".JPG"). Position 1 ist die
+  Endung, MIT Punkt. .lower() dahinter macht Gross/Klein egal. Brauche
+  ich, wenn ich die Endung SELBST brauche - endswith reicht nur, wenn
+  man gegen eine einzige pruefen will
+- Dabei den Punkt bei "jpeg" vergessen. Damit haette foto.jpeg
+  faelschlich Invalid output bekommen. Faellt nur auf, wenn man genau
+  mit .jpeg testet - dieselbe Sorte Luecke wie bei test_twttr.py, wo
+  meine ersten zwei Tests gegen ein kaputtes shorten gruen waren
+- Die Anzahl der Argumente musste wieder ZUERST geprueft werden, sonst
+  haette splitext(sys.argv[2]) bei fehlenden Argumenten einen IndexError
+  geworfen. Dritte Aufgabe in Folge, wo diese Reihenfolge zaehlt
+- Zwei getrennte Meldungen fuer zwei getrennte Probleme:
+  after1.gif -> "Invalid output" (gar nicht erlaubt)
+  after1.png -> "Input and output have different extensions" (erlaubt,
+  passt nur nicht zur Eingabe). Das ist der Unterschied zu "irgendwas
+  stimmt nicht"
+- PIL: ImageOps.fit(photo, shirt.size) verkleinert UND beschneidet das
+  Foto auf exakt die Masse des T-Shirts. Muss sein - zwei Bilder lassen
+  sich nur uebereinanderlegen, wenn sie gleich gross sind
+- photo.paste(shirt, shirt) - zweimal dasselbe mit Absicht. Das erste
+  ist WAS geklebt wird, das zweite die SCHABLONE. Nur wo das Shirt
+  undurchsichtig ist, wird geklebt. Deshalb muss es ein PNG sein, JPG
+  kann keine Transparenz
+- "shirt.png" steht FEST im Code und das ist richtig so. Das T-Shirt ist
+  immer dasselbe, nur das Foto kommt von aussen. Nicht alles, was ein
+  Dateiname ist, gehoert in sys.argv
+- Rueckblick auf das ganze Set: technisch war NICHTS neu. sys.argv und
+  sys.exit aus Woche 4, open/with/csv aus Woche 6. Die Aufgabe war die
+  MONTAGE - genau der Engpass, der seit Oktober im Lernplan steht
+- Viermal derselbe Rahmen: erst zaehlen, dann lesen. Erst der Name, dann
+  die Datei. try nur um das Oeffnen. Ein Fehler, eine Meldung
+- Kein einziges input() im ganzen Problem Set. Ein Programm, dem man von
+  aussen sagt womit es arbeiten soll, ist ein Werkzeug
+- erklaert.md hat jetzt Teil 8 mit allen vier Programmen
+- Naechstes Mal: Woche 7, Regular Expressions

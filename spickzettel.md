@@ -2203,6 +2203,66 @@ Bildern dran.
 > `sys.argv[1:]` ist dann leer, die Schleife läuft nie, die Liste bleibt
 > leer. Nicht der Code ist falsch — die Eingabe fehlt.
 
+**Zwei Bilder übereinanderlegen:**
+
+```python
+from PIL import Image, ImageOps
+
+shirt = Image.open("shirt.png")
+photo = Image.open(sys.argv[1])
+
+photo = ImageOps.fit(photo, shirt.size)
+photo.paste(shirt, shirt)
+photo.save(sys.argv[2])
+```
+
+| | |
+|---|---|
+| `Image, ImageOps` | zwei Dinge aus derselben Bibliothek, mit Komma. `ImageOps` ist die Werkzeugkiste fürs Zuschneiden |
+| `bild.size` | die Maße als Paar `(Breite, Höhe)` |
+| `ImageOps.fit(bild, maße)` | **verkleinert und beschneidet** auf exakt diese Maße. Zwei Bilder lassen sich nur übereinanderlegen, wenn sie gleich groß sind |
+| `a.paste(b, b)` | `b` auf `a` kleben — **zweimal dasselbe mit Absicht** |
+
+Das doppelte Argument bei `paste`: das erste ist, **was** geklebt wird, das
+zweite ist die **Schablone**. Nur wo das obere Bild undurchsichtig ist, wird
+geklebt; der transparente Rand bleibt frei. Ohne Schablone bekommt man einen
+rechteckigen Klotz.
+
+> **Stolperstein.** Die Schablone funktioniert nur mit **PNG**. JPG kann gar
+> keine Transparenz — ein Logo als `.jpg` hat immer einen weißen Kasten drum.
+
+---
+
+### Dateinamen zerlegen — `os.path.splitext`
+
+```python
+import os
+
+os.path.splitext("Bild.JPG")           →  ("Bild", ".JPG")
+os.path.splitext("Bild.JPG")[1]        →  ".JPG"
+os.path.splitext("Bild.JPG")[1].lower()→  ".jpg"
+```
+
+Trennt einen Dateinamen in Stamm und Endung. **Die Endung kommt mit Punkt.**
+
+Für eine einzelne Endung reicht `name.endswith(".py")`. `splitext` braucht
+man, wenn man die Endung **selbst** braucht — um sie mit einer anderen zu
+vergleichen oder gegen eine Liste zu prüfen:
+
+```python
+if output_ext not in [".jpg", ".jpeg", ".png"]:
+    sys.exit("Invalid output")
+elif input_ext != output_ext:
+    sys.exit("Input and output have different extensions")
+```
+
+> **Stolperstein.** Den **Punkt** in der Liste nicht vergessen. `"jpeg"` ohne
+> Punkt steht nie drin, weil `splitext` immer `".jpeg"` liefert. Fällt nur
+> auf, wenn man genau mit dieser Endung testet.
+
+`.lower()` dahinter macht Groß- und Kleinschreibung egal — `.JPG` vom Handy
+gilt dann wie `.jpg`.
+
 ---
 
 ## Stil
@@ -2279,6 +2339,28 @@ Pfad stecken.
 **Nicht viele Terminals offen lassen.** Steht eines in einem Ordner, lässt
 Windows den Ordner nicht verschieben oder löschen ("wird von einem anderen
 Prozess verwendet"). Überzählige mit dem Mülleimer-Symbol schließen.
+
+**Dateien herunterladen:**
+
+```powershell
+curl.exe -L -O https://beispiel.de/datei.png
+Expand-Archive archiv.zip -DestinationPath .
+```
+
+| | |
+|---|---|
+| `curl.exe` | **mit `.exe`**. Blankes `curl` ist in PowerShell ein Deckname für etwas anderes mit ganz anderer Schreibweise |
+| `-O` | unter dem Originalnamen speichern |
+| `-L` | **Weiterleitungen folgen.** Ohne das lädt man die Weiterleitungsseite statt der Datei |
+
+In Anleitungen aus der Unix-Welt steht meist `wget` — das gibt es unter
+Windows nicht, `curl.exe -L -O` tut dasselbe.
+
+> **Stolperstein.** Eine heruntergeladene Datei mit ein paar hundert Bytes
+> ist fast immer eine Fehler- oder Weiterleitungsseite, nicht die Datei. Nach
+> dem Download `dir` und auf die Spalte **Length** schauen. Ein PNG hat
+> zigtausend Bytes. Sonst sucht man den Fehler später im Code, wo er nicht
+> ist — `Expand-Archive` meldet dann nur, es finde kein Archiv-Ende.
 
 **Tab-Taste vervollständigt Dateinamen.** `regu` + Tab wird zu
 `regular.csv`. Passiert nichts, gibt es die Datei nicht — und das sieht man
@@ -2497,7 +2579,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Problem Set 6: `shirt.py` fehlt noch (PIL). `lines`, `pizza`, `scourgify` sind durch
+- Woche 7 (Regular Expressions), dann Problem Set 7
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

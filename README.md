@@ -20,7 +20,7 @@ kleine Programme, Notizen.
 ## Stand
 
 **CS50P Woche 0 bis 6 durch, Problem Set 0 bis 6 vollständig gelöst.**
-Sieben komplette Problem Sets. Als Nächstes Woche 7 (Regular Expressions).
+Sieben komplette Problem Sets. Woche 7 (Regular Expressions) angefangen.
 
 Gelernt bisher: Variablen und Datentypen, Bedingungen, Schleifen, Listen,
 Dictionaries, Funktionen, Fehler abfangen mit `try`/`except`,

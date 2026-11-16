@@ -74,7 +74,7 @@ INDUZEIT, drei Tage ohne CS50P. Weiter ab Mittwochabend, 28.10.
 | ~~26.10.–01.11.~~ | Mo–Mi Belgien. ~~Problem Set 4 (game, professor, bitcoin)~~ ✅ **komplett am 31.10.** |
 | ~~02.–08.11.~~ | ~~Woche 5 (Unit Tests)~~ ✅ 02.11. · Di–Fr Schulung 9–17 Uhr · ~~Problem Set 5~~ ✅ **komplett am 08.11.** |
 | ~~09.–15.11.~~ | ~~Woche 6 (File I/O)~~ ✅ 10.11. · ~~Problem Set 6~~ ✅ **komplett am 15.11.** |
-| 16.–22.11. | Woche 7 (Regular Expressions) + Problem Set 7 |
+| 16.–22.11. | Woche 7 (Regular Expressions) — **begonnen 16.11.** — + Problem Set 7 |
 | 23.–29.11. | Woche 8 (Object-Oriented Programming) + Problem Set 8 |
 | 30.11.–06.12. | Woche 9 (Et Cetera) + Problem Set 9 |
 | 07.–21.12. | Abschlussprojekt |

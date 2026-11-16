@@ -43,6 +43,7 @@ Das Ding ist über zweitausend Zeilen lang. **Nicht scrollen — suchen:**
 | [Bibliotheken benutzen (Woche 4)](#bibliotheken-benutzen-woche-4) | `import`, `pip`, `sys.argv`, `requests`, eigene Module |
 | [Unit Tests (Woche 5)](#unit-tests-woche-5) | `assert`, `pytest`, `pytest.raises` |
 | [Dateien lesen und schreiben (Woche 6)](#dateien-lesen-und-schreiben-woche-6) | `open`, `with`, `.rstrip`, CSV, `lambda`, PIL |
+| [Reguläre Ausdrücke (Woche 7)](#reguläre-ausdrücke-woche-7) | `re.search`, Muster, Rohstrings |
 
 **Werkzeuge**
 
@@ -2265,6 +2266,91 @@ gilt dann wie `.jpg`.
 
 ---
 
+## Reguläre Ausdrücke (Woche 7)
+
+*(Erstes Viertel der Lektion. Der Rest folgt.)*
+
+Ein **regulärer Ausdruck** beschreibt eine **Form**, nicht einen Inhalt.
+Statt zu prüfen, ob ein Text dieses oder jenes enthält, sagt man: *so muss
+er aussehen.*
+
+Die Wand davor — eine E-Mail-Adresse von Hand prüfen:
+
+```python
+username, domain = email.split("@")
+
+if username and domain.endswith(".edu"):
+    print("Valid")
+```
+
+Das ist schon die zweite Fassung; die erste war `if "@" in email`. Und
+beide lassen Unsinn durch. Mit jeder weiteren Regel wächst die Kette.
+
+Die Tür:
+
+```python
+import re
+
+if re.search(r".+@.+\.edu", email):
+    print("Valid")
+```
+
+Eine Zeile für dieselbe Regel. **Viertes Mal dasselbe Muster** — Woche 3
+`if`-Ketten → `try`/`except`, Woche 4 selbst schreiben → `import`, Woche 6
+`split(",")` → `csv`, Woche 7 Handarbeit am String → `re`.
+
+### `re.search`
+
+```python
+re.search(muster, text)
+```
+
+Sucht das Muster **irgendwo** im Text. Gibt einen Treffer zurück — oder
+`None`, wenn nichts passt. Beides lässt sich direkt in ein `if` stecken,
+weil `None` als `False` gilt (siehe *Leer ist `False`*).
+
+`re` ist **mitgeliefert**. Kein `pip install`, nur `import re`.
+
+### Die Zeichen, die bisher vorkamen
+
+| | |
+|---|---|
+| `.` | **irgendein** Zeichen, genau eins |
+| `+` | das Vorherige **ein- oder mehrmals** |
+| `\.` | ein **echter Punkt**. Der Backslash nimmt dem `.` seine Sonderbedeutung |
+
+Damit liest sich `.+@.+\.edu` als: *irgendwas, dann ein `@`, dann irgendwas,
+dann ein Punkt, dann `edu`.*
+
+Der Backslash ist der Grund, warum `malan@harvard?edu` als **Invalid**
+durchfällt: `\.` verlangt einen Punkt, kein beliebiges Zeichen. Ohne den
+Backslash hätte das Fragezeichen gereicht.
+
+### Rohstrings — `r"..."`
+
+> **Stolperstein.**
+> `SyntaxWarning: "\." is an invalid escape sequence.`
+>
+> In einem normalen String leitet der Backslash eine Sonderbedeutung ein:
+> `\n` ist ein Zeilenumbruch, `\t` ein Tabulator. `\.` kennt Python nicht —
+> es warnt, und in künftigen Versionen wird es ein Fehler.
+
+```python
+re.search(".+@.+\.edu", email)     # Warnung
+re.search(r".+@.+\.edu", email)    # richtig
+```
+
+Das `r` vor dem Anführungszeichen schaltet die Sonderbedeutung **ab**. Der
+Backslash wird dann unverändert durchgereicht — und zwar an die
+Regex-Maschine, die ihn selbst auswertet. Genau das will man: zwei Stellen,
+die denselben Backslash auslegen wollen, wären eine zu viel.
+
+**Die Regel, die alles Nachdenken spart: jedes Muster bekommt ein `r`
+davor.** Immer, auch wenn gar kein Backslash drinsteht. Es schadet nie, und
+man vergisst es dann auch nie.
+
+---
+
 ## Stil
 
 **Variablen nach dem Inhalt benennen, Funktionen nach der Tätigkeit.**
@@ -2579,7 +2665,7 @@ bei Motivationstiefs unbezahlbar.
 
 ## Noch offen
 
-- Woche 7 (Regular Expressions), dann Problem Set 7
+- Woche 7 ab Minute 29 von 2:05, dann Problem Set 7
 
 **Woche 5 ist angeschaut** — `assert`, `pytest`, Testfunktionen,
 `pytest.raises`, Standardwerte, Packages.

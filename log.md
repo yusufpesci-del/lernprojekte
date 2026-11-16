@@ -956,3 +956,39 @@
   aussen sagt womit es arbeiten soll, ist ein Werkzeug
 - erklaert.md hat jetzt Teil 8 mit allen vier Programmen
 - Naechstes Mal: Woche 7, Regular Expressions
+## 16.11.2026
+- Woche 7 angefangen (Regular Expressions), Video bis 29:15 von 2:05.
+  Kurzer Abend, 30 Minuten, wie geplant. Ordner woche7 steht
+- Malan faengt wieder mit der Wand an: eine E-Mail-Adresse von Hand
+  pruefen. Erst "@" in email, dann split("@") plus endswith(".edu") -
+  und beides laesst Unsinn durch. Mit jeder weiteren Regel waechst die
+  Kette. Dann die Tuer: re.search(r".+@.+\.edu", email), eine Zeile
+- VIERTES Mal dasselbe Muster. Woche 3 if-Ketten -> try/except, Woche 4
+  selbst schreiben -> import, Woche 6 split(",") -> csv, Woche 7
+  Handarbeit am String -> re
+- Der Unterschied zu allem bisher: ein regulaerer Ausdruck beschreibt
+  eine FORM, keinen Inhalt. Nicht "enthaelt es ein @", sondern "so muss
+  es aussehen"
+- re ist mitgeliefert, kein pip install. Nur import re
+- re.search(muster, text) sucht das Muster irgendwo im Text und gibt
+  einen Treffer zurueck - oder None. Beides passt direkt in ein if, weil
+  None als False gilt. Dasselbe Prinzip wie "leer ist False" von
+  Samstag
+- Die drei Zeichen bis hierhin: . ist irgendein Zeichen, + heisst
+  ein- oder mehrmals, \. ist ein ECHTER Punkt
+- Der Backslash war der Grund, dass malan@harvard?edu durchgefallen ist.
+  \. verlangt einen Punkt, kein beliebiges Zeichen. Ohne Backslash
+  haette das Fragezeichen gereicht
+- STOLPERSTEIN DES ABENDS: SyntaxWarning: "\." is an invalid escape
+  sequence. In einem normalen String leitet der Backslash eine
+  Sonderbedeutung ein - \n Zeilenumbruch, \t Tabulator. \. kennt Python
+  nicht, also warnt es
+- Geloest mit einem r vor dem Anfuehrungszeichen: r".+@.+\.edu". Das
+  schaltet die Sonderbedeutung ab, der Backslash wird unveraendert an
+  die Regex-Maschine durchgereicht. Zwei Stellen, die denselben
+  Backslash auslegen wollen, waeren eine zu viel
+- REGEL FUER DEN REST DER WOCHE: jedes Muster bekommt ein r davor.
+  Immer, auch wenn gar kein Backslash drinsteht. Schadet nie, und man
+  vergisst es dann auch nie
+- Naechstes Mal: Video ab 29:15. Da kommen die Anker ^ und $ - die
+  Untertitel haben es schon angedeutet
